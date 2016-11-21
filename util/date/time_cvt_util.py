@@ -1,6 +1,5 @@
 # coding=gbk
 import time
-
 ISFORMAT = "%Y-%m-%d %H:%M:%S"
 def convert_mill(mill_second):
     print(mill_second,"毫秒转换后",time.strftime(ISFORMAT, time.localtime(mill_second/1000)))
