@@ -5,6 +5,7 @@ import time
 import pymysql
 from pymongo import MongoClient
 
+
 def test_mongo():
     client = MongoClient(host="127.0.0.1", port=27017)
     db = client['test']
@@ -57,19 +58,19 @@ class Mysql2Mongo(object):
     def show_tables(self):
         self.cursor.execute("show tables")
         data = self.cursor.fetchall()
-        return list(map(lambda x : x[0], data))
+        return list(map(lambda x: x[0], data))
 
     def show_actions(self):
         self.cursor.execute("SELECT p.id,p.name,a.id,a.name"
-            + " FROM tb_project p"
-            + " JOIN tb_module m ON m.project_id = p.id"
-            + " JOIN tb_page p2 ON p2.module_id = m.id"
-            + " JOIN tb_action_and_page ap ON ap.page_id = p2.id"
-            + " JOIN tb_action a ON a.id = ap.action_id")
+                            + " FROM tb_project p"
+                            + " JOIN tb_module m ON m.project_id = p.id"
+                            + " JOIN tb_page p2 ON p2.module_id = m.id"
+                            + " JOIN tb_action_and_page ap ON ap.page_id = p2.id"
+                            + " JOIN tb_action a ON a.id = ap.action_id")
         data = self.cursor.fetchall()
-        return list(map(lambda x : {"projectId":x[0],"projectName":x[1],"actionId":x[2],"actionName":x[3]}, data))
+        return list(map(lambda x: {"projectId": x[0], "projectName": x[1], "actionId": x[2], "actionName": x[3]}, data))
 
-    def show_action(self,actionId):
+    def show_action(self, actionId):
         self.cursor.execute("SELECT p.id,p.name,a.id,a.name"
                             + " FROM tb_project p"
                             + " JOIN tb_module m ON m.project_id = p.id"
@@ -101,7 +102,7 @@ class Mysql2Mongo(object):
             types.append(type)
         return keys, types
 
-    def drop_collection(self,table):
+    def drop_collection(self, table):
         self.mongodb[table].drop()
 
     def mysql2Mongo(self, table):
@@ -111,36 +112,36 @@ class Mysql2Mongo(object):
         sql = """select * from  %s""" % (table)
         n = self.cursor.execute(sql)
         data = self.cursor.fetchall()
-        #print table, keys, types
+        # print table, keys, types
         for row in data:
             ret = {}
             for k, key in enumerate(keys):
                 # if key == 'id':
                 #     key = '_id'
-                    #ret[key] = int(row[k])
-                if(types[k] == 1):
-                    if row[k]==None:
-                        ret[key]= 0
+                # ret[key] = int(row[k])
+                if (types[k] == 1):
+                    if row[k] == None:
+                        ret[key] = 0
                         continue
-                    #print k, key, row
+                    # print k, key, row
                     ret[key] = int(row[k])
-                elif(types[k] == 2):
-                    if row[k]==None:
-                        ret[key]= ''
+                elif (types[k] == 2):
+                    if row[k] == None:
+                        ret[key] = ''
                         continue
                     ret[key] = str(row[k])
-                elif(types[k] == 3):
-                    if row[k]==None:
-                        ret[key]= ''
+                elif (types[k] == 3):
+                    if row[k] == None:
+                        ret[key] = ''
                         continue
                     ret[key] = float(row[k])
                 else:
-                    if row[k]==None:
-                        ret[key]= ''
+                    if row[k] == None:
+                        ret[key] = ''
                         continue
                     ret[key] = str(row[k])
-            #if(table== 'hs_card') or (table== 'hs_hero'):
-                #ret['rand'] = random.random()
+                    # if(table== 'hs_card') or (table== 'hs_hero'):
+                    # ret['rand'] = random.random()
             # print(ret)
             self.setMongoCollectionDocument(table, ret)
 
@@ -149,6 +150,7 @@ class Mysql2Mongo(object):
         self.cursor.close()
         self.conn.close()
 
+
 if __name__ == "__main__":
     # test_mongo()
     # test_log()
@@ -156,10 +158,12 @@ if __name__ == "__main__":
     logger = multiprocessing.get_logger()
     logger.setLevel(logging.INFO)
     cls = Mysql2Mongo(logger)
-    tables = ["tb_parameter","tb_request_parameter_list_mapping","tb_response_parameter_list_mapping","tb_complex_parameter_list_mapping","tb_project","tb_module","tb_page","tb_action_and_page","tb_action"]
+    tables = ["tb_parameter", "tb_request_parameter_list_mapping", "tb_response_parameter_list_mapping",
+              "tb_complex_parameter_list_mapping", "tb_project", "tb_module", "tb_page", "tb_action_and_page",
+              "tb_action"]
 
     for t in tables:
         t1 = time.time()
         cls.mysql2Mongo(t)
-        print(t+" cost:", time.time() - t1)
+        print(t + " cost:", time.time() - t1)
     logger.info("done")

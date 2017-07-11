@@ -55,7 +55,7 @@ def replace_char_entity(htmlstr):
 def grap_url(url):
     response = urllib.request.urlopen(url)
     read = response.read()
-    read = read.decode("UTF-8")
+    read = read.decode("ISO-8859-1")
     read = filter_tags(read)
     print(read)
 
@@ -72,8 +72,8 @@ def get_img(url):
     return re.findall('<img.*?src=.*?>',read,re.I)
 
 if __name__ == '__main__':
-    url = "http://www.ishadowsocks.net/"
-    # url = "http://pan.haoii123.com/"
-    # grap_url(url)
-    v = get_href("http://cndenis.iteye.com/blog/1746706")
-    print(v[0])
+    # url = "https://detail.tmall.hk/hk/item.htm?spm=a1z10.4-b-s.w5003-15745601448.3.cTLysz&id=540000229842&rn=71a39db269e8a9227c205e1c0f41d495&abbucket=4&scene=taobao_shop&skuId=3201014554263"
+    url = "http://ss.ishadow.world/"
+    grap_url(url)
+    # v = grap_url("http://cndenis.iteye.com/blog/1746706")
+    # print(v[0]) encoding = "ISO-8859-1"
