@@ -1,4 +1,4 @@
-# coding=gbk
+# coding=utf-8
 import re
 import os
 import csv
@@ -14,7 +14,7 @@ class AnalyseChinese(object):
     def chushi(self,path):
         self.csv_file = open(path, 'w')
         self.f_csv = csv.writer(self.csv_file, dialect='excel')
-        self.f_csv.writerow(["ÎÄ¼şÃû", "ĞĞºÅ", "Â·ÓÉ", "°üº¬ÖĞÎÄ", "ĞĞÄÚÈİ"])
+        self.f_csv.writerow(["æ–‡ä»¶å", "è¡Œå·", "è·¯ç”±", "åŒ…å«ä¸­æ–‡", "è¡Œå†…å®¹"])
 
     def traversing_file(self,rootDir):
         for lists in os.listdir(rootDir):
@@ -35,7 +35,7 @@ class AnalyseChinese(object):
                 for i in range(len(lines)):
                     results = pattern.findall(lines[i])
                     px = path[15:]
-                    route = "ÎŞ"
+                    route = "æ— "
                     if(px in self.dict.keys()):
                         route = self.dict[px]
                     if (len(results) > 0):
@@ -45,7 +45,7 @@ class AnalyseChinese(object):
                         self.f_csv.writerow([px,str(i + 1),route,str(s),str(lines[i])])
                 f.close()
         except Exception:
-            print("¶ÁÈ¡ÎÄ¼ş" + path + "³ö´í")
+            print("è¯»å–æ–‡ä»¶" + path + "å‡ºé”™")
 
     def save(self):
         self.csv_file.close()

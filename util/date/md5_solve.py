@@ -1,4 +1,4 @@
-# coding=gbk
+# coding=utf-8
 import hashlib
 
 import string
@@ -24,4 +24,4 @@ def decryptMD5(testHash):
 
 
 if __name__ == "__main__":
-    print(decryptMD5("47bce5c74f589f4867dbd57e9ca9f808"))  # ÒªÆÆ½âµÄmd5Öµ£¬´Ë´¦ÎªÃ÷ÎÄtestµÄmd5Öµ
+    print(decryptMD5("47bce5c74f589f4867dbd57e9ca9f808"))  # è¦ç ´è§£çš„md5å€¼ï¼Œæ­¤å¤„ä¸ºæ˜æ–‡testçš„md5å€¼

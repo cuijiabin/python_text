@@ -1,12 +1,12 @@
-# coding=gbk
+# coding=utf-8
 import datetime
 import pymysql
 import json
 from pymongo import MongoClient
 from collections import OrderedDict
 """
-1.mysqlÊı¾İ¿âµ¼³öÊı¾İÖÁmongo
-2.´Ómysql²éÑ¯Êı¾İ
+1.mysqlæ•°æ®åº“å¯¼å‡ºæ•°æ®è‡³mongo
+2.ä»mysqlæŸ¥è¯¢æ•°æ®
 """
 class ExportData(object):
     mysql_host = None
@@ -143,7 +143,7 @@ class ExportData(object):
         self.cursor.close()
         self.conn.close()
 """
-1.¸ù¾İmongoÊı¾İÉú³ÉÈë²ÎÓë³ö²Î
+1.æ ¹æ®mongoæ•°æ®ç”Ÿæˆå…¥å‚ä¸å‡ºå‚
 """
 class GenerateData(object):
 
@@ -198,7 +198,7 @@ class GenerateData(object):
                 sub_map = self.recursion_param(sub_param);
                 map[identifier] = [sub_map]
         return map
-    # ²éÑ¯ËùÓĞµÄactionId
+    # æŸ¥è¯¢æ‰€æœ‰çš„actionId
     def get_all_actionIds(self):
         actions = self.mongodb["my_rap"].find({}, {"actionId": 1, "_id": 0})
         return list(map(lambda x: x["actionId"], actions))
@@ -217,12 +217,12 @@ class GenerateData(object):
         self.mongodb["my_rap"].remove({"actionId":actionId})
         self.mongodb["my_rap"].insert(sorted_doc)
 
-# µ¼Êı¾İ¼¯³É²Ù×÷
+# å¯¼æ•°æ®é›†æˆæ“ä½œ
 def handle_export_data(tables,ed):
     for table in tables:
         start = datetime.datetime.now()
         ed.export_to_mongo(table)
-        print(table + " cost:", (datetime.datetime.now() - start).seconds, "Ãë")
+        print(table + " cost:", (datetime.datetime.now() - start).seconds, "ç§’")
     print("done")
 
 def handle_generate_data(gd,ed):
@@ -251,10 +251,10 @@ def handle_generate_data(gd,ed):
             except Exception:
                 action_map["serviceId"] = ""
             gd.insert_mongo(action_map)
-            print("Éú³ÉÊı¾İ",action_id," cost:", (datetime.datetime.now() - start1).seconds, "Ãë")
+            print("ç”Ÿæˆæ•°æ®",action_id," cost:", (datetime.datetime.now() - start1).seconds, "ç§’")
         except Exception as e:
-            print("²Ù×÷Ê§°Ü", action_map, e)
-    print("Éú³ÉÊı¾İ cost:", (datetime.datetime.now() - start).seconds, "Ãë")
+            print("æ“ä½œå¤±è´¥", action_map, e)
+    print("ç”Ÿæˆæ•°æ® cost:", (datetime.datetime.now() - start).seconds, "ç§’")
 
 if __name__ == "__main__":
     conf_map ={
@@ -288,10 +288,10 @@ if __name__ == "__main__":
               "tb_project",
               "tb_module",
               "tb_page"]
-    # µ¼Êı¾İ¹ı³Ì
+    # å¯¼æ•°æ®è¿‡ç¨‹
     # handle_export_data(tables,ed)
 
-    # Éú³ÉÊı¾İ¹ı³Ì
+    # ç”Ÿæˆæ•°æ®è¿‡ç¨‹
     gd = GenerateData(conf_map)
     handle_generate_data(gd, ed)
     # handle_generate_data(gd, ed, 469)

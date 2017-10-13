@@ -1,4 +1,4 @@
-# coding=gbk
+# coding=utf-8
 # USAGE
 # python detect_blur.py --images images
 
@@ -8,8 +8,8 @@ import argparse
 import cv2
 
 """
-Í¼Æ¬ÇåÎú¶È¼ì²â TODO
-import cv2 ÓÐÎÊÌâ
+å›¾ç‰‡æ¸…æ™°åº¦æ£€æµ‹ TODO
+import cv2 æœ‰é—®é¢˜
 """
 def variance_of_laplacian(image):
     # compute the Laplacian of the image and then return the focus

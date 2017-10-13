@@ -1,6 +1,6 @@
-# coding=gbk
+# coding=utf-8
 """
-²éÕÒËã·¨
+æŸ¥æ‰¾ç®—æ³•
 """
 def binary_search(lst, n):
     low, high = 0, len(lst) - 1

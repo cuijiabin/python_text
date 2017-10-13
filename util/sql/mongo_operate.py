@@ -1,4 +1,4 @@
-# coding=gbk
+# coding=utf-8
 from collections import Iterable
 import multiprocessing
 import logging
@@ -75,7 +75,7 @@ def batch_precess(action_map):
         req_param = gm.recursion_param(req_list)
 
         res_list = gm.get_res_param(action_id)
-        # print("请求参数",res_list)
+        # print("璇锋眰鍙傛暟",res_list)
         res_param = gm.recursion_param(res_list)
 
         action_map["requestParam"] = req_param
@@ -88,7 +88,7 @@ def batch_precess(action_map):
         # print(action_map)
         gm.insert_mongo(action_map)
     except Exception as e:
-        print("操作失败",action_map)
+        print("鎿嶄綔澶辫触",action_map)
 
 if __name__ == "__main__":
 
@@ -102,4 +102,4 @@ if __name__ == "__main__":
     t1 = time.time()
     for t in actions:
         batch_precess(t)
-    print("耗费时间cost:", time.time() - t1)
+    print("鑰楄垂鏃堕棿cost:", time.time() - t1)

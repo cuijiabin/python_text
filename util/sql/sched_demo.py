@@ -1,10 +1,10 @@
-# coding=gbk
+# coding=utf-8
 import time
 import sched
 from threading import Timer
 
 """
-python¶¨Ê±ÈÎÎñ
+pythonå®šæ—¶ä»»åŠ¡
 """
 schedule = sched.scheduler(time.time, time.sleep)
 
@@ -22,7 +22,7 @@ schedule.run()
 print(time.time())
 
 """
-¶àÏß³Ì²¢·¢Ö´ĞĞ
+å¤šçº¿ç¨‹å¹¶å‘æ‰§è¡Œ
 """
 def print_time( enter_time ):
     print("now is", time.time() , "enter_the_box_time is", enter_time)

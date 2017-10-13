@@ -1,4 +1,4 @@
-# coding=gbk
+# coding=utf-8
 import re
 import os
 import codecs
@@ -21,7 +21,7 @@ def deppp():
     linNum = 0
     with open("E:/File/download/55.txt", encoding="utf8") as fn:
         linNum = len(list(fn))
-        print("ÎÄ¼þÐÐÊý£º", linNum)
+        print("æ–‡ä»¶è¡Œæ•°ï¼š", linNum)
         fn.close()
 
     with open("E:/File/download/55.txt", encoding="utf8") as f:

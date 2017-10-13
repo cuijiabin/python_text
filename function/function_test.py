@@ -1,4 +1,4 @@
-# coding=gbk
+# coding=utf-8
 from collections import Iterable
 import functools
 import gc
@@ -7,7 +7,7 @@ from pymongo import MongoClient
 from collections import OrderedDict
 
 """
-python º¯ÊıÊ½³ÌĞòÉè¼Æ
+python å‡½æ•°å¼ç¨‹åºè®¾è®¡
 """
 def log(func):
     @functools.wraps(func)

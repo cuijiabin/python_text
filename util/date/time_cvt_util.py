@@ -1,26 +1,26 @@
-# coding=gbk
+# coding=utf-8
 import time
 
-# ÈÕÆÚ×ª»»¹¤¾ß
+# æ—¥æœŸè½¬æ¢å·¥å…·
 ISFORMAT = "%Y-%m-%d %H:%M:%S"
 
 
-# ºÁÃë×ª»¯³ÉÎªÄêÔÂÈÕ
+# æ¯«ç§’è½¬åŒ–æˆä¸ºå¹´æœˆæ—¥
 def convert_mill(mill_second):
-    print(mill_second, "ºÁÃë×ª»»ºó", time.strftime(ISFORMAT, time.localtime(mill_second / 1000)))
+    print(mill_second, "æ¯«ç§’è½¬æ¢å", time.strftime(ISFORMAT, time.localtime(mill_second / 1000)))
 
 
-# ×Ö·û´®×ª»¯³ÉÎªºÁÃë
+# å­—ç¬¦ä¸²è½¬åŒ–æˆä¸ºæ¯«ç§’
 def convert_str_mill(date_str, format="%Y-%m-%d %H:%M:%S"):
     struct_time = time.strptime(date_str, format)
     mk_time = time.mktime(struct_time)
-    print(date_str, "×ª»»ºóºÁÃëÊı:" + str(int(1000 * mk_time)))
+    print(date_str, "è½¬æ¢åæ¯«ç§’æ•°:" + str(int(1000 * mk_time)))
 
 
 def convert_str_second(date_str, format="%Y-%m-%d %H:%M:%S"):
     struct_time = time.strptime(date_str, format)
     mk_time = time.mktime(struct_time)
-    print(date_str, "×ª»»ºóºÁÃëÊı:" + str(int(mk_time)))
+    print(date_str, "è½¬æ¢åæ¯«ç§’æ•°:" + str(int(mk_time)))
 
 
 if __name__ == "__main__":

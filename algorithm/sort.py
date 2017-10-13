@@ -1,93 +1,93 @@
-# coding=gbk
+# coding=utf-8
 """
-�����㷨 ����������������
-�������� ð������
-ϣ������
-�鲢���� �������� ������
-��������
+排序算法 按名称来进行排序
+插入排序 冒泡排序
+希尔排序
+归并排序 快速排序 堆排序
+基数排序
 """
 import math
-# ��һ��
+# 第一类
 """
-�������� InsertionSort ��������Ĺ���ԭ���ǣ�����ÿ��δ�������ݣ��������������дӺ���ǰɨ�裬�ҵ���Ӧλ�ò����롣
-���裺
-1.�ӵ�һ��Ԫ�ؿ�ʼ����Ԫ�ؿ�����Ϊ�Ѿ�������
-2.ȡ����һ��Ԫ�أ����Ѿ������Ԫ�������дӺ���ǰɨ��
-3.�����ɨ���Ԫ�أ������򣩴�����Ԫ�أ�����Ԫ�غ���һλ
-4.�ظ�����3��ֱ���ҵ��������Ԫ��С�ڻ��ߵ�����Ԫ�ص�λ��
-5.����Ԫ�ز��뵽��λ�ú�
-6.�ظ�����2~5
+插入排序 InsertionSort 插入排序的工作原理是，对于每个未排序数据，在已排序序列中从后向前扫描，找到相应位置并插入。
+步骤：
+1.从第一个元素开始，该元素可以认为已经被排序
+2.取出下一个元素，在已经排序的元素序列中从后向前扫描
+3.如果被扫描的元素（已排序）大于新元素，将该元素后移一位
+4.重复步骤3，直到找到已排序的元素小于或者等于新元素的位置
+5.将新元素插入到该位置后
+6.重复步骤2~5
 """
 def insert_sort(array):
     n = len(array)
     for i in range(1,n):
         if array[i] < array[i-1]:
             temp = array[i]
-            index = i           #��������±�
-            for j in range(i-1,-1,-1):  #��i-1 ѭ���� 0 (����0)
+            index = i           #待插入的下标
+            for j in range(i-1,-1,-1):  #从i-1 循环到 0 (包括0)
                 if array[j] > temp :
                     array[j+1] = array[j]
-                    index = j   #��¼�������±�
+                    index = j   #记录待插入下标
                 else :
                     break
             array[index] = temp
     return array
 
 """
-ð������ BubbleSort ð�������ԭ���ǳ��򵥣����ظ����߷ù�Ҫ��������У�һ�αȽ�����Ԫ�أ�������ǵ�˳�����Ͱ����ǽ���������
-���裺
-�Ƚ����ڵ�Ԫ�ء������һ���ȵڶ����󣬾ͽ�������������
-�Ե�0������n-1��������ͬ���Ĺ�������ʱ���������͡�����������������λ���ϡ�
-������е�Ԫ���ظ����ϵĲ��裬�������һ����
-����ÿ�ζ�Խ��Խ�ٵ�Ԫ���ظ�����Ĳ��裬ֱ��û���κ�һ��������Ҫ�Ƚϡ�
+冒泡排序 BubbleSort 冒泡排序的原理非常简单，它重复地走访过要排序的数列，一次比较两个元素，如果他们的顺序错误就把他们交换过来。
+步骤：
+比较相邻的元素。如果第一个比第二个大，就交换他们两个。
+对第0个到第n-1个数据做同样的工作。这时，最大的数就“浮”到了数组最后的位置上。
+针对所有的元素重复以上的步骤，除了最后一个。
+持续每次对越来越少的元素重复上面的步骤，直到没有任何一对数字需要比较。
 """
 def bubble_sort(arry):
-    n = len(arry)                   #�������ĳ���
+    n = len(arry)                   #获得数组的长度
     for i in range(n):
         for j in range(1,n-i):
-            if  arry[j-1] > arry[j] :       #���ǰ�߱Ⱥ��ߴ�
-                arry[j-1],arry[j] = arry[j],arry[j-1]      #�򽻻�����
+            if  arry[j-1] > arry[j] :       #如果前者比后者大
+                arry[j-1],arry[j] = arry[j],arry[j-1]      #则交换两者
     return arry
 
 """
-ѡ������ SelectionSort ѡ���������������ֱ�۵��������Ĺ���ԭ�����¡�
-���裺
-��δ�����������ҵ���С����Ԫ�أ���ŵ��������е���ʼλ�á�
-�ٴ�ʣ��δ����Ԫ���м���Ѱ����С����Ԫ�أ�Ȼ��ŵ����������е�ĩβ��
-�Դ����ƣ�ֱ������Ԫ�ؾ�������ϡ�
+选择排序 SelectionSort 选择排序无疑是最简单直观的排序。它的工作原理如下。
+步骤：
+在未排序序列中找到最小（大）元素，存放到排序序列的起始位置。
+再从剩余未排序元素中继续寻找最小（大）元素，然后放到已排序序列的末尾。
+以此类推，直到所有元素均排序完毕。
 """
 def select_sort(array):
     n = len(array)
     for i in range(0,n):
-        min = i                             #��СԪ���±���
+        min = i                             #最小元素下标标记
         for j in range(i+1,n):
             if array[j] < array[min] :
-                min = j                     #�ҵ���Сֵ���±�
-        array[min],array[i] = array[i],array[min]   #��������
+                min = j                     #找到最小值的下标
+        array[min],array[i] = array[i],array[min]   #交换两者
     return array
 
 """
-ϣ������ ShellSort
-ϣ������Ҳ�Ƶݼ����������㷨��ʵ���Ƿ������������ Donald Shell ��1959�������ϣ�������Ƿ��ȶ������㷨��
+希尔排序 ShellSort
+希尔排序，也称递减增量排序算法，实质是分组插入排序。由 Donald Shell 于1959年提出。希尔排序是非稳定排序算法。
 
-ϣ������Ļ���˼���ǣ�����������һ�����в����зֱ���в��������ظ�����̣�����ÿ���ø������У����������ˣ����������ˣ������С�
-�����������ֻ��һ���ˡ�������ת��������Ϊ�˸��õ��������㷨���㷨��������ʹ�������������
+希尔排序的基本思想是：将数组列在一个表中并对列分别进行插入排序，重复这过程，不过每次用更长的列（步长更长了，列数更少了）来进行。
+最后整个表就只有一列了。将数组转换至表是为了更好地理解这算法，算法本身还是使用数组进行排序。
 
-���磬����������һ����[ 13 14 94 33 82 25 59 94 65 23 45 27 73 25 39 10 ]����������Բ���Ϊ5��ʼ��������
-���ǿ���ͨ�������б�������5�еı��������õ������㷨���������Ǿ�Ӧ�ÿ�������������
+例如，假设有这样一组数[ 13 14 94 33 82 25 59 94 65 23 45 27 73 25 39 10 ]，如果我们以步长为5开始进行排序，
+我们可以通过将这列表放在有5列的表中来更好地描述算法，这样他们就应该看起来是这样：
 
 13 14 94 33 82
 25 59 94 65 23
 45 27 73 25 39
 10
-Ȼ�����Ƕ�ÿ�н�������
+然后我们对每列进行排序：
 
 10 14 73 25 23
 13 27 94 33 39
 25 59 94 65 82
 45
-�������������֣��������һ��ʱ���ǵõ���[ 10 14 73 25 23 13 27 94 33 39 25 59 94 65 82 45 ]��
-��ʱ10�Ѿ�������ȷλ���ˣ�Ȼ������3Ϊ������������
+将上述四行数字，依序接在一起时我们得到：[ 10 14 73 25 23 13 27 94 33 39 25 59 94 65 82 45 ]。
+这时10已经移至正确位置了，然后再以3为步长进行排序：
 
 10 14 73
 25 23 13
@@ -95,7 +95,7 @@ def select_sort(array):
 39 25 59
 94 65 82
 45
-����֮���Ϊ��
+排序之后变为：
 
 10 14 13
 25 23 33
@@ -103,45 +103,45 @@ def select_sort(array):
 39 65 73
 45 94 82
 94
-�����1�����������򣨴�ʱ���Ǽ򵥵Ĳ��������ˣ���
+最后以1步长进行排序（此时就是简单的插入排序了）。
 """
 def shell_sort(array):
     n = len(array)
-    gap = round(n/2)       #��ʼ���� , ��round��������ȡ��
+    gap = round(n/2)       #初始步长 , 用round四舍五入取整
     while gap > 0 :
-        for i in range(gap,n):        #ÿһ�н��в������� , ��gap �� n-1
+        for i in range(gap,n):        #每一列进行插入排序 , 从gap 到 n-1
             temp = array[i]
             j = i
-            while ( j >= gap and array[j-gap] > temp ):    #��������
+            while ( j >= gap and array[j-gap] > temp ):    #插入排序
                 array[j] = array[j-gap]
                 j = j - gap
             array[j] = temp
-        gap = round(gap/2)                     #�������ò���
+        gap = round(gap/2)                     #重新设置步长
     return array
 
 """
-�鲢���� MergeSort
+归并排序 MergeSort
 
-�鲢�����ǲ��÷��η���һ���ǳ����͵�Ӧ�á��鲢�����˼������ȵݹ�ֽ����飬�ٺϲ����顣
-�ȿ��Ǻϲ������������飬����˼·�ǱȽ������������ǰ�������˭С����ȡ˭��ȡ�˺���Ӧ��ָ���������һλ��
-Ȼ���ٱȽϣ�ֱ��һ������Ϊ�գ�������һ�������ʣ�ಿ�ָ��ƹ������ɡ�
+归并排序是采用分治法的一个非常典型的应用。归并排序的思想就是先递归分解数组，再合并数组。
+先考虑合并两个有序数组，基本思路是比较两个数组的最前面的数，谁小就先取谁，取了后相应的指针就往后移一位。
+然后再比较，直至一个数组为空，最后把另一个数组的剩余部分复制过来即可。
 
-�ٿ��ǵݹ�ֽ⣬����˼·�ǽ�����ֽ��left��right����������������ڲ�����������ģ���ô�Ϳ���������ϲ�����ķ���������������ϲ�����
-����������������ڲ�������ģ������ٶ��֣�ֱ���ֽ����С��ֻ����һ��Ԫ��ʱΪֹ����ʱ��Ϊ��С���ڲ�������Ȼ��ϲ��������ڶ���С�鼴�ɡ�
+再考虑递归分解，基本思路是将数组分解成left和right，如果这两个数组内部数据是有序的，那么就可以用上面合并数组的方法将这两个数组合并排序。
+如何让这两个数组内部是有序的？可以再二分，直至分解出的小组只含有一个元素时为止，此时认为该小组内部已有序。然后合并排序相邻二个小组即可。
 """
 def merge_sort(ary):
     if len(ary) <= 1 :
         return ary
-    num = int(len(ary)/2)       #���ַֽ�
+    num = int(len(ary)/2)       #二分分解
     left = merge_sort(ary[:num])
     right = merge_sort(ary[num:])
-    return merge(left,right)    #�ϲ�����
+    return merge(left,right)    #合并数组
 
 def merge(left,right):
-    '''�ϲ�������
-    ��������������left[]��right[]�ϲ���һ�������������
+    '''合并操作，
+    将两个有序数组left[]和right[]合并成一个大的有序数组
     '''
-    l,r = 0,0           #left��right������±�ָ��
+    l,r = 0,0           #left与right数组的下标指针
     result = []
     while l<len(left) and r<len(right) :
         if left[l] < right[r]:
@@ -155,27 +155,27 @@ def merge(left,right):
     return result
 
 """
-�������� QuickSort
-���ܣ�
-��������ͨ�����Ա�ͬΪ��(n log n)�������㷨���죬��˳������ã����ҿ��Ų����˷��η���˼�룬�����ںܶ�����������ܾ����������ŵ�Ӱ�ӡ��ɼ����տ��ŵ���Ҫ�ԡ�
+快速排序 QuickSort
+介绍：
+快速排序通常明显比同为Ο(n log n)的其他算法更快，因此常被采用，而且快排采用了分治法的思想，所以在很多笔试面试中能经常看到快排的影子。可见掌握快排的重要性。
 
-���裺
+步骤：
 
-������������һ��Ԫ����Ϊ��׼����
-�������̣����Ȼ�׼����ķŵ��ұߣ�С�ڻ�������������ŵ���ߡ�
-�ٶ���������ݹ�ִ�еڶ�����ֱ��������ֻ��һ������
+从数列中挑出一个元素作为基准数。
+分区过程，将比基准数大的放到右边，小于或等于它的数都放到左边。
+再对左右区间递归执行第二步，直至各区间只有一个数。
 
 """
 def quick_sort(array):
     return qsort(array,0,len(array)-1)
 
 def qsort(array,left,right):
-    #���ź�����arrayΪ���������飬leftΪ���������߽磬rightΪ�ұ߽�
+    #快排函数，array为待排序数组，left为待排序的左边界，right为右边界
     if left >= right :
         return array
-    key = array[left]     #ȡ����ߵ�Ϊ��׼��
-    lp = left           #��ָ��
-    rp = right          #��ָ��
+    key = array[left]     #取最左边的为基准数
+    lp = left           #左指针
+    rp = right          #右指针
     while lp < rp :
         while array[rp] >= key and lp < rp :
             rp -= 1
@@ -189,51 +189,51 @@ def qsort(array,left,right):
     return array
 
 """
-������ HeapSort
-���ܣ�
+堆排序 HeapSort
+介绍：
 
-�������� top K ������ʹ�ñȽ�Ƶ�����������ǲ��ö���ѵ����ݽṹ��ʵ�ֵģ���Ȼʵ���ϻ���һά���顣�������һ��������ȫ������ ��
+堆排序在 top K 问题中使用比较频繁。堆排序是采用二叉堆的数据结构来实现的，虽然实质上还是一维数组。二叉堆是一个近似完全二叉树 。
 
-����Ѿ����������ʣ�
+二叉堆具有以下性质：
 
-���ڵ�ļ�ֵ���Ǵ��ڻ���ڣ�С�ڻ���ڣ��κ�һ���ӽڵ�ļ�ֵ��
-ÿ���ڵ��������������һ������ѣ��������ѻ���С�ѣ���
-���裺
+父节点的键值总是大于或等于（小于或等于）任何一个子节点的键值。
+每个节点的左右子树都是一个二叉堆（都是最大堆或最小堆）。
+步骤：
 
-�������ѣ�Build_Max_Heap�����������±귶ΧΪ0~n�����ǵ�����һ��Ԫ���Ǵ���ѣ�����±�n/2��ʼ��Ԫ�ؾ�Ϊ����ѡ�����ֻҪ��n/2-1��ʼ����ǰ���ι������ѣ��������ܱ�֤�����쵽ĳ���ڵ�ʱ�����������������Ѿ��Ǵ���ѡ�
+构造最大堆（Build_Max_Heap）：若数组下标范围为0~n，考虑到单独一个元素是大根堆，则从下标n/2开始的元素均为大根堆。于是只要从n/2-1开始，向前依次构造大根堆，这样就能保证，构造到某个节点时，它的左右子树都已经是大根堆。
 
-������HeapSort�������ڶ���������ģ��ġ��õ�һ������Ѻ������ڲ�����������ġ������Ҫ���ѻ��������򻯡�˼�����Ƴ����ڵ㣬�������ѵ����ĵݹ����㡣��һ�ν�heap[0]��heap[n-1]�������ٶ�heap[0...n-2]�����ѵ������ڶ��ν�heap[0]��heap[n-2]�������ٶ�heap[0...n-3]�����ѵ������ظ��ò���ֱ��heap[0]��heap[1]����������ÿ�ζ��ǽ����������뵽������������䣬�ʲ�����������������������ˡ�
+堆排序（HeapSort）：由于堆是用数组模拟的。得到一个大根堆后，数组内部并不是有序的。因此需要将堆化数组有序化。思想是移除根节点，并做最大堆调整的递归运算。第一次将heap[0]与heap[n-1]交换，再对heap[0...n-2]做最大堆调整。第二次将heap[0]与heap[n-2]交换，再对heap[0...n-3]做最大堆调整。重复该操作直至heap[0]和heap[1]交换。由于每次都是将最大的数并入到后面的有序区间，故操作完后整个数组就是有序的了。
 
-���ѵ�����Max_Heapify�����÷������ṩ�������������̵��õġ�Ŀ���ǽ��ѵ�ĩ���ӽڵ���������ʹ���ӽڵ���ԶС�ڸ��ڵ� ��
+最大堆调整（Max_Heapify）：该方法是提供给上述两个过程调用的。目的是将堆的末端子节点作调整，使得子节点永远小于父节点 。
 """
 def heap_sort(ary) :
     n = len(ary)
-    first = int(n/2-1)       #���һ����Ҷ�ӽڵ�
-    for start in range(first,-1,-1) :     #��������
+    first = int(n/2-1)       #最后一个非叶子节点
+    for start in range(first,-1,-1) :     #构造大根堆
         max_heapify(ary,start,n-1)
-    for end in range(n-1,0,-1):           #���ţ��������ת������������
+    for end in range(n-1,0,-1):           #堆排，将大根堆转换成有序数组
         ary[end],ary[0] = ary[0],ary[end]
         max_heapify(ary,0,end-1)
     return ary
 
 
-#���ѵ��������ѵ�ĩ���ӽڵ���������ʹ���ӽڵ���ԶС�ڸ��ڵ�
-#startΪ��ǰ��Ҫ�������ѵ�λ�ã�endΪ�����߽�
+#最大堆调整：将堆的末端子节点作调整，使得子节点永远小于父节点
+#start为当前需要调整最大堆的位置，end为调整边界
 def max_heapify(ary,start,end):
     root = start
     while True :
-        child = root*2 +1               #�����ڵ���ӽڵ�
+        child = root*2 +1               #调整节点的子节点
         if child > end : break
         if child+1 <= end and ary[child] < ary[child+1] :
-            child = child+1             #ȡ�ϴ���ӽڵ�
-        if ary[root] < ary[child] :     #�ϴ���ӽڵ��Ϊ���ڵ�
-            ary[root],ary[child] = ary[child],ary[root]     #����
+            child = child+1             #取较大的子节点
+        if ary[root] < ary[child] :     #较大的子节点成为父节点
+            ary[root],ary[child] = ary[child],ary[root]     #交换
             root = child
         else :
             break
 
 """
-��������
+基数排序
 
 """
 def radix_sort(lists, radix=10):
@@ -249,22 +249,22 @@ def radix_sort(lists, radix=10):
     return lists
 
 
-# �������˼�� -- �Դ����Ϊ��:
-# 1) ������
-# 2) �ѶѸ�ȡ�����ŵ�������ȥ -- �Ѹ��ǵ�ǰ������������
-# 3) ��ʱ��û�и��ˣ����µ����ѣ�Ȼ���ظ�1) - 3)ֱ���ѳ�Ϊһ���ն�
+# 堆排序的思想 -- 以大根堆为例:
+# 1) 构建堆
+# 2) 把堆根取下来放到有序区去 -- 堆跟是当前堆上最大的数字
+# 3) 此时堆没有根了，重新调整堆，然后重复1) - 3)直到堆成为一个空堆
 #
-# ��������ѡ�������һ�֣� Ҳ��ÿ�δ�δ���������ѡ��һ��ֵ���������������
-# ����ֱ��ѡ������ĸĽ��ǣ� ������ǰ�Ѿ��ȽϹ��Ľ�����Ա����������������ظ��Ƚϣ���Ҳ�Ƕѵ�����
+# 堆排序是选择排序的一种： 也是每次从未排序的区域选择一个值放入已排序的区域
+# 它对直接选择排序的改进是： 对于以前已经比较过的结果可以保留下来：不用再重复比较：这也是堆的特性
 
 def heap_sort(arr):
     build_heap(arr)
     print(arr)
     arrlen = len(arr)
     for i in reversed(range(1, arrlen)):
-        # �ѶѸ�(����ֵ)�ŵ������ȥ
+        # 把堆跟(最大的值)放到最后面去
         swap(arr, 0, i)
-        # ���µ�����
+        # 重新调整堆
         heapify(arr, 0, i - 1)
 
 
@@ -276,8 +276,8 @@ def swap(arr, index1, index2):
 
 def build_heap(arr):
     """
-    ��arr[0]��arr[(arrlen / 2)]Ϊ������Щ��������Ҫ����������
-    �����Ķ���Ҷ�ӽڵ�
+    以arr[0]到arr[(arrlen / 2)]为根的这些子树是需要调整的子树
+    其他的都是叶子节点
     """
     arrlen = len(arr)
     harf = int(math.floor(arrlen / 2))
@@ -290,10 +290,10 @@ def heapify(arr, low, high):
     right = left + 1
     current = low
 
-    # �ݴ�������ٸ�����ֵ
+    # 暂存这个“假根”的值
     tmp = arr[low]
 
-    # �����ǰ�ڵ㻹������
+    # 如果当前节点还有子树
     while left <= high:
         if right <= high:
             if arr[left] < arr[right]:
@@ -303,19 +303,19 @@ def heapify(arr, low, high):
         else:
             next = left
 
-        # ȷʵ�и����ӵ�ֵ������
+        # 确实有个孩子的值比他大
         if tmp < arr[next]:
-            # ��������ֵ���Ƶ����׽ڵ�
+            # 把这个大的值上移到父亲节点
             arr[current] = arr[next]
-            # ����current
+            # 更新current
             current = next
             left = current * 2 + 1
             right = left + 1
         else:
-            # ������Ѿ����
+            # 这个堆已经完成
             break
 
-    # �Ѽٸ��ѵ������ȷ��λ��
+    # 把假根把到这个正确的位置
     arr[current] = tmp
 
 if __name__ =="__main__":

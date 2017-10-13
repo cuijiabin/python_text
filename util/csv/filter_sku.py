@@ -1,4 +1,4 @@
-# coding=gbk
+# coding=utf-8
 import pymysql
 # filterList = []
 # with open("E:/work-text/list.txt") as ft:
@@ -10,7 +10,7 @@ import pymysql
 #         line = ft.readline()
 #     ft.close()
 # for i in filterList:
-#     print("初始数据", i)
+#     print("鍒濆鏁版嵁", i)
 def getMiaConn():
     conn = pymysql.connect(host="10.1.3.33", user="pop_cuijiabin", passwd="8dtx5EOUZASc", port=3306, charset="utf8")
     return conn
@@ -44,5 +44,5 @@ def filter_sku(txt_path="E:/db_sku.txt"):
 
         of.close()
 
-# 过滤sku
+# 杩囨护sku
 filter_sku("E:/origin_data.txt")

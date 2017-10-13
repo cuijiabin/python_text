@@ -1,6 +1,6 @@
-# coding=gbk
+# coding=utf-8
 """
-½ÚµãÀà
+èŠ‚ç‚¹ç±»
 """
 class Node(object):
 
@@ -10,7 +10,7 @@ class Node(object):
         self.rchild = rchild
 
 """
-Ê÷Àà
+æ ‘ç±»
 """
 class Tree(object):
 
@@ -18,17 +18,17 @@ class Tree(object):
         self.root = Node()
 
     """
-    ÎªÊ÷Ìí¼Ó½Úµã
+    ä¸ºæ ‘æ·»åŠ èŠ‚ç‚¹
     """
     def add(self, elem):
         node = Node(elem)
-        if self.root.elem == -1:            #Èç¹ûÊ÷ÊÇ¿ÕµÄ£¬Ôò¶Ô¸ù½Úµã¸³Öµ
+        if self.root.elem == -1:            #å¦‚æœæ ‘æ˜¯ç©ºçš„ï¼Œåˆ™å¯¹æ ¹èŠ‚ç‚¹èµ‹å€¼
             self.root = node
         else:
             myQueue = []
             treeNode = self.root
             myQueue.append(treeNode)
-            while myQueue:                      #¶ÔÒÑÓĞµÄ½Úµã½øĞĞ²ã´Î±éÀú
+            while myQueue:                      #å¯¹å·²æœ‰çš„èŠ‚ç‚¹è¿›è¡Œå±‚æ¬¡éå†
                 treeNode = myQueue.pop(0)
                 if treeNode.lchild == None:
                     treeNode.lchild = node
@@ -41,7 +41,7 @@ class Tree(object):
                     myQueue.append(treeNode.rchild)
 
     """
-    ÀûÓÃµİ¹éÊµÏÖÊ÷µÄÏÈĞò±éÀú
+    åˆ©ç”¨é€’å½’å®ç°æ ‘çš„å…ˆåºéå†
     """
     def front_digui(self, root):
 
@@ -52,7 +52,7 @@ class Tree(object):
         self.front_digui(root.rchild)
 
     """
-    ÀûÓÃµİ¹éÊµÏÖÊ÷µÄÖĞĞò±éÀú
+    åˆ©ç”¨é€’å½’å®ç°æ ‘çš„ä¸­åºéå†
     """
     def middle_digui(self, root):
         if root == None:
@@ -62,7 +62,7 @@ class Tree(object):
         self.middle_digui(root.rchild)
 
     """
-    ÀûÓÃµİ¹éÊµÏÖÊ÷µÄºóĞò±éÀú
+    åˆ©ç”¨é€’å½’å®ç°æ ‘çš„ååºéå†
     """
     def later_digui(self, root):
         if root == None:
@@ -72,7 +72,7 @@ class Tree(object):
         print(root.elem)
 
     """
-    ÀûÓÃ¶ÑÕ»ÊµÏÖÊ÷µÄÏÈĞò±éÀú
+    åˆ©ç”¨å †æ ˆå®ç°æ ‘çš„å…ˆåºéå†
     """
     def front_stack(self, root):
         if root == None:
@@ -80,15 +80,15 @@ class Tree(object):
         myStack = []
         node = root
         while node or myStack:
-            while node:                     #´Ó¸ù½Úµã¿ªÊ¼£¬Ò»Ö±ÕÒËüµÄ×ó×ÓÊ÷
+            while node:                     #ä»æ ¹èŠ‚ç‚¹å¼€å§‹ï¼Œä¸€ç›´æ‰¾å®ƒçš„å·¦å­æ ‘
                 print(node.elem)
                 myStack.append(node)
                 node = node.lchild
-            node = myStack.pop()            #while½áÊø±íÊ¾µ±Ç°½ÚµãnodeÎª¿Õ£¬¼´Ç°Ò»¸ö½ÚµãÃ»ÓĞ×ó×ÓÊ÷ÁË
-            node = node.rchild                  #¿ªÊ¼²é¿´ËüµÄÓÒ×ÓÊ÷
+            node = myStack.pop()            #whileç»“æŸè¡¨ç¤ºå½“å‰èŠ‚ç‚¹nodeä¸ºç©ºï¼Œå³å‰ä¸€ä¸ªèŠ‚ç‚¹æ²¡æœ‰å·¦å­æ ‘äº†
+            node = node.rchild                  #å¼€å§‹æŸ¥çœ‹å®ƒçš„å³å­æ ‘
 
     """
-    ÀûÓÃ¶ÑÕ»ÊµÏÖÊ÷µÄÖĞĞò±éÀú
+    åˆ©ç”¨å †æ ˆå®ç°æ ‘çš„ä¸­åºéå†
     """
     def middle_stack(self, root):
         if root == None:
@@ -96,15 +96,15 @@ class Tree(object):
         myStack = []
         node = root
         while node or myStack:
-            while node:                     #´Ó¸ù½Úµã¿ªÊ¼£¬Ò»Ö±ÕÒËüµÄ×ó×ÓÊ÷
+            while node:                     #ä»æ ¹èŠ‚ç‚¹å¼€å§‹ï¼Œä¸€ç›´æ‰¾å®ƒçš„å·¦å­æ ‘
                 myStack.append(node)
                 node = node.lchild
-            node = myStack.pop()            #while½áÊø±íÊ¾µ±Ç°½ÚµãnodeÎª¿Õ£¬¼´Ç°Ò»¸ö½ÚµãÃ»ÓĞ×ó×ÓÊ÷ÁË
+            node = myStack.pop()            #whileç»“æŸè¡¨ç¤ºå½“å‰èŠ‚ç‚¹nodeä¸ºç©ºï¼Œå³å‰ä¸€ä¸ªèŠ‚ç‚¹æ²¡æœ‰å·¦å­æ ‘äº†
             print(node.elem)
-            node = node.rchild                  #¿ªÊ¼²é¿´ËüµÄÓÒ×ÓÊ÷
+            node = node.rchild                  #å¼€å§‹æŸ¥çœ‹å®ƒçš„å³å­æ ‘
 
     """
-    ÀûÓÃ¶ÑÕ»ÊµÏÖÊ÷µÄºóĞò±éÀú
+    åˆ©ç”¨å †æ ˆå®ç°æ ‘çš„ååºéå†
     """
     def later_stack(self, root):
         if root == None:
@@ -113,18 +113,18 @@ class Tree(object):
         myStack2 = []
         node = root
         myStack1.append(node)
-        while myStack1:                   #Õâ¸öwhileÑ­»·µÄ¹¦ÄÜÊÇÕÒ³öºóĞò±éÀúµÄÄæĞò£¬´æÔÚmyStack2ÀïÃæ
+        while myStack1:                   #è¿™ä¸ªwhileå¾ªç¯çš„åŠŸèƒ½æ˜¯æ‰¾å‡ºååºéå†çš„é€†åºï¼Œå­˜åœ¨myStack2é‡Œé¢
             node = myStack1.pop()
             if node.lchild:
                 myStack1.append(node.lchild)
             if node.rchild:
                 myStack1.append(node.rchild)
             myStack2.append(node)
-        while myStack2:                         #½«myStack2ÖĞµÄÔªËØ³öÕ»£¬¼´ÎªºóĞò±éÀú´ÎĞò
+        while myStack2:                         #å°†myStack2ä¸­çš„å…ƒç´ å‡ºæ ˆï¼Œå³ä¸ºååºéå†æ¬¡åº
             print(myStack2.pop().elem)
 
     """
-    ÀûÓÃ¶ÓÁĞÊµÏÖÊ÷µÄ²ã´Î±éÀú
+    åˆ©ç”¨é˜Ÿåˆ—å®ç°æ ‘çš„å±‚æ¬¡éå†
     """
     def level_queue(self, root):
         if root == None:
@@ -141,7 +141,7 @@ class Tree(object):
                 myQueue.append(node.rchild)
 
 """
-¶ş·Ö²éÕÒÊ÷
+äºŒåˆ†æŸ¥æ‰¾æ ‘
 """
 class TreeNode(object):
     def __init__(self, key, left=None, right=None, parent=None):
@@ -259,18 +259,18 @@ class BSTree(object):
             raise KeyError('Error, key not in tree')
 
     def remove(self, node):
-        if not node.left and not node.right:  # nodeÎªÊ÷Ò¶
+        if not node.left and not node.right:  # nodeä¸ºæ ‘å¶
             if node == node.parent.left:
                 node.parent.left = None
             else:
                 node.parent.right = None
 
-        elif node.left and node.right:  # ÓĞÁ½¸ö¶ù×Ó
+        elif node.left and node.right:  # æœ‰ä¸¤ä¸ªå„¿å­
             minNode = self._findMin(node.right)
             node.key = minNode.key
             self.remove(minNode)
 
-        else:  # ÓĞÒ»¸ö¶ù×Ó
+        else:  # æœ‰ä¸€ä¸ªå„¿å­
             if node.hasLeftChild():
                 if node.isLeftChild():
                     node.left.parent = node.parent
@@ -278,7 +278,7 @@ class BSTree(object):
                 elif node.isRightChild():
                     node.left.parent = node.parent
                     node.parent.right = node.left
-                else:  # nodeÎª¸ù
+                else:  # nodeä¸ºæ ¹
                     self.root = node.left
                     node.left.parent = None
                     node.left = None
@@ -289,7 +289,7 @@ class BSTree(object):
                 elif node.isRightChild():
                     node.right.parent = node.parent
                     node.parent.right = node.right
-                else:  # nodeÎª¸ù
+                else:  # nodeä¸ºæ ¹
                     self.root = node.right
                     node.right.parent = None
                     node.right = None
@@ -507,27 +507,27 @@ class Solution:
 
 
 if __name__ == '__main__':
-    # elems = range(10)           #Éú³ÉÊ®¸öÊı¾İ×÷ÎªÊ÷½Úµã
-    # tree = Tree()          #ĞÂ½¨Ò»¸öÊ÷¶ÔÏó
+    # elems = range(10)           #ç”Ÿæˆåä¸ªæ•°æ®ä½œä¸ºæ ‘èŠ‚ç‚¹
+    # tree = Tree()          #æ–°å»ºä¸€ä¸ªæ ‘å¯¹è±¡
     # for elem in elems:
     #     print(elem)
-    #     tree.add(elem)           #Öğ¸öÌí¼ÓÊ÷µÄ½Úµã
+    #     tree.add(elem)           #é€ä¸ªæ·»åŠ æ ‘çš„èŠ‚ç‚¹
 
-    # print('¶ÓÁĞÊµÏÖ²ã´Î±éÀú:')
+    # print('é˜Ÿåˆ—å®ç°å±‚æ¬¡éå†:')
     # tree.level_queue(tree.root)
 
-    # print('µİ¹éÊµÏÖÏÈĞò±éÀú:')
+    # print('é€’å½’å®ç°å…ˆåºéå†:')
     # tree.front_digui(tree.root)
-    # print('µİ¹éÊµÏÖÖĞĞò±éÀú:')
+    # print('é€’å½’å®ç°ä¸­åºéå†:')
     # tree.middle_digui(tree.root)
-    # print('µİ¹éÊµÏÖºóĞò±éÀú:')
+    # print('é€’å½’å®ç°ååºéå†:')
     # tree.later_digui(tree.root)
     #
-    # print('¶ÑÕ»ÊµÏÖÏÈĞò±éÀú:')
+    # print('å †æ ˆå®ç°å…ˆåºéå†:')
     # tree.front_stack(tree.root)
-    # print('¶ÑÕ»ÊµÏÖÖĞĞò±éÀú:')
+    # print('å †æ ˆå®ç°ä¸­åºéå†:')
     # tree.middle_stack(tree.root)
-    # print('¶ÑÕ»ÊµÏÖºóĞò±éÀú:')
+    # print('å †æ ˆå®ç°ååºéå†:')
     # tree.later_stack(tree.root)
 
     nodes = [16,10,24,18,27,2,26,29,17,1]
@@ -537,7 +537,7 @@ if __name__ == '__main__':
         s.RBInsert(T, RBTreeNode(node))
 
     s.InorderTreeWalk(T.root)
-    print("²ã´Î±éÀú")
+    print("å±‚æ¬¡éå†")
     s.level_queue(T.root)
 
     # s.RBDelete(T, T.root)

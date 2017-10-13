@@ -1,4 +1,4 @@
-# coding=gbk
+# coding=utf-8
 import javalang
 
 f = open('E:/workspace/mia-framework-new/mia-store-web/src/main/java/com/mia/pop/realOrder/mvc/TracInfoController.java',

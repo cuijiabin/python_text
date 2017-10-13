@@ -1,4 +1,4 @@
-# coding=gbk
+# coding=utf-8
 import re
 import csv
 from bs4 import BeautifulSoup,Comment,NavigableString,Tag
@@ -15,7 +15,7 @@ def get_load_view(html_path):
                 # print(load_view)
                 r_results.append(load_view)
     except Exception:
-        print("³ö´í")
+        print("å‡ºé”™")
     return r_results
 
 def route_analyse():
@@ -50,12 +50,12 @@ def route_analyse():
     return dict
 
 """
-1.»ñÈ¡ËùÓĞÂ·ÓÉµ±ÖĞÉæ¼°µ½µÄÎÄ¼ş
+1.è·å–æ‰€æœ‰è·¯ç”±å½“ä¸­æ¶‰åŠåˆ°çš„æ–‡ä»¶
 """
 # dict = route_analyse()
 # csv_file = open("E:/route.csv", 'w')
 # f_csv = csv.writer(csv_file, dialect='excel')
-# f_csv.writerow(["ÎÄ¼şÃû", "Â·ÓÉ"])
+# f_csv.writerow(["æ–‡ä»¶å", "è·¯ç”±"])
 # for m in dict:
 #     print(m,dict[m])
 #     f_csv.writerow([m, dict[m]])
@@ -74,24 +74,24 @@ def analyse_html(html_path):
             if (element.strip() != "" and pattern.findall(element)):
                 my = str(element).replace('  ', '').replace('\n', '').replace('\t', '')
                 parent = str(element.parent).replace('  ', '').replace('\n', '').replace('\t', '')
-                # print("ÄÚÈİ£º", my)
-                # print("¸¸½Úµã£º", parent)
+                # print("å†…å®¹ï¼š", my)
+                # print("çˆ¶èŠ‚ç‚¹ï¼š", parent)
                 r_results.append(parent)
         r_results = list(set(r_results))
         return r_results
     except Exception:
-        print(html_path+"³ö´í")
+        print(html_path+"å‡ºé”™")
         return []
 
 """
-2.¶ÁÈ¡ÁĞ±íÄÚÈİ
+2.è¯»å–åˆ—è¡¨å†…å®¹
 """
 # csv_file = open("E:/route0.csv", 'r')
 # f_csv = csv.reader(csv_file, dialect='excel')
 #
 # csv_file_w = open("E:/html.csv", 'w')
 # f_csv_w = csv.writer(csv_file_w, dialect='excel')
-# f_csv_w.writerow(["ÎÄ¼şÃû", "Â·ÓÉ","ÖĞÎÄÇø¿é"])
+# f_csv_w.writerow(["æ–‡ä»¶å", "è·¯ç”±","ä¸­æ–‡åŒºå—"])
 #
 # for row in f_csv:
 #     path = row[0]
@@ -103,7 +103,7 @@ def analyse_html(html_path):
 #                 print(i)
 #                 f_csv_w.writerow([path, row[1], i])
 #             except Exception:
-#                 print(path + "³ö´í")
+#                 print(path + "å‡ºé”™")
 
 def analyse_content(content):
     try:
@@ -114,24 +114,24 @@ def analyse_content(content):
         print(reduce(lambda x, y: x + " " + y, all_chinese))
 
         td_count = len(soup.find_all("td"))
-        print("ÊÇ·ñtd",td_count)
+        print("æ˜¯å¦td",td_count)
         has_button0 = soup.findAll("button")
         btn_count = len(has_button0)
-        print("ÊÇ·ñ°´Å¥",btn_count)
+        print("æ˜¯å¦æŒ‰é’®",btn_count)
         return (all_chinese,btn_count)
     except Exception:
-        print(content+"³ö´í")
+        print(content+"å‡ºé”™")
         return ([],0,0)
 
 """
-3.¶ÔÇø¿é½øĞĞ·ÖÎö
+3.å¯¹åŒºå—è¿›è¡Œåˆ†æ
 """
 csv_file = open("E:/html0.csv", 'r')
 f_csv = csv.reader(csv_file, dialect='excel')
 
 csv_file_w = open("E:/effort.csv", 'w')
 f_csv_w = csv.writer(csv_file_w, dialect='excel')
-f_csv_w.writerow(["ÎÄ¼şÃû", "Â·ÓÉ","ÖĞÎÄÇø¿é","ºº×Ö","ÊÇ·ñ°´Å¥"])
+f_csv_w.writerow(["æ–‡ä»¶å", "è·¯ç”±","ä¸­æ–‡åŒºå—","æ±‰å­—","æ˜¯å¦æŒ‰é’®"])
 
 for row in f_csv:
     path = row[0]
@@ -141,6 +141,6 @@ for row in f_csv:
         try:
             f_csv_w.writerow([row[0], row[1], row[2],chinese,effort[1]])
         except Exception:
-            print(path + "³ö´í")
-# dd = '<div class="fl mt5 ml5">Ìá½»¶©µ¥</div>'
+            print(path + "å‡ºé”™")
+# dd = '<div class="fl mt5 ml5">æäº¤è®¢å•</div>'
 # analyse_content(dd)

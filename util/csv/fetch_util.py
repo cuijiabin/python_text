@@ -1,9 +1,9 @@
-# coding=gbk
+# coding=utf-8
 import urllib
 import requests
 from bs4 import BeautifulSoup
 
-# http://pururin.us/ Í¼Æ¬×¥È¡
+# http://pururin.us/ å›¾ç‰‡æŠ“å–
 
 class BcnetFetch(object):
     headers = None
@@ -25,18 +25,18 @@ class BcnetFetch(object):
         try:
             r = requests.get(url, headers=self.headers)
             read = r.content.decode("utf-8")
-            # print("ÎÄÕÂ×¥È¡£º", read)
+            # print("æ–‡ç« æŠ“å–ï¼š", read)
             soup = BeautifulSoup(read, "lxml")
             detail = soup.find('div', id="article_details")
             title = detail.find('span', class_="link_title").a.get_text()
-            # print("ÎÄÕÂ±êÌâ£º", title)
+            # print("æ–‡ç« æ ‡é¢˜ï¼š", title)
             # content = soup.find('div', id="article_content")
-            # print("ÎÄÕÂÄÚÈİ£º", content.get_text())
+            # print("æ–‡ç« å†…å®¹ï¼š", content.get_text())
         except Exception:
-            print("bcn_fetch³ö´í", url)
+            print("bcn_fetchå‡ºé”™", url)
 
 
-# ²©¿ÍÔ°
+# åšå®¢å›­
 class CnblogFetch(object):
     headers = None
 
@@ -57,17 +57,17 @@ class CnblogFetch(object):
         try:
             r = requests.get(url, headers=self.headers)
             read = r.content.decode("utf-8")
-            print("ÎÄÕÂ×¥È¡£º", read)
+            print("æ–‡ç« æŠ“å–ï¼š", read)
             # soup = BeautifulSoup(read, "lxml")
             # title = soup.find('a', id="cb_post_title_url").get_text()
-            # print("ÎÄÕÂ±êÌâ£º", title)
+            # print("æ–‡ç« æ ‡é¢˜ï¼š", title)
             # content = soup.find('div', id="article_content")
-            # print("ÎÄÕÂÄÚÈİ£º", content.get_text())
+            # print("æ–‡ç« å†…å®¹ï¼š", content.get_text())
         except Exception:
-            print("bcn_fetch³ö´í", url)
+            print("bcn_fetchå‡ºé”™", url)
 
 
-# ¿ªÔ´ÖĞ¹ú ×¥È¡Ö®ºóµÄ±àÂëÓĞÎÊÌâ
+# å¼€æºä¸­å›½ æŠ“å–ä¹‹åçš„ç¼–ç æœ‰é—®é¢˜
 class OsChinaFetch(object):
     headers = None
 
@@ -87,14 +87,14 @@ class OsChinaFetch(object):
         try:
             r = requests.get(url, headers=self.headers)
             read = r.content.decode("utf-8")
-            print("ÎÄÕÂ×¥È¡£º", read)
+            print("æ–‡ç« æŠ“å–ï¼š", read)
             soup = BeautifulSoup(read, "lxml")
             title = soup.find('div', class_="news-content").get_text()
-            print("ÎÄÕÂ±êÌâ£º", title)
+            print("æ–‡ç« æ ‡é¢˜ï¼š", title)
             # content = soup.find('div', id="article_content")
-            # print("ÎÄÕÂÄÚÈİ£º", content.get_text())
+            # print("æ–‡ç« å†…å®¹ï¼š", content.get_text())
         except Exception:
-            print("bcn_fetch³ö´í", url)
+            print("bcn_fetchå‡ºé”™", url)
 
 
 class SgoFetch(object):
@@ -116,14 +116,14 @@ class SgoFetch(object):
         try:
             r = requests.get(url, headers=self.headers)
             read = r.content.decode("utf-8")
-            print("ÎÄÕÂ×¥È¡£º", read)
+            print("æ–‡ç« æŠ“å–ï¼š", read)
             soup = BeautifulSoup(read, "lxml")
             title = soup.find('div', class_="title text-center").get_text()
-            print("ÎÄÕÂ±êÌâ£º", title)
+            print("æ–‡ç« æ ‡é¢˜ï¼š", title)
             # content = soup.find('div', id="article_content")
-            # print("ÎÄÕÂÄÚÈİ£º", content.get_text())
+            # print("æ–‡ç« å†…å®¹ï¼š", content.get_text())
         except Exception:
-            print("bcn_fetch³ö´í", url)
+            print("bcn_fetchå‡ºé”™", url)
 
 
 class ZhiHuFetch(object):
@@ -145,14 +145,14 @@ class ZhiHuFetch(object):
         try:
             r = requests.get(url)
             read = r.content.decode("utf-8","ignore")
-            print("ÎÄÕÂ×¥È¡£º", read)
+            print("æ–‡ç« æŠ“å–ï¼š", read)
             soup = BeautifulSoup(read, "lxml")
             title = soup.find('div', class_="zh-question-title").get_text()
-            print("ÎÄÕÂ±êÌâ£º", title)
+            print("æ–‡ç« æ ‡é¢˜ï¼š", title)
             # content = soup.find('div', id="article_content")
-            # print("ÎÄÕÂÄÚÈİ£º", content.get_text())
+            # print("æ–‡ç« å†…å®¹ï¼š", content.get_text())
         except Exception as e:
-            print("bcn_fetch³ö´í", url)
+            print("bcn_fetchå‡ºé”™", url)
             print(format(e))
 
 

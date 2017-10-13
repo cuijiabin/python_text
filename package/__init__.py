@@ -1,4 +1,4 @@
-# coding=gbk
+# coding=utf-8
 """
-python °ü¹ÜÀí¹¤¾ß demo
+python åŒ…ç®¡ç†å·¥å…· demo
 """

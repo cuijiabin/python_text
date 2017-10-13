@@ -1,4 +1,4 @@
-# coding=gbk
+# coding=utf-8
 import pymysql
 import json
 
@@ -11,7 +11,7 @@ def get_connection():
     data = cur.fetchall()
     dict_json = {}
     for d in data:
-        print("²ÎÊıID:" + str(d[0]) + "  ;²ÎÊıÃû³Æ:" + d[1] + " ±êÊ¾:" + d[2] + " Êı¾İÀàĞÍ£º" + d[3])
+        print("å‚æ•°ID:" + str(d[0]) + "  ;å‚æ•°åç§°:" + d[1] + " æ ‡ç¤º:" + d[2] + " æ•°æ®ç±»å‹ï¼š" + d[3])
         if (d[3] == 'string'):
             dict_json[d[2]] = "input_str"
         if (d[3] == 'number'):
@@ -35,6 +35,6 @@ def genScript():
              where spu.warehouse_type in (3,5,7)")
     data = cur.fetchall()
     for d in data:
-        print("²ÎÊıID:" + str(d[0]) + "  ;²ÎÊıÃû³Æ:" + d[1] + " ±êÊ¾:" + d[2])
+        print("å‚æ•°ID:" + str(d[0]) + "  ;å‚æ•°åç§°:" + d[1] + " æ ‡ç¤º:" + d[2])
 
 # genScript()

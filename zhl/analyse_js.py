@@ -1,4 +1,4 @@
-# coding=gbk
+# coding=utf-8
 import re
 import csv
 from functools import reduce
@@ -21,16 +21,16 @@ def analyse_js(js_path):
                 tip, _ = func_re.subn("", tip)
                 ch_tip = ch_re.findall(tip)
                 if (len(ch_tip) > 0):
-                    # print(tip,"°üº¬ÖĞÎÄ£º",ch_re.findall(tip))
+                    # print(tip,"åŒ…å«ä¸­æ–‡ï¼š",ch_re.findall(tip))
                     r_results.append((tip, ch_re.findall(tip)))
         return r_results
     except Exception:
-        print(js_path + "³ö´í")
+        print(js_path + "å‡ºé”™")
         return []
 
 
 """
-1.¶ÁÈ¡jsÎÄ¼ş
+1.è¯»å–jsæ–‡ä»¶
 """
 # analyse_js("E:/another/zhl/"+"engine/controllers/tbdefine/tbjoin_list.js")
 csv_file = open("E:/route0.csv", 'r')
@@ -38,7 +38,7 @@ f_csv = csv.reader(csv_file, dialect='excel')
 
 csv_file_w = open("E:/js.csv", 'w')
 f_csv_w = csv.writer(csv_file_w, dialect='excel')
-f_csv_w.writerow(["ÎÄ¼şÃû", "Â·ÓÉ", "ÌáÊ¾ĞÅÏ¢", "ÖĞÎÄĞÅÏ¢"])
+f_csv_w.writerow(["æ–‡ä»¶å", "è·¯ç”±", "æç¤ºä¿¡æ¯", "ä¸­æ–‡ä¿¡æ¯"])
 
 for row in f_csv:
     path = row[0]

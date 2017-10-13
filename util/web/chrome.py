@@ -1,11 +1,11 @@
-# coding=gbk
+# coding=utf-8
 import os
 import sqlite3
 import operator
 from collections import OrderedDict
 import matplotlib.pyplot as plt
 
-# TODO »ñÈ¡±¾Ì¨»úÆ÷µÄä¯ÀÀ¼ÇÂ¼ Ã»ÓĞ³É¹¦
+# TODO è·å–æœ¬å°æœºå™¨çš„æµè§ˆè®°å½• æ²¡æœ‰æˆåŠŸ
 
 def parse(url):
     try:

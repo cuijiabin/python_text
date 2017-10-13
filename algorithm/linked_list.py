@@ -1,6 +1,6 @@
-# coding=gbk
+# coding=utf-8
 """
-python实现链表结构
+python瀹炵幇閾捐〃缁撴瀯
 """
 class Node(object):
     def __init__(self,val,p=0):
@@ -160,6 +160,6 @@ print(l.getitem(5))
 l.delete(5)
 print(l.getitem(5))
 
-# 1. 在O(1)时间删除链表节点
+# 1. 鍦∣(1)鏃堕棿鍒犻櫎閾捐〃鑺傜偣
 
-# 2. 单链表的转置
+# 2. 鍗曢摼琛ㄧ殑杞疆

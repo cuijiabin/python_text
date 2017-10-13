@@ -1,9 +1,9 @@
-# coding=gbk
+# coding=utf-8
 """
-ÅÅĞòËã·¨Ä¬Ğ´
+æ’åºç®—æ³•é»˜å†™
 """
 
-# 1.¹é²¢ÅÅĞò
+# 1.å½’å¹¶æ’åº
 def merge_sort(array):
     if len(array) <=1:
         return array
@@ -23,7 +23,7 @@ def merge(left,right):
             result.append(right[j])
             j += 1
 
-    result +=left[i:] # result.append(left[i:]) ×¢Òâµã
+    result +=left[i:] # result.append(left[i:]) æ³¨æ„ç‚¹
     result +=right[j:]
     return result
 
@@ -45,7 +45,7 @@ def quick(array,left,right):
 
     return array
 
-# ĞèÒª¶îÍâµÄ¿Õ¼ä
+# éœ€è¦é¢å¤–çš„ç©ºé—´
 def quick_sort(array):
     if len(array) <= 1:
         return array

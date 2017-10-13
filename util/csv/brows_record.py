@@ -1,4 +1,4 @@
-# coding=gbk
+# coding=utf-8
 import csv
 import os
 from urllib.parse import parse_qs
@@ -8,18 +8,20 @@ from urllib.parse import urlparse
 from fetch_util import BcnetFetch
 from fetch_util import CnblogFetch
 
+from newspaper import Article
+
 """
-ä¯ÀÀ¼ÇÂ¼·ÖÎö
-1.»ñÈ¡ËùÔÚÄ¿Â¼µÄËùÓĞÎÄ¼ş
-2.¶ÁÈ¡ÎÄ¼şÖĞµÄurlÂ·¾¶
-3.Ñ¡Ôñ¹È¸èurlÌáÈ¡¹Ø¼ü´Ê
+æµè§ˆè®°å½•åˆ†æ
+1.è·å–æ‰€åœ¨ç›®å½•çš„æ‰€æœ‰æ–‡ä»¶
+2.è¯»å–æ–‡ä»¶ä¸­çš„urlè·¯å¾„
+3.é€‰æ‹©è°·æ­Œurlæå–å…³é”®è¯
 
-ÇåÏ´¼ÇÂ¼ ¹ıÂËÎŞĞ§url£¬É¸Ñ¡³ö¹È¸èÌø×ª °Ù¶ÈÌø×ªÒ³Ãæ£¡
+æ¸…æ´—è®°å½• è¿‡æ»¤æ— æ•ˆurlï¼Œç­›é€‰å‡ºè°·æ­Œè·³è½¬ ç™¾åº¦è·³è½¬é¡µé¢ï¼
 """
 
 
-# »ñÈ¡ËùÓĞÎÄ¼ş
-def get_record_files(base_path="E:/File/ä¯ÀÀ¼ÇÂ¼/08ÔÂ/"):
+# è·å–æ‰€æœ‰æ–‡ä»¶
+def get_record_files(base_path="E:/File/æµè§ˆè®°å½•/08æœˆ/"):
     file_names = os.listdir(base_path)
     names = []
     if (len(file_names) > 0):
@@ -29,8 +31,8 @@ def get_record_files(base_path="E:/File/ä¯ÀÀ¼ÇÂ¼/08ÔÂ/"):
         return names
 
 
-# ±éÀúËùÓĞÎÄ¼ş
-def traversing_file(rootdir="E:/BaiduYunDownload/2015Äê"):
+# éå†æ‰€æœ‰æ–‡ä»¶
+def traversing_file(rootdir="E:/File/æµè§ˆè®°å½•/2017å¹´/"):
     names = []
     for parent, _, filenames in os.walk(rootdir):
         for filename in filenames:
@@ -38,7 +40,7 @@ def traversing_file(rootdir="E:/BaiduYunDownload/2015Äê"):
     return names
 
 
-# »ñÈ¡µ¥¸öurlÁĞ±í
+# è·å–å•ä¸ªurlåˆ—è¡¨
 def operate_csv(csv_path):
     urls = []
     try:
@@ -49,13 +51,13 @@ def operate_csv(csv_path):
                 urls.append(url)
             return urls
     except Exception:
-        print("¶ÁÈ¡ÎÄ¼ş³ö´í", csv_path)
+        print("è¯»å–æ–‡ä»¶å‡ºé”™", csv_path)
         return []
 
 
-# »ñÈ¡ËùÓĞµÄurlÂ·¾¶
-def get_all_urls():
-    paths = traversing_file()
+# è·å–æ‰€æœ‰çš„urlè·¯å¾„
+def get_all_urls(root):
+    paths = traversing_file(root)
     all_urls = []
     for path in paths:
         urls = operate_csv(path)
@@ -63,7 +65,7 @@ def get_all_urls():
     return all_urls
 
 
-# ×¥È¡ËÑË÷¹Ø¼ü´Ê
+# æŠ“å–æœç´¢å…³é”®è¯
 def get_grap_words(urls):
     for url in urls:
         hostname = urlparse(url).hostname
@@ -79,16 +81,16 @@ def get_grap_words(urls):
                         key_word = unquote(u_a[1])
                         print(key_word)
                     except Exception:
-                        print("½âÎö´íÎó", u_a[1], url)
+                        print("è§£æé”™è¯¯", u_a[1], url)
 
 
-# ÅĞ¶ÏÊÇ·ñÎªÌø×ªurl
+# åˆ¤æ–­æ˜¯å¦ä¸ºè·³è½¬url
 def is_jump(url):
     hostname = urlparse(url).hostname
     return (hostname and "www.google" in hostname and (not "#" in url))
 
 
-# »ñÈ¡¹È¸èµÄÌø×ªÁ´½Ó
+# è·å–è°·æ­Œçš„è·³è½¬é“¾æ¥
 def get_jump_url(urls):
     j_urls = []
     for url in list(filter(is_jump, urls)):
@@ -99,7 +101,7 @@ def get_jump_url(urls):
     return j_urls
 
 
-# °´hostÀ´¼ÆÊı
+# æŒ‰hostæ¥è®¡æ•°
 def count_host(urls):
     hostnames = []
     tups = []
@@ -114,12 +116,12 @@ def count_host(urls):
     return tups
 
 
-# ÅÅĞòº¯Êı
+# æ’åºå‡½æ•°
 def by_score(t):
     return t[1]
 
 
-# °´host½øĞĞ¹ıÂË
+# æŒ‰hostè¿›è¡Œè¿‡æ»¤
 def filter_url_host(urls, hostname):
     retults = []
     for url in urls:
@@ -131,11 +133,31 @@ def filter_url_host(urls, hostname):
     return retults
 
 
+def analyse_title(address):
+    try:
+        a = Article(address, language='zh')  # Chinese
+        a.download()
+        a.parse()
+        # print(a.text)
+        # print("=========================title=========================")
+        print(a.title)
+    except Exception:
+        print("æŠ“å–å¤±è´¥")
+
 if __name__ == "__main__":
 
-    traversing_file("E:/File/ä¯ÀÀ¼ÇÂ¼/2017Äê/")
-    urls = get_all_urls()
-    print("urlÊı×éÁĞ±í", len(urls))
+    # è·å–ç›®å½•ä¸‹æ‰€æœ‰çš„url
+    urls = get_all_urls("E:/File/æµè§ˆè®°å½•/2017å¹´/08æœˆ")
+    # åˆ†æurlçš„å…³é”®æœç´¢è¯
+    # get_grap_words(urls)
+
+    # å¸¸ç”¨è®¿é—®ç½‘ç«™å‰åå
+    print("urlæ•°ç»„åˆ—è¡¨", len(urls))
+    for url in urls:
+        if "stackoverflow.com" in url:
+            print(url)
+            analyse_title(url)
+
     h_count = count_host(urls)
     top_10 = sorted(h_count, key=by_score, reverse=True)
     for i in top_10:
@@ -147,31 +169,19 @@ if __name__ == "__main__":
             #     print(u)
             #     bcn.fetch(u)
 
-            # www.google.co.jp 1692
-            # github.com 884 GitHub
-            # www.zhihu.com 323 Öªºõ
-            # www.runoob.com 199 ²ËÄñ½Ì³Ì
-            # www.google.com 142
-            # twitter.com 127
-            # www.xvideos.com 127
-            # www.youtube.com 126
-            # picture.pconline.com.cn 119 Ì«Æ½ÑóµçÄÔÍø
+            # github.com
+            # www.zhihu.com
+            # www.google.com
+            # blog.csdn.net
+            # www.jianshu.com
+            # www.oschina.net
+            # stackoverflow.com
+            # translate.google.cn
+            # news.dwnews.com
+            # www.cnblogs.com
+            # zh.wikipedia.org
+            # git.oschina.net
+            # kr.com
+            # zhuanlan.zhihu.com
 
-            # zhuanlan.zhihu.com 87 Öªºõ×¨À¸
-            # www.pornhub.com 84
-            # 36kr.com 84 36ë´
-            # None 75
-            # www.molihua.org 72 ÜÔÀò»¨¸ïÃüÖĞÎÄÍø
-            # docs.mongodb.com 67 mongodbÎÄµµ
-            # www.freecodecamp.com 66 ´úÂë¾ºÈü
-            # zh.wikipedia.org 63 Î¬»ù°Ù¿Æ
-            # api.crap.cn 56 ½Ó¿Ú¹ÜÀíÏµÍ³
-            # dev.mysql.com 56 mysql¿ª·¢ÎÄµµ
-            # www.cnblogs.com 55 ²©¿ÍÔ°
-            # www.liaoxuefeng.com 54 ÁÎÑ©·åµÄÍøÕ¾
-            # json.cn 52
-            # blog.csdn.net 52 csdn²©¿ÍÆµµÀ
-            # digi.163.com 51 ÍøÒ×ÊıÂë²âÆÀ
-            # detail.tmall.com 51 ÌìÃ¨
-
-# ĞèÒª½øĞĞ×¥È¡µÄÍøÕ¾£ºwww.cnblogs.com blog.csdn.net studygolang.com Öªºõ github È»ºó¾ÍÃ»ÓĞÁË£¡
+# éœ€è¦è¿›è¡ŒæŠ“å–çš„ç½‘ç«™ï¼šwww.cnblogs.com blog.csdn.net studygolang.com çŸ¥ä¹ github ç„¶åå°±æ²¡æœ‰äº†ï¼

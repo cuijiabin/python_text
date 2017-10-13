@@ -1,16 +1,16 @@
-# coding=gbk
+# coding=utf-8
 import os
 import re
 from functools import reduce
 from xml.etree.ElementTree import parse
 
 """
-1.Ê×ÏÈ±éÀú³öxmlÎÄ¼şÁĞ±í DONE
-2.½âÎömapperÎÄ¼ş
+1.é¦–å…ˆéå†å‡ºxmlæ–‡ä»¶åˆ—è¡¨ DONE
+2.è§£æmapperæ–‡ä»¶
 """
 
 
-# »ñÈ¡ËùÓĞµÄxmlÎÄ¼ş
+# è·å–æ‰€æœ‰çš„xmlæ–‡ä»¶
 def traversing_file(root_dir):
     for lists in os.listdir(root_dir):
         path = os.path.join(root_dir, lists)
@@ -37,7 +37,7 @@ def traversing_file(root_dir):
                 traversing_file(path)
 
 
-# ½âÎömapperÎÄ¼ş ((SELECT.+?FROM)|(LEFT\\s+JOIN|JOIN|LEFT))[\\s`]+?(\\w+)[\\s`]+? TODO select xml »ñÈ¡ÄÚÈİÓĞÒ»Ğ©ÎÊÌâ
+# è§£æmapperæ–‡ä»¶ ((SELECT.+?FROM)|(LEFT\\s+JOIN|JOIN|LEFT))[\\s`]+?(\\w+)[\\s`]+? TODO select xml è·å–å†…å®¹æœ‰ä¸€äº›é—®é¢˜
 def ana_mapper(path):
     doc = parse(path)
     tag_list = ["update", "update", "update", "select"]
@@ -73,6 +73,6 @@ if __name__ == "__main__":
     for pp in all_path:
         traversing_file("E:/workspace/mia-framework-new/" + pp)
 
-    # E:/workspace/mia-framework-new/mia-product-service/src/main/java/com/mia/pop/ums/product/main/dao/ProcurementOrderDetailMapper.xml ÓĞÎÊÌâµÄ
+    # E:/workspace/mia-framework-new/mia-product-service/src/main/java/com/mia/pop/ums/product/main/dao/ProcurementOrderDetailMapper.xml æœ‰é—®é¢˜çš„
     # ana_re_mapper(
     #     "E:/project_dir/javaspace/mia-framework-oneall/mia-service/src/main/java/com/mia/common/api/dao/CommunityTodoMapper.xml")

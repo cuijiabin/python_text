@@ -1,13 +1,13 @@
-# coding=gbk
+# coding=utf-8
 import re
 from bs4 import BeautifulSoup,Comment,NavigableString,Tag
 
 """
-ÕıÔò²âÊÔ
-1.»ñÈ¡Â·ÓÉ±í
-2.»ñÈ¡load-view
-3.Ê¹ÓÃBeautifulSoup ½âÎöHTML
-4.»ñÈ¡ËùÓĞµÄhtmlµÄµØÖ·
+æ­£åˆ™æµ‹è¯•
+1.è·å–è·¯ç”±è¡¨
+2.è·å–load-view
+3.ä½¿ç”¨BeautifulSoup è§£æHTML
+4.è·å–æ‰€æœ‰çš„htmlçš„åœ°å€
 """
 def testSoup(html_path = "E:/another/zhl/views/order/my/detail_confirmed.html"):
     try:
@@ -19,18 +19,18 @@ def testSoup(html_path = "E:/another/zhl/views/order/my/detail_confirmed.html"):
             element.extract()
         for element in soup(text=lambda text: isinstance(text, NavigableString)):
             if(element.strip()!="" and pattern.findall(element)):
-                print("ÄÚÈİ£º",str(element).replace('  ', '').replace('\n', '').replace('\t', ''))
-                print("¸¸½Úµã£º",str(element.parent).replace('  ', '').replace('\n', '').replace('\t', ''))
+                print("å†…å®¹ï¼š",str(element).replace('  ', '').replace('\n', '').replace('\t', ''))
+                print("çˆ¶èŠ‚ç‚¹ï¼š",str(element.parent).replace('  ', '').replace('\n', '').replace('\t', ''))
         # for element in soup(text=lambda text: isinstance(text, Tag)):
-        #     print("ÄÚÈİ£º", element)
+        #     print("å†…å®¹ï¼š", element)
 
         # for element in soup():
         #     match = pattern.findall(str(element))
-        #     # print("match£º", match)
+        #     # print("matchï¼š", match)
         #     if(not match):
         #         element.extract()
         #     else:
-        #         print("ÄÚÈİ£º",element)
+        #         print("å†…å®¹ï¼š",element)
 
 
         # print(soup.prettify())
@@ -39,7 +39,7 @@ def testSoup(html_path = "E:/another/zhl/views/order/my/detail_confirmed.html"):
         # for lv in lvs:
         #     print(lv["src"])
     except Exception:
-        print("³ö´í")
+        print("å‡ºé”™")
 
 def luyou():
     f = open('E:/another/zhl/engine/route.js', encoding="utf8")

@@ -1,4 +1,4 @@
-# coding=gbk
+# coding=utf-8
 import random
 def binary_search(lst,n):
     low,high = 0,len(lst)-1

@@ -1,7 +1,7 @@
-# coding=gbk
+# coding=utf-8
 
 """
-ÈÕÆÚËã·¨
+æ—¥æœŸç®—æ³•
 """
 def isLeapYear(year):
     if (year % 400) == 0:

@@ -1,4 +1,4 @@
-# coding=gbk
+# coding=utf-8
 import re
 import urllib
 import urllib.request
@@ -6,30 +6,30 @@ from pyquery import PyQuery as pq
 from lxml import etree
 
 def filter_tags(htmlstr):
-    # ÏÈ¹ıÂËCDATA
-    re_cdata = re.compile('//<!\[CDATA\[[^>]*//\]\]>', re.I)  # Æ¥ÅäCDATA
+    # å…ˆè¿‡æ»¤CDATA
+    re_cdata = re.compile('//<!\[CDATA\[[^>]*//\]\]>', re.I)  # åŒ¹é…CDATA
     re_script = re.compile('<\s*script[^>]*>[^<]*<\s*/\s*script\s*>', re.I)  # Script
     re_style = re.compile('<\s*style[^>]*>[^<]*<\s*/\s*style\s*>', re.I)  # style
-    re_br = re.compile('<br\s*?/?>')  # ´¦Àí»»ĞĞ
-    re_h = re.compile('</?\w+[^>]*>')  # HTML±êÇ©
-    re_comment = re.compile('<!--[^>]*-->')  # HTML×¢ÊÍ
-    s = re_cdata.sub('', htmlstr)  # È¥µôCDATA
-    s = re_script.sub('', s)  # È¥µôSCRIPT
-    s = re_style.sub('', s)  # È¥µôstyle
-    s = re_br.sub('\n', s)  # ½«br×ª»»Îª»»ĞĞ
-    s = re_h.sub('', s)  # È¥µôHTML ±êÇ©
-    s = re_comment.sub('', s)  # È¥µôHTML×¢ÊÍ
-    # È¥µô¶àÓàµÄ¿ÕĞĞ
+    re_br = re.compile('<br\s*?/?>')  # å¤„ç†æ¢è¡Œ
+    re_h = re.compile('</?\w+[^>]*>')  # HTMLæ ‡ç­¾
+    re_comment = re.compile('<!--[^>]*-->')  # HTMLæ³¨é‡Š
+    s = re_cdata.sub('', htmlstr)  # å»æ‰CDATA
+    s = re_script.sub('', s)  # å»æ‰SCRIPT
+    s = re_style.sub('', s)  # å»æ‰style
+    s = re_br.sub('\n', s)  # å°†brè½¬æ¢ä¸ºæ¢è¡Œ
+    s = re_h.sub('', s)  # å»æ‰HTML æ ‡ç­¾
+    s = re_comment.sub('', s)  # å»æ‰HTMLæ³¨é‡Š
+    # å»æ‰å¤šä½™çš„ç©ºè¡Œ
     blank_line = re.compile('\n+')
     s = blank_line.sub('\n', s)
-    s = replace_char_entity(s)  # Ìæ»»ÊµÌå
+    s = replace_char_entity(s)  # æ›¿æ¢å®ä½“
     return s
 
 
-##Ìæ»»³£ÓÃHTML×Ö·ûÊµÌå.
-# Ê¹ÓÃÕı³£µÄ×Ö·ûÌæ»»HTMLÖĞÌØÊâµÄ×Ö·ûÊµÌå.
-# Äã¿ÉÒÔÌí¼ÓĞÂµÄÊµÌå×Ö·ûµ½CHAR_ENTITIESÖĞ,´¦Àí¸ü¶àHTML×Ö·ûÊµÌå.
-# @param htmlstr HTML×Ö·û´®.
+##æ›¿æ¢å¸¸ç”¨HTMLå­—ç¬¦å®ä½“.
+# ä½¿ç”¨æ­£å¸¸çš„å­—ç¬¦æ›¿æ¢HTMLä¸­ç‰¹æ®Šçš„å­—ç¬¦å®ä½“.
+# ä½ å¯ä»¥æ·»åŠ æ–°çš„å®ä½“å­—ç¬¦åˆ°CHAR_ENTITIESä¸­,å¤„ç†æ›´å¤šHTMLå­—ç¬¦å®ä½“.
+# @param htmlstr HTMLå­—ç¬¦ä¸².
 def replace_char_entity(htmlstr):
     CHAR_ENTITIES = {'nbsp': ' ', '160': ' ',
                      'lt': '<', '60': '<',
@@ -40,13 +40,13 @@ def replace_char_entity(htmlstr):
     re_charEntity = re.compile(r'&#?(?P<name>\w+);')
     sz = re_charEntity.search(htmlstr)
     while sz:
-        entity = sz.group()  # entityÈ«³Æ£¬Èç&gt;
-        key = sz.group('name')  # È¥³ı&;ºóentity,Èç&gt;Îªgt
+        entity = sz.group()  # entityå…¨ç§°ï¼Œå¦‚&gt;
+        key = sz.group('name')  # å»é™¤&;åentity,å¦‚&gt;ä¸ºgt
         try:
             htmlstr = re_charEntity.sub(CHAR_ENTITIES[key], htmlstr, 1)
             sz = re_charEntity.search(htmlstr)
         except KeyError:
-            # ÒÔ¿Õ´®´úÌæ
+            # ä»¥ç©ºä¸²ä»£æ›¿
             htmlstr = re_charEntity.sub('', htmlstr, 1)
             sz = re_charEntity.search(htmlstr)
     return htmlstr

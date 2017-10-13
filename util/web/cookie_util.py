@@ -1,22 +1,22 @@
-# coding=gbk
+# coding=utf-8
 import urllib.request, urllib.parse, urllib.error
 import http.cookiejar
 
 """
-              ©³©·      ©³©·
-            ©³©¿©ß©¥©¥©¥©¿©ß©·
-            ©§      ?      ©§
-            ©§  ©×©¿  ©»©×  ©§
-            ©§      ©ß      ©§
-            ©»©¥©·      ©³©¥©¿
-                ©§      ©»©¥©¥©¥©·
-                ©§  ÉñÊŞ±£ÓÓ    ©Ç©·
-                ©§¡¡ÓÀÎŞBUG£¡   ©³©¿
-                ©»©·©·©³©¥©×©·©³©¿
-                  ©§©Ï©Ï  ©§©Ï©Ï
-                  ©»©ß©¿  ©»©ß©¿
+              â”â”“      â”â”“
+            â”â”›â”»â”â”â”â”›â”»â”“
+            â”ƒ      ?      â”ƒ
+            â”ƒ  â”³â”›  â”—â”³  â”ƒ
+            â”ƒ      â”»      â”ƒ
+            â”—â”â”“      â”â”â”›
+                â”ƒ      â”—â”â”â”â”“
+                â”ƒ  ç¥å…½ä¿ä½‘    â”£â”“
+                â”ƒã€€æ°¸æ— BUGï¼   â”â”›
+                â”—â”“â”“â”â”â”³â”“â”â”›
+                  â”ƒâ”«â”«  â”ƒâ”«â”«
+                  â”—â”»â”›  â”—â”»â”›
 """
-# TODO Ê¹ÓÃpython²Ù×÷ÓòµÄcookie! ÉĞÎ´ÊµÏÖ
+# TODO ä½¿ç”¨pythonæ“ä½œåŸŸçš„cookie! å°šæœªå®ç°
 LOGIN_URL = 'http://acm.hit.edu.cn/hoj/system/login'
 values = {'user': '******', 'password': '******'} # , 'submit' : 'Login'
 postdata = urllib.parse.urlencode(values).encode()
@@ -36,13 +36,13 @@ try:
 except urllib.error.URLError as e:
     print(e.code, ':', e.reason)
 
-cookie.save(ignore_discard=True, ignore_expires=True)  # ±£´æcookieµ½cookie.txtÖĞ
+cookie.save(ignore_discard=True, ignore_expires=True)  # ä¿å­˜cookieåˆ°cookie.txtä¸­
 print(cookie)
 for item in cookie:
     print('Name = ' + item.name)
     print('Value = ' + item.value)
 
-get_url = 'http://acm.hit.edu.cn/hoj/problem/solution/?problem=1'  # ÀûÓÃcookieÇëÇó·ÃÎÊÁíÒ»¸öÍøÖ·
+get_url = 'http://acm.hit.edu.cn/hoj/problem/solution/?problem=1'  # åˆ©ç”¨cookieè¯·æ±‚è®¿é—®å¦ä¸€ä¸ªç½‘å€
 get_request = urllib.request.Request(get_url, headers=headers)
 get_response = opener.open(get_request)
 print(get_response.read().decode())
