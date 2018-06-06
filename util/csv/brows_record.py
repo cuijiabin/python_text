@@ -1,14 +1,14 @@
-# coding=utf-8
+﻿# coding=utf-8
 import csv
 import os
 from urllib.parse import parse_qs
 from urllib.parse import unquote
 from urllib.parse import urlparse
 
-from fetch_util import BcnetFetch
-from fetch_util import CnblogFetch
-
-from newspaper import Article
+# from fetch_util import BcnetFetch
+# from fetch_util import CnblogFetch
+#
+# from newspaper import Article
 
 """
 浏览记录分析
@@ -21,7 +21,7 @@ from newspaper import Article
 
 
 # 获取所有文件
-def get_record_files(base_path="E:/File/浏览记录/08月/"):
+def get_record_files(base_path="E:/File/浏览记录/09月/"):
     file_names = os.listdir(base_path)
     names = []
     if (len(file_names) > 0):
@@ -45,13 +45,15 @@ def operate_csv(csv_path):
     urls = []
     try:
         with open(csv_path) as f:
-            f_csv = csv.reader(f)
-            for row in f_csv:
-                url = row[0]
+            # f_csv = csv.reader(f)
+            line = f.readline()
+            while line:
+            # for row in f_csv:
+                url = line[0]
                 urls.append(url)
             return urls
-    except Exception:
-        print("读取文件出错", csv_path)
+    except Exception as e:
+        print("读取文件出错", csv_path, e)
         return []
 
 
@@ -133,40 +135,41 @@ def filter_url_host(urls, hostname):
     return retults
 
 
-def analyse_title(address):
-    try:
-        a = Article(address, language='zh')  # Chinese
-        a.download()
-        a.parse()
-        # print(a.text)
-        # print("=========================title=========================")
-        print(a.title)
-    except Exception:
-        print("抓取失败")
+# def analyse_title(address):
+#     try:
+#         a = Article(address, language='zh')  # Chinese
+#         a.download()
+#         a.parse()
+#         # print(a.text)
+#         # print("=========================title=========================")
+#         print(a.title)
+#     except Exception:
+#         print("抓取失败")
 
 if __name__ == "__main__":
 
     # 获取目录下所有的url
-    urls = get_all_urls("E:/File/浏览记录/2017年/08月")
+    urls = get_all_urls("E:/File/浏览记录/2017年/12月")
     # 分析url的关键搜索词
     # get_grap_words(urls)
 
     # 常用访问网站前十名
     print("url数组列表", len(urls))
-    for url in urls:
-        if "stackoverflow.com" in url:
-            print(url)
-            analyse_title(url)
+    # for url in urls:
+    #     if "stackoverflow.com" in url:
+    #         print(url)
+    #         analyse_title(url)
 
-    h_count = count_host(urls)
-    top_10 = sorted(h_count, key=by_score, reverse=True)
-    for i in top_10:
-        if i[1] <= 10000 and i[1] > 25:
-            print(i[0], i[1])
+    for u in filter_url_host(urls, "github.com"):
+        print(u)
+
+    # h_count = count_host(urls)
+    # top_10 = sorted(h_count, key=by_score, reverse=True)
+    # for i in top_10:
+    #     if i[1] <= 10000 and i[1] > 25:
+    #         print(i[0], i[1])
 
             # bcn = CnblogFetch()
-            # for u in filter_url_host(urls, "stackoverflow.com"):
-            #     print(u)
             #     bcn.fetch(u)
 
             # github.com

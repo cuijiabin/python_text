@@ -138,19 +138,19 @@ if __name__ == "__main__":
     #     analyse_excel(path)
 
     # analyse_interface("E:/File/download/口碑申报表4.28 更新.xlsx")
-    # payload = {"class": "User",
-    #            "action": "addSupplierUser",
-    #            "params": {"supplierId": 4193,
-    #                       "user_info": {"nickname": "蜜芽澳洲站",
-    #                                     "icon": "http://img.miyabaobei.com/d1/p5/2017/07/07/ec/1c/ec1c1934ebc1cf02ccb4ad2b8a355992228627137.jpg"}
-    #                       }
-    #            }
-    # payload["params"]["supplierId"] = 3555
-    # payload["params"]["user_info"]["nickname"] = "北京吉佳电子信息技术有限公司"
-    # # payload["params"]["user_info"]["icon"] = supplyIcon
-    # print(json.dumps(payload));
-    # r = requests.post("http://groupservice.miyabaobei.com/", data=json.dumps(payload))
-    # print(r.content.decode("utf-8"))
+    payload = {"class": "User",
+               "action": "addSupplierUser",
+               "params": {"supplierId": 4966,
+                          "user_info": {"nickname": "舒蓓恩专卖店",
+                                        "icon": "http://image1.miyabaobei.com/image/2016/11/14/c6d0a5bf6b37ad8dd5e77b3af0297bb5.png"}
+                          }
+               }
+    # payload["params"]["supplierId"] = 4966
+    # payload["params"]["user_info"]["nickname"] = "潘明杰"
+    # payload["params"]["user_info"]["icon"] = supplyIcon
+    print(json.dumps(payload));
+    r = requests.post("http://groupservice.miyabaobei.com/", data=json.dumps(payload))
+    print(r.content.decode("utf-8"))
 
     # FILEID:d1/p5/2017/07/07/5e/e9/5ee996656bc447fed8e64648bf3d2951228199557.jpg FILEID:d1/p5/2017/07/07/ec/1c/ec1c1934ebc1cf02ccb4ad2b8a355992228627137.jpg
 

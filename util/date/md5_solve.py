@@ -1,7 +1,6 @@
 # coding=utf-8
 import hashlib
-
-import string
+import base64
 
 
 def decryptMD5(testHash):
@@ -23,5 +22,21 @@ def decryptMD5(testHash):
             s.append(0)
 
 
+def md5(pwd):
+    m = hashlib.md5()
+    m.update(pwd.encode("utf-8"))
+    return m.hexdigest()
+
+
+def b64(pwd):
+    pwd = bytes(pwd, encoding="utf8")
+    base = base64.b64encode(pwd)
+    return str(base, encoding="utf-8")
+
+
 if __name__ == "__main__":
-    print(decryptMD5("47bce5c74f589f4867dbd57e9ca9f808"))  # 要破解的md5值，此处为明文test的md5值
+    tmp = "2211252428@qq.com" + "0755a07db45e9bfa0e96e03c76d107d9" + "dNgrIBwedcfrfosFislkkwwTgaDffllpo"
+    print(tmp)
+    tmp = md5(tmp)
+    tmp = b64(tmp)
+    print(tmp[0:-3])
