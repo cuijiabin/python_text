@@ -35,8 +35,8 @@ def getAndRemoveLast(stack):
         print("getAndRemoveLast 递归 append", stack)
         return i
 
-def reverse(stack):
 
+def reverse(stack):
     if len(stack) == 0:
         return
     i = getAndRemoveLast(stack)
@@ -46,10 +46,10 @@ def reverse(stack):
     stack.append(i)
     return stack
 
+
 # 递归结构有什么妙处？ 稍后准备使用java再实验一次！
 
 def digui(stack):
-
     print("in", stack)
     if len(stack) == 0:
         return
@@ -57,6 +57,40 @@ def digui(stack):
     digui(stack)
     stack.append(m)
     print("out", stack)
+
+    return stack
+
+
+def sort_stack(stack):
+    if len(stack) < 2:
+        return stack
+
+    help = []
+    while stack:
+        cur = stack.pop()
+        while len(help) != 0 and help[-1] > cur:
+            stack.append(help.pop())
+
+        help.append(cur)
+
+    while help:
+        stack.append(help.pop())
+
+    return stack
+
+def copy_sort_stack(stack):
+    if len(stack) < 2:
+        return stack
+    help = []
+
+    while stack:
+        cur = stack.pop()
+        while len(help) > 0 and cur > help[-1]:
+            stack.append(help.pop())
+        help.append(cur)
+    print(help)
+    while help:
+        stack.append(help.pop())
 
     return stack
 
@@ -68,10 +102,12 @@ if __name__ == '__main__':
     # print(stack.pop())
     # print(stack.pop())
 
-    stack = [1,2,3,4,5,6,7]
+    stack = [1, 2, 3, 9, 5, 6, 7]
     # print(getAndRemoveLast(stack))
-    print(stack)
-    print(digui(stack))
+    # sort_stack(stack)
+    copy_sort_stack(stack)
+    while stack:
+        print(stack.pop())
     # reverse(stack)
     # for i in range(len(stack)):
     #     print(stack.pop())

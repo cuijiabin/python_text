@@ -50,7 +50,7 @@ def get_pop_supplier_map(args, column=["p.id", "p.mia_supplier_id", "p.pop_admin
 
 
 # 获取mia主库供应商的基本信息
-def get_supplier_map(args, column=["c.id", "c.name", "c.pop_admin_id", "s.name", "sw.type"]):
+def get_supplier_map(args, column=["c.id", "c.name", "c.pop_admin_id", "s.name", "sw.type", "sw.id"]):
     cur = bm.get_mia_cursor()
     column = ", ".join(list(map(lambda x: x, column)))
     sql = "SELECT " + column + " FROM mia_mirror.customer_supplier c " \
@@ -65,7 +65,7 @@ def get_supplier_map(args, column=["c.id", "c.name", "c.pop_admin_id", "s.name",
 
     # 转成列表对象
     f_data = list(
-        map(lambda x: {"id": x[0], "name": x[1], "pop_admin_id": x[2], "user_name": x[3], "w_type": x[4]}, f_data))
+        map(lambda x: {"id": x[0], "name": x[1], "pop_admin_id": x[2], "user_name": x[3], "w_type": x[4],"w_id": x[5]}, f_data))
     result = {}
     for sup in f_data:
         result.setdefault(sup["id"], sup)
