@@ -30,7 +30,7 @@ def getItemKoubeiList():
         "version": "1",
         "class": "Koubei",
         "action": "getKoubeiList",
-        "package": "Ums",
+        "package_demo": "Ums",
         "params": {
             "params": {
                 # "id": kId,
@@ -53,7 +53,7 @@ def getCommentList(sId):
     cl_param = {
         "class": "Comment",
         "action": "getCommentList",
-        "package": "ums",
+        "package_demo": "ums",
         "params": {
             "params": {
                 "subject_id": sId,
@@ -91,7 +91,7 @@ def getKoubeiAppealList():
     ka_param = {
         "class": "Koubei",
         "action": "getKoubeiAppealList",
-        "package": "ums",
+        "package_demo": "ums",
         "params": {
             "params": {
                 "supplier_id": 3054,

@@ -2,7 +2,7 @@
 import sched
 import time
 from datetime import datetime
-import common_build_model as bm
+import util as bm
 import requests
 from multiprocessing import Queue
 from collections import deque

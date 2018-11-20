@@ -1,8 +1,5 @@
 # coding=utf-8
-import common_build_model as bm
-import csv
-
-import pymysql
+import util as bm
 import xlrd
 
 """
@@ -65,7 +62,8 @@ def get_supplier_map(args, column=["c.id", "c.name", "c.pop_admin_id", "s.name",
 
     # 转成列表对象
     f_data = list(
-        map(lambda x: {"id": x[0], "name": x[1], "pop_admin_id": x[2], "user_name": x[3], "w_type": x[4],"w_id": x[5]}, f_data))
+        map(lambda x: {"id": x[0], "name": x[1], "pop_admin_id": x[2], "user_name": x[3], "w_type": x[4], "w_id": x[5]},
+            f_data))
     result = {}
     for sup in f_data:
         result.setdefault(sup["id"], sup)

@@ -1,6 +1,7 @@
 # coding=utf-8
+import os
 import re
-import csv
+import pycorrector
 from functools import reduce
 
 
@@ -12,39 +13,37 @@ def analyse_js(js_path):
             js_content = js_content.replace('  ', '').replace('\t', '')
             note_re = re.compile(u"\/\/[^\n]*")
             content, _ = note_re.subn("", js_content)
-
-            tip_re = re.compile(r"zhlModalTip\s*\((.*?)\)", re.I | re.X)
-            tips = tip_re.findall(content)
-            func_re = re.compile(u",\s*function\s*\($")
             ch_re = re.compile(u"([\u4e00-\u9fff]+)")
+            tips = ch_re.findall(content)
             for tip in tips:
-                tip, _ = func_re.subn("", tip)
-                ch_tip = ch_re.findall(tip)
-                if (len(ch_tip) > 0):
-                    # print(tip,"包含中文：",ch_re.findall(tip))
-                    r_results.append((tip, ch_re.findall(tip)))
+                # print(js_path, tip)
+                r_results.append(tip)
+        r_results = list(set(r_results))
+        if len(r_results) > 0 :
+            print(js_path, r_results)
         return r_results
     except Exception:
-        print(js_path + "出错")
+        # print(js_path + "出错")
         return []
+
+
+# 获取所有的xml文件
+def traversing_file(root_dir):
+    for lists in os.listdir(root_dir):
+        path = os.path.join(root_dir, lists)
+        if (not os.path.isdir(path) and os.path.splitext(path)[1] == ".java"):
+            path = path.replace("\\", "/")
+            analyse_js(path)
+        elif (os.path.isdir(path) and ".git" not in path and ".idea" not in path):
+            if ("src" in path and "test" not in path):
+                traversing_file(path)
 
 
 """
 1.读取js文件
 """
-# analyse_js("E:/another/zhl/"+"engine/controllers/tbdefine/tbjoin_list.js")
-csv_file = open("E:/route0.csv", 'r')
-f_csv = csv.reader(csv_file, dialect='excel')
+# analyse_js("F:/project_dir/mywork/mia-framework/mia-store-web/src/main/webapp/WEB-INF/page/all_order/index.jsp")
+traversing_file("F:/project_dir/mywork/mia-framework/mia-store-web/src/")
 
-csv_file_w = open("E:/js.csv", 'w')
-f_csv_w = csv.writer(csv_file_w, dialect='excel')
-f_csv_w.writerow(["文件名", "路由", "提示信息", "中文信息"])
-
-for row in f_csv:
-    path = row[0]
-    if (".js" in path):
-        print("js", path)
-        effort = analyse_js("E:/another/zhl/" + path)
-        for e in effort:
-            # print(e[0],reduce(lambda x, y: x+" "+y, e[1]))
-            f_csv_w.writerow([path, row[1], e[0], reduce(lambda x, y: x + " " + y, e[1])])
+# corrected_sent, detail = pycorrector.correct('少先队员因该为老人让坐')
+# print(corrected_sent, detail)

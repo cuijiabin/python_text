@@ -32,7 +32,7 @@ def get_record_files(base_path="E:/File/浏览记录/09月/"):
 
 
 # 遍历所有文件
-def traversing_file(rootdir="E:/File/浏览记录/2017年/"):
+def traversing_file(rootdir="E:/File/浏览记录/2018年/"):
     names = []
     for parent, _, filenames in os.walk(rootdir):
         for filename in filenames:
@@ -44,7 +44,7 @@ def traversing_file(rootdir="E:/File/浏览记录/2017年/"):
 def operate_csv(csv_path):
     urls = []
     try:
-        with open(csv_path) as f:
+        with open(csv_path, encoding="utf8") as f:
             # f_csv = csv.reader(f)
             line = f.readline()
             while line:
@@ -149,7 +149,7 @@ def filter_url_host(urls, hostname):
 if __name__ == "__main__":
 
     # 获取目录下所有的url
-    urls = get_all_urls("E:/File/浏览记录/2017年/12月")
+    urls = get_all_urls("F:/File/浏览记录/2018年/08月")
     # 分析url的关键搜索词
     # get_grap_words(urls)
 

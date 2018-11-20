@@ -71,8 +71,8 @@ if __name__ == "__main__":
                 "mia-read-service", "mia-service", "mia-store-service", "mia-store-web", "mia-supplierManager-service",
                 "mia-ums-service", "mia-ums-web", "mia_log"]
     for pp in all_path:
-        traversing_file("E:/workspace/mia-framework-new/" + pp)
+        traversing_file("F:/project_dir/mywork/mia-framework/" + pp)
 
-    # E:/workspace/mia-framework-new/mia-product-service/src/main/java/com/mia/pop/ums/product/main/dao/ProcurementOrderDetailMapper.xml 有问题的
+    # F:/workspace/mia-framework-new/mia-product-service/src/main/java/com/mia/pop/ums/product/main/dao/ProcurementOrderDetailMapper.xml 有问题的
     # ana_re_mapper(
-    #     "E:/project_dir/javaspace/mia-framework-oneall/mia-service/src/main/java/com/mia/common/api/dao/CommunityTodoMapper.xml")
+    #     "F:/project_dir/javaspace/mia-framework-oneall/mia-service/src/main/java/com/mia/common/api/dao/CommunityTodoMapper.xml")
