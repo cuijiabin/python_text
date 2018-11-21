@@ -44,7 +44,7 @@ def get_db_group_info(table_name, field, param):
 
 
 def get_mia_group_info(table_name, field, param):
-    cur = bm.get_mia_cursor("db_pop")
+    cur = bm.get_mia_cursor("mia_mirror")
     sql = get_sql_param(table_name, field, param)
     cur.execute(sql, param)
     columns = [col[0] for col in cur.description]

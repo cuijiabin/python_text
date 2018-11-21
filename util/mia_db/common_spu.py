@@ -10,6 +10,150 @@ from threading import Timer
 """
 
 
+def timed_task(i):
+    print("定时输出", str(i))
+    i += 1
+    Timer(3, timed_task, (i,)).start()
+
+
+# 获取spuId
+def get_db_spu_ids(value_id, is_draft=True):
+    cur = bm.get_mia_cursor("db_pop")
+    sql = "SELECT spu_id FROM db_pop.item_spu_draft WHERE id = " + str(value_id)
+    if is_draft:
+        sql = "SELECT id FROM db_pop.item_spu_draft WHERE spu_id = " + str(value_id)
+    cur.execute(sql)
+    result_data = cur.fetchall()
+    if len(result_data) > 0:
+        return result_data[0][0]
+    return ""
+
+
+# 获取skuId
+def get_db_sku_ids(value_id, is_draft=True):
+    cur = bm.get_mia_cursor("db_pop")
+    sql = "SELECT id FROM db_pop.item_sku WHERE spu_id = " + str(value_id)
+    if is_draft:
+        sql = "SELECT id FROM db_pop.item_sku_draft WHERE spu_id = " + str(value_id)
+    cur.execute(sql)
+    result_data = cur.fetchall()
+    if len(result_data) > 0:
+        return list(map(lambda x: x[0], result_data))
+    return []
+
+
+# 根据spuId 获取相关id列表
+def get_relates_by_spu_id(spu_id):
+    spu_draft_id = get_db_spu_ids(spu_id)
+
+    sku_ids = get_db_sku_ids(spu_id, False)
+    sku_draft_ids = get_db_sku_ids(spu_draft_id)
+
+    sku_data = mu.get_db_group_info("db_pop.item_sku", "id", sku_ids)
+    item_ids = list(map(lambda x: x['item_id'], sku_data))
+    item_ids = list(set(item_ids))
+
+    result = dict()
+    result["spuId"] = spu_id
+    result["spuDraftId"] = spu_draft_id
+    result["skuIds"] = sku_ids
+    result["skuDraftIds"] = sku_draft_ids
+    result["itemIds"] = item_ids
+
+    return result
+
+
+# 根据spuDraftId 获取相关id列表
+def get_relates_by_spu_draft_id(spu_draft_id):
+    result = dict()
+    sku_draft_ids = get_db_sku_ids(spu_draft_id)
+    result["spuDraftId"] = spu_draft_id
+    result["skuDraftIds"] = sku_draft_ids
+    spu_id = get_db_spu_ids(spu_draft_id, False)
+    if not (spu_id is None) and bm.is_number(spu_id):
+        sku_ids = get_db_sku_ids(spu_id, False)
+        sku_data = mu.get_db_group_info("db_pop.item_sku", "id", sku_ids)
+        item_ids = list(map(lambda x: x['item_id'], sku_data))
+        item_ids = list(set(item_ids))
+
+        result["spuId"] = spu_id
+        result["skuIds"] = sku_ids
+        result["itemIds"] = item_ids
+
+    return result
+
+
+# 根据skuId 获取相关id列表
+def get_relates_by_sku_id(sku_id):
+    known_data = mu.get_db_group_info("db_pop.item_sku", "id", [sku_id])
+    known_data = known_data[0]
+    spu_id = known_data["spu_id"]
+    spu_draft_id = get_db_spu_ids(spu_id)
+
+    sku_ids = get_db_sku_ids(spu_id, False)
+    sku_draft_ids = get_db_sku_ids(spu_draft_id)
+
+    sku_data = mu.get_db_group_info("db_pop.item_sku", "id", sku_ids)
+    item_ids = list(map(lambda x: x['item_id'], sku_data))
+    item_ids = list(set(item_ids))
+
+    result = dict()
+    result["spuId"] = spu_id
+    result["spuDraftId"] = spu_draft_id
+    result["skuIds"] = sku_ids
+    result["skuDraftIds"] = sku_draft_ids
+    result["itemIds"] = item_ids
+
+    return result
+
+
+# 根据skuDraftId 获取相关id列表
+def get_relates_by_sku_draft_id(sku_draft_id):
+    known_data = mu.get_db_group_info("db_pop.item_sku_draft", "id", [sku_draft_id])
+    known_data = known_data[0]
+    spu_draft_id = known_data["spu_id"]
+    result = dict()
+    sku_draft_ids = get_db_sku_ids(spu_draft_id)
+    result["spuDraftId"] = spu_draft_id
+    result["skuDraftIds"] = sku_draft_ids
+    spu_id = get_db_spu_ids(spu_draft_id, False)
+    if not (spu_id is None) and bm.is_number(spu_id):
+        sku_ids = get_db_sku_ids(spu_id, False)
+        sku_data = mu.get_db_group_info("db_pop.item_sku", "id", sku_ids)
+        item_ids = list(map(lambda x: x['item_id'], sku_data))
+        item_ids = list(set(item_ids))
+
+        result["spuId"] = spu_id
+        result["skuIds"] = sku_ids
+        result["itemIds"] = item_ids
+
+    return result
+
+
+# 根据itemId 获取相关id列表
+def get_relates_by_item_id(item_id):
+    known_data = mu.get_db_group_info("db_pop.item_sku", "item_id", [item_id])
+    known_data = known_data[0]
+    spu_id = known_data["spu_id"]
+    spu_draft_id = get_db_spu_ids(spu_id)
+
+    sku_ids = get_db_sku_ids(spu_id, False)
+    sku_draft_ids = get_db_sku_ids(spu_draft_id)
+
+    sku_data = mu.get_db_group_info("db_pop.item_sku", "id", sku_ids)
+    item_ids = list(map(lambda x: x['item_id'], sku_data))
+    item_ids = list(set(item_ids))
+
+    result = dict()
+    result["spuId"] = spu_id
+    result["spuDraftId"] = spu_draft_id
+    result["skuIds"] = sku_ids
+    result["skuDraftIds"] = sku_draft_ids
+    result["itemIds"] = item_ids
+
+    return result
+
+
 def get_all_draft(param):
     # spu数据
     spu_data = mu.get_db_group_info("db_pop.item_spu", "id", param)
@@ -90,35 +234,6 @@ def get_all_spu(param):
     item_data = mu.get_mia_group_info("mia_mirror.item", "id", item_ids)
     print("输出item数据")
     print(json.dumps(item_data, cls=bm.ExtendJSONEncoder))
-
-
-def timed_task():
-    print("定时输出")
-    Timer(3, timed_task).start()
-
-
-def get_db_spu_ids(value_id, is_draft=True):
-    cur = bm.get_mia_cursor("db_pop")
-    sql = "SELECT spu_id FROM db_pop.item_spu_draft WHERE id = " + str(value_id)
-    if is_draft:
-        sql = "SELECT id FROM db_pop.item_spu_draft WHERE spu_id = " + str(value_id)
-    cur.execute(sql)
-    result_data = cur.fetchall()
-    if len(result_data) > 0:
-        return result_data[0][0]
-    return ""
-
-
-def get_db_sku_ids(value_id, is_draft=True):
-    cur = bm.get_mia_cursor("db_pop")
-    sql = "SELECT id FROM db_pop.item_sku WHERE spu_id = " + str(value_id)
-    if is_draft:
-        sql = "SELECT id FROM db_pop.item_sku_draft WHERE spu_id = " + str(value_id)
-    cur.execute(sql)
-    result_data = cur.fetchall()
-    if len(result_data) > 0:
-        return list(map(lambda x: x[0], result_data))
-    return []
 
 
 # spu 差异比较
@@ -300,5 +415,18 @@ def convert_spu(spu_id):
     return json.dumps(spu_data, cls=bm.ExtendJSONEncoder)
 
 
+def spu_timed_task(spu_id):
+    cur = bm.get_mia_cursor("db_pop")
+    sql = "SELECT id FROM db_pop.item_spu WHERE id < " + str(spu_id) + " ORDER BY id DESC LIMIT 1"
+    cur.execute(sql)
+    result_data = cur.fetchall()
+    spu_id = result_data[0][0]
+    print(spu_id)
+    Timer(3, spu_timed_task, (spu_id,)).start()
+
+
 if __name__ == "__main__":
-    print(convert_spu([101126163]))
+    # info = get_relates_by_spu_draft_id(101121511)
+    # print(json.dumps(info, cls=bm.ExtendJSONEncoder))
+    spu_timed_task(101126460)
+    # timed_task(10)

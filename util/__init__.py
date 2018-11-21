@@ -47,3 +47,19 @@ def gen_sql(tb_name, tb_data):
     sentence = 'INSERT %s (' % tb_name + ','.join([i[0] for i in ls]) + \
                ') VALUES (' + ','.join(['%r' % i[1] for i in ls]) + ');'
     return sentence
+
+
+# 判断是否为数字
+def is_number(s):
+    try:
+        float(s)
+        return True
+    except ValueError:
+        pass
+    try:
+        import unicodedata
+        unicodedata.numeric(s)
+        return True
+    except (TypeError, ValueError):
+        pass
+    return False
