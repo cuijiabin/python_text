@@ -1,139 +1,304 @@
 # coding=utf-8
-import datetime
-import decimal
 import json
 
 import util as bm
+import util.mia_db as mu
+from threading import Timer
 
 """
 获取spu的信息然后转换成字典对象
 """
 
 
-class ExtendJSONEncoder(json.JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, decimal.Decimal):
-            return int(obj)
-        if isinstance(obj, datetime.datetime):
-            return obj.strftime("%Y-%m-%d %H:%M:%S")
-        if isinstance(obj, datetime.date):
-            return obj.strftime("%Y-%m-%d")
-
-        return super(ExtendJSONEncoder, self).default(obj)
-
-
-def get_sql_param(table_name, field, param):
-    sql = "SELECT * FROM " + table_name + " WHERE " + field + " IN (%s)"
-    condition = ", ".join(list(map(lambda x: "%s", param)))
-    sql %= condition
-    return sql
-
-
-def get_db_group_info(table_name, field, param):
-    cur = bm.get_mia_cursor("db_pop")
-    sql = get_sql_param(table_name, field, param)
-    cur.execute(sql, param)
-    columns = [col[0] for col in cur.description]
-    rows = [dict(zip(columns, row)) for row in cur.fetchall()]
-    return rows
-
-
-def get_mia_group_info(table_name, field, param):
-    cur = bm.get_mia_cursor("db_pop")
-    sql = get_sql_param(table_name, field, param)
-    cur.execute(sql, param)
-    columns = [col[0] for col in cur.description]
-    rows = [dict(zip(columns, row)) for row in cur.fetchall()]
-    return rows
-
-
 def get_all_draft(param):
     # spu数据
-    spu_data = get_db_group_info("db_pop.item_spu", "id", param)
+    spu_data = mu.get_db_group_info("db_pop.item_spu", "id", param)
     spu_ids = list(map(lambda x: x['id'], spu_data))
-    print("输出spu")
-    print(json.dumps(spu_data, cls=ExtendJSONEncoder))
 
     # spu草稿数据
-    spu_draft_data = get_db_group_info("db_pop.item_spu_draft", "spu_id", spu_ids)
+    spu_draft_data = mu.get_db_group_info("db_pop.item_spu_draft", "spu_id", spu_ids)
     spu_draft_ids = list(map(lambda x: x['id'], spu_draft_data))
     print("输出spu草稿数据")
-    print(json.dumps(spu_draft_data, cls=ExtendJSONEncoder))
+    print(json.dumps(spu_draft_data, cls=bm.ExtendJSONEncoder))
 
-    print(spu_data[0].keys() & spu_draft_data[0].keys())
-    print(spu_data[0].keys() - spu_draft_data[0].keys())
-    print(spu_draft_data[0].keys() - spu_data[0].keys())
+    print(bm.gen_sql("item_spu_draft", spu_draft_data[0]))
 
     # 商品图片草稿数据
-    spu_pictures_draft_data = get_db_group_info("db_pop.item_spu_pictures_draft", "spu_id", spu_draft_ids)
+    spu_pictures_draft_data = mu.get_db_group_info("db_pop.item_spu_pictures_draft", "spu_id", spu_draft_ids)
     print("输出商品图片草稿数据")
-    print(json.dumps(spu_pictures_draft_data, cls=ExtendJSONEncoder))
+    print(json.dumps(spu_pictures_draft_data, cls=bm.ExtendJSONEncoder))
 
     # 规格图片草稿数据
-    image_draft_data = get_db_group_info("db_pop.item_specification_image_draft", "spu_id", spu_draft_ids)
+    image_draft_data = mu.get_db_group_info("db_pop.item_specification_image_draft", "spu_id", spu_draft_ids)
     print("输出规格图片草稿数据")
-    print(json.dumps(image_draft_data, cls=ExtendJSONEncoder))
+    print(json.dumps(image_draft_data, cls=bm.ExtendJSONEncoder))
 
-    sku_draft_data = get_db_group_info("db_pop.item_sku_draft", "spu_id", spu_draft_ids)
+    sku_draft_data = mu.get_db_group_info("db_pop.item_sku_draft", "spu_id", spu_draft_ids)
     sku_draft_ids = list(map(lambda x: x['id'], sku_draft_data))
     print("输出sku草稿数据")
-    print(json.dumps(sku_draft_data, cls=ExtendJSONEncoder))
+    print(json.dumps(sku_draft_data, cls=bm.ExtendJSONEncoder))
 
-    relation_draft_data = get_db_group_info("db_pop.item_sku_specification_relation_draft", "sku_id", sku_draft_ids)
+    relation_draft_data = mu.get_db_group_info("db_pop.item_sku_specification_relation_draft", "sku_id", sku_draft_ids)
     print("输出sku规格关系草稿数据")
-    print(json.dumps(relation_draft_data, cls=ExtendJSONEncoder))
+    print(json.dumps(relation_draft_data, cls=bm.ExtendJSONEncoder))
 
-    cost_price_draft_data = get_db_group_info("db_pop.item_cost_price_draft", "spu_id", spu_draft_ids)
+    cost_price_draft_data = mu.get_db_group_info("db_pop.item_cost_price_draft", "spu_id", spu_draft_ids)
     print("输出spu成本价草稿数据")
-    print(json.dumps(cost_price_draft_data, cls=ExtendJSONEncoder))
+    print(json.dumps(cost_price_draft_data, cls=bm.ExtendJSONEncoder))
 
-    stock_data = get_db_group_info("db_pop.item_stock", "sku_id", sku_draft_ids)
+    stock_data = mu.get_db_group_info("db_pop.item_stock", "sku_id", sku_draft_ids)
     print("输出sku库存数据")
-    print(json.dumps(stock_data, cls=ExtendJSONEncoder))
+    print(json.dumps(stock_data, cls=bm.ExtendJSONEncoder))
 
 
 def get_all_spu(param):
     # spu数据
-    spu_data = get_db_group_info("db_pop.item_spu", "id", param)
+    spu_data = mu.get_db_group_info("db_pop.item_spu", "id", param)
     spu_ids = list(map(lambda x: x['id'], spu_data))
     print("输出spu")
-    print(json.dumps(spu_data, cls=ExtendJSONEncoder))
+    print(json.dumps(spu_data, cls=bm.ExtendJSONEncoder))
 
     # 商品图片数据
-    spu_pictures_data = get_db_group_info("db_pop.item_spu_pictures", "spu_id", spu_ids)
+    spu_pictures_data = mu.get_db_group_info("db_pop.item_spu_pictures", "spu_id", spu_ids)
     print("输出商品图片数据")
-    print(json.dumps(spu_pictures_data, cls=ExtendJSONEncoder))
+    print(json.dumps(spu_pictures_data, cls=bm.ExtendJSONEncoder))
 
     # 规格图片数据
-    image_data = get_db_group_info("db_pop.item_specification_image_draft", "spu_id", spu_ids)
+    image_data = mu.get_db_group_info("db_pop.item_specification_image_draft", "spu_id", spu_ids)
     print("输出规格图片数据")
-    print(json.dumps(image_data, cls=ExtendJSONEncoder))
+    print(json.dumps(image_data, cls=bm.ExtendJSONEncoder))
 
-    sku_data = get_db_group_info("db_pop.item_sku", "spu_id", spu_ids)
+    sku_data = mu.get_db_group_info("db_pop.item_sku", "spu_id", spu_ids)
     sku_ids = list(map(lambda x: x['id'], sku_data))
     print("输出sku数据")
-    print(json.dumps(sku_data, cls=ExtendJSONEncoder))
+    print(json.dumps(sku_data, cls=bm.ExtendJSONEncoder))
 
-    relation_data = get_db_group_info("db_pop.item_sku_specification_relation", "sku_id", sku_ids)
+    relation_data = mu.get_db_group_info("db_pop.item_sku_specification_relation", "sku_id", sku_ids)
     print("输出sku规格关系数据")
-    print(json.dumps(relation_data, cls=ExtendJSONEncoder))
+    print(json.dumps(relation_data, cls=bm.ExtendJSONEncoder))
 
-    cost_price_data = get_db_group_info("db_pop.item_cost_price", "spu_id", spu_ids)
+    cost_price_data = mu.get_db_group_info("db_pop.item_cost_price", "spu_id", spu_ids)
     print("输出spu成本价数据")
-    print(json.dumps(cost_price_data, cls=ExtendJSONEncoder))
+    print(json.dumps(cost_price_data, cls=bm.ExtendJSONEncoder))
 
-    stock_data = get_db_group_info("db_pop.item_stock", "sku_id", sku_ids)
+    stock_data = mu.get_db_group_info("db_pop.item_stock", "sku_id", sku_ids)
     print("输出sku库存数据")
-    print(json.dumps(stock_data, cls=ExtendJSONEncoder))
+    print(json.dumps(stock_data, cls=bm.ExtendJSONEncoder))
 
     item_ids = list(map(lambda x: x['item_id'], sku_data))
     item_ids = list(set(item_ids))
-    item_data = get_mia_group_info("mia_mirror.item", "id", item_ids)
+    item_data = mu.get_mia_group_info("mia_mirror.item", "id", item_ids)
     print("输出item数据")
-    print(json.dumps(item_data, cls=ExtendJSONEncoder))
-    # print(item_data)
+    print(json.dumps(item_data, cls=bm.ExtendJSONEncoder))
+
+
+def timed_task():
+    print("定时输出")
+    Timer(3, timed_task).start()
+
+
+def get_db_spu_ids(value_id, is_draft=True):
+    cur = bm.get_mia_cursor("db_pop")
+    sql = "SELECT spu_id FROM db_pop.item_spu_draft WHERE id = " + str(value_id)
+    if is_draft:
+        sql = "SELECT id FROM db_pop.item_spu_draft WHERE spu_id = " + str(value_id)
+    cur.execute(sql)
+    result_data = cur.fetchall()
+    if len(result_data) > 0:
+        return result_data[0][0]
+    return ""
+
+
+def get_db_sku_ids(value_id, is_draft=True):
+    cur = bm.get_mia_cursor("db_pop")
+    sql = "SELECT id FROM db_pop.item_sku WHERE spu_id = " + str(value_id)
+    if is_draft:
+        sql = "SELECT id FROM db_pop.item_sku_draft WHERE spu_id = " + str(value_id)
+    cur.execute(sql)
+    result_data = cur.fetchall()
+    if len(result_data) > 0:
+        return list(map(lambda x: x[0], result_data))
+    return []
+
+
+# spu 差异比较
+def diff_spu_info(spu_id):
+    spu_draft_id = get_db_spu_ids(spu_id)
+
+    spu_data = mu.get_db_group_info("db_pop.item_spu", "id", [spu_id])
+    spu_draft_data = mu.get_db_group_info("db_pop.item_spu_draft", "id", [spu_draft_id])
+
+    common_fields = spu_data[0].keys() & spu_draft_data[0].keys()
+    formal_fields = spu_data[0].keys() - spu_draft_data[0].keys()
+    diff_fields = spu_draft_data[0].keys() - spu_data[0].keys()
+    print("公共字段", common_fields)
+    print("正式表字段", formal_fields)
+    print("草稿表字段", list(diff_fields))
+
+    for field in common_fields:
+        if spu_data[0][field] == spu_draft_data[0][field]:
+            continue
+        print(spu_data[0][field], spu_draft_data[0][field], field, spu_data[0][field] == spu_draft_data[0][field])
+
+
+# 商品图片比较
+def diff_spu_picture_info(spu_id):
+    spu_draft_id = get_db_spu_ids(spu_id)
+
+    sku_data = mu.get_db_group_info("db_pop.item_spu_pictures", "spu_id", [spu_id])
+    sku_draft_data = mu.get_db_group_info("db_pop.item_spu_pictures_draft", "spu_id", [spu_draft_id])
+    print(len(sku_data), len(sku_draft_data))
+
+    common_fields = sku_data[0].keys() & sku_draft_data[0].keys()
+    formal_fields = sku_data[0].keys() - sku_draft_data[0].keys()
+    diff_fields = sku_draft_data[0].keys() - sku_data[0].keys()
+
+    print("公共字段", common_fields)
+    print("正式表字段", formal_fields)
+    print("草稿表字段", diff_fields)
+
+    for i in range(len(sku_data)):
+        sku = sku_data[i]
+        sku_draft = sku_draft_data[i]
+        for field in common_fields:
+            if sku[field] == sku_draft[field]:
+                continue
+            print(sku[field], sku_draft[field], field, sku[field] == sku_draft[field])
+        print("--------------")
+
+
+# 规格图片比较
+def diff_specification_image_info(spu_id):
+    spu_draft_id = get_db_spu_ids(spu_id)
+
+    sku_data = mu.get_db_group_info("db_pop.item_specification_image", "spu_id", [spu_id])
+    sku_draft_data = mu.get_db_group_info("db_pop.item_specification_image_draft", "spu_id", [spu_draft_id])
+    print(len(sku_data), len(sku_draft_data))
+
+    common_fields = sku_data[0].keys() & sku_draft_data[0].keys()
+    formal_fields = sku_data[0].keys() - sku_draft_data[0].keys()
+    diff_fields = sku_draft_data[0].keys() - sku_data[0].keys()
+
+    print("公共字段", common_fields)
+    print("正式表字段", formal_fields)
+    print("草稿表字段", diff_fields)
+
+    for i in range(len(sku_data)):
+        sku = sku_data[i]
+        sku_draft = sku_draft_data[i]
+        for field in common_fields:
+            if sku[field] == sku_draft[field]:
+                continue
+            print(sku[field], sku_draft[field], field, sku[field] == sku_draft[field])
+        print("--------------")
+
+
+# sku 差异比较
+def diff_sku_info(spu_id):
+    spu_draft_id = get_db_spu_ids(spu_id)
+    sku_ids = get_db_sku_ids(spu_id, False)
+    sku_draft_ids = get_db_sku_ids(spu_draft_id)
+
+    sku_data = mu.get_db_group_info("db_pop.item_sku", "id", sku_ids)
+    sku_draft_data = mu.get_db_group_info("db_pop.item_sku_draft", "id", sku_draft_ids)
+    print(len(sku_data), len(sku_draft_data))
+
+    common_fields = sku_data[0].keys() & sku_draft_data[0].keys()
+    formal_fields = sku_data[0].keys() - sku_draft_data[0].keys()
+    diff_fields = sku_draft_data[0].keys() - sku_data[0].keys()
+
+    print("公共字段", common_fields)
+    print("正式表字段", formal_fields)
+    print("草稿表字段", diff_fields)
+
+    for i in range(len(sku_data)):
+        sku = sku_data[i]
+        sku_draft = sku_draft_data[i]
+        for field in common_fields:
+            if sku[field] == sku_draft[field]:
+                continue
+            print(sku[field], sku_draft[field], field, sku[field] == sku_draft[field])
+
+
+# sku 差异比较
+def diff_specification_relation_info(spu_id):
+    spu_draft_id = get_db_spu_ids(spu_id)
+    sku_ids = get_db_sku_ids(spu_id, False)
+    sku_draft_ids = get_db_sku_ids(spu_draft_id)
+
+    sku_data = mu.get_db_group_info("db_pop.item_sku_specification_relation", "sku_id", sku_ids)
+    sku_draft_data = mu.get_db_group_info("db_pop.item_sku_specification_relation_draft", "sku_id", sku_draft_ids)
+    print(len(sku_data), len(sku_draft_data))
+
+    common_fields = sku_data[0].keys() & sku_draft_data[0].keys()
+    formal_fields = sku_data[0].keys() - sku_draft_data[0].keys()
+    diff_fields = sku_draft_data[0].keys() - sku_data[0].keys()
+
+    print("公共字段", common_fields)
+    print("正式表字段", formal_fields)
+    print("草稿表字段", diff_fields)
+
+    for i in range(len(sku_data)):
+        sku = sku_data[i]
+        sku_draft = sku_draft_data[i]
+        for field in common_fields:
+            if sku[field] == sku_draft[field]:
+                continue
+            print(sku[field], sku_draft[field], field, sku[field] == sku_draft[field])
+        print("--------------")
+
+
+# 成本价比较
+def diff_cost_price_info(spu_id):
+    spu_draft_id = get_db_spu_ids(spu_id)
+
+    sku_data = mu.get_db_group_info("db_pop.item_cost_price", "spu_id", [spu_id])
+    sku_draft_data = mu.get_db_group_info("db_pop.item_cost_price_draft", "spu_id", [spu_draft_id])
+    print(len(sku_data), len(sku_draft_data))
+
+    common_fields = sku_data[0].keys() & sku_draft_data[0].keys()
+    formal_fields = sku_data[0].keys() - sku_draft_data[0].keys()
+    diff_fields = sku_draft_data[0].keys() - sku_data[0].keys()
+
+    print("公共字段", common_fields)
+    print("正式表字段", formal_fields)
+    print("草稿表字段", diff_fields)
+
+    for i in range(len(sku_data)):
+        sku = sku_data[i]
+        sku_draft = sku_draft_data[i]
+        for field in common_fields:
+            if sku[field] == sku_draft[field]:
+                continue
+            print(sku[field], sku_draft[field], field, sku[field] == sku_draft[field])
+        print("--------------")
+
+
+def convert_spu(spu_id):
+    # spu数据
+    spu_data = mu.get_db_group_info("db_pop.item_spu", "id", [spu_id])
+    spu_pictures_data = mu.get_db_group_info("db_pop.item_spu_pictures", "spu_id", [spu_id])
+    image_data = mu.get_db_group_info("db_pop.item_specification_image_draft", "spu_id", [spu_id])
+    sku_data = mu.get_db_group_info("db_pop.item_sku", "spu_id", [spu_id])
+    sku_ids = list(map(lambda x: x['id'], sku_data))
+    relation_data = mu.get_db_group_info("db_pop.item_sku_specification_relation", "sku_id", sku_ids)
+    cost_price_data = mu.get_db_group_info("db_pop.item_cost_price", "spu_id", [spu_id])
+    stock_data = mu.get_db_group_info("db_pop.item_stock", "sku_id", sku_ids)
+    item_ids = list(map(lambda x: x['item_id'], sku_data))
+    item_ids = list(set(item_ids))
+    item_data = mu.get_mia_group_info("mia_mirror.item", "id", item_ids)
+
+    spu_data = spu_data[0]
+    spu_data["pictures_list"] = spu_pictures_data
+    spu_data["specification_image_list"] = image_data
+    spu_data["sku_list"] = sku_data
+    spu_data["specification_relation_list"] = relation_data
+    spu_data["cost_price_list"] = cost_price_data
+    spu_data["stock_list"] = stock_data
+    spu_data["item_list"] = item_data
+
+    return json.dumps(spu_data, cls=bm.ExtendJSONEncoder)
 
 
 if __name__ == "__main__":
-    get_all_spu([101125830])
-    # get_all_draft([101125830])
+    print(convert_spu([101126163]))

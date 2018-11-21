@@ -1,4 +1,5 @@
 # coding=utf-8
+import util as bm
 
 
 # 获取数据库表
@@ -24,3 +25,28 @@ def get_columns_name(db_table, db_cursor):
     db_cursor.execute(sql)
     column_data = db_cursor.fetchall()
     return list(map(lambda x: x[0], column_data))
+
+
+def get_sql_param(table_name, field, param):
+    sql = "SELECT * FROM " + table_name + " WHERE " + field + " IN (%s)"
+    condition = ", ".join(list(map(lambda x: "%s", param)))
+    sql %= condition
+    return sql
+
+
+def get_db_group_info(table_name, field, param):
+    cur = bm.get_mia_cursor("db_pop")
+    sql = get_sql_param(table_name, field, param)
+    cur.execute(sql, param)
+    columns = [col[0] for col in cur.description]
+    rows = [dict(zip(columns, row)) for row in cur.fetchall()]
+    return rows
+
+
+def get_mia_group_info(table_name, field, param):
+    cur = bm.get_mia_cursor("db_pop")
+    sql = get_sql_param(table_name, field, param)
+    cur.execute(sql, param)
+    columns = [col[0] for col in cur.description]
+    rows = [dict(zip(columns, row)) for row in cur.fetchall()]
+    return rows
