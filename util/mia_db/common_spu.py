@@ -402,6 +402,7 @@ def convert_spu(spu_id):
     item_ids = list(map(lambda x: x['item_id'], sku_data))
     item_ids = list(set(item_ids))
     item_data = mu.get_mia_group_info("mia_mirror.item", "id", item_ids)
+    stock_item = mu.get_mia_group_info("mia_mirror.stock_item", "item_id", item_ids)
 
     spu_data = spu_data[0]
     spu_data["pictures_list"] = spu_pictures_data
@@ -411,6 +412,7 @@ def convert_spu(spu_id):
     spu_data["cost_price_list"] = cost_price_data
     spu_data["stock_list"] = stock_data
     spu_data["item_list"] = item_data
+    spu_data["stock_item"] = stock_item
 
     return json.dumps(spu_data, cls=bm.ExtendJSONEncoder)
 
@@ -426,7 +428,11 @@ def spu_timed_task(spu_id):
 
 
 if __name__ == "__main__":
-    # info = get_relates_by_spu_draft_id(101121511)
+    # info = get_relates_by_item_id(2772864)
+    info = convert_spu(101002203)
+    print(info)
     # print(json.dumps(info, cls=bm.ExtendJSONEncoder))
-    spu_timed_task(101126460)
+    # spu_timed_task(101126460)
     # timed_task(10)
+
+    # TODO 库存信息的查询功能
