@@ -2,8 +2,10 @@
 import datetime
 import decimal
 import json
+import traceback
 
 import pymysql
+import xlrd
 
 
 class ExtendJSONEncoder(json.JSONEncoder):
@@ -23,6 +25,16 @@ def get_mia_cursor(db_name="mia_mirror"):
                            port=3306,
                            user="pop_cuijiabin",
                            passwd="8dtx5EOUZASc#",
+                           db=db_name,
+                           charset="utf8")
+    return conn.cursor()
+
+
+def get_mia_test_cursor(db_name="mia_test2"):
+    conn = pymysql.connect(host="172.16.104.207",
+                           port=3307,
+                           user="write_user",
+                           passwd="write_pwd",
                            db=db_name,
                            charset="utf8")
     return conn.cursor()
@@ -63,3 +75,19 @@ def is_number(s):
     except (TypeError, ValueError):
         pass
     return False
+
+# 打开excel文件
+def open_excel(file):
+    try:
+        data = xlrd.open_workbook(file)
+        return data
+    except FileNotFoundError:
+        print("文件%s 不存在" % file)
+        return None
+    except Exception as e:
+        print("str(Exception):\t", str(Exception))
+        print("str(e):\t\t", str(e))
+        print("repr(e):\t", repr(e))
+        print("e.message:\t", e.message)
+        print("traceback.print_exc():\t", traceback.print_exc())
+        print("traceback.format_exc():\n%s" % traceback.format_exc())

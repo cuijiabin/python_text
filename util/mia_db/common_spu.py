@@ -428,11 +428,14 @@ def spu_timed_task(spu_id):
 
 
 if __name__ == "__main__":
-    # info = get_relates_by_item_id(2772864)
-    info = convert_spu(101002203)
+    # info = get_relates_by_item_id(2849224)
+    # info = get_relates_by_sku_id(2952137)
+    info = convert_spu(101204171)
     print(info)
+    # get_all_draft([101131232])
     # print(json.dumps(info, cls=bm.ExtendJSONEncoder))
     # spu_timed_task(101126460)
     # timed_task(10)
-
+    print(bm.camel_convert("sale_property_value_category","_"))
+    #
     # TODO 库存信息的查询功能
