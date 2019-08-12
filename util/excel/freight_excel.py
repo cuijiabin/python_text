@@ -48,7 +48,10 @@ def read_keynote_excel(file_path, start_num=2, limit_num=500, set_map={}, amount
 
             row_param.append(cell_value)
 
-        print(gen_rule_sql(start_id, row_param[0], row_param[1], row_param[9]))
+        start_id = get_freight_rule_id(row_param[1])
+        if start_id is None or start_id == "":
+            print("EEEEEEEEEEEE", row_param[1])
+        print(gen_up_rule_sql(start_id, row_param[1], row_param[9]))
         # 新疆31、西藏26
         print(gen_rule_prov_sql(start_id, 31, set_map[row_param[2]], amount_map[row_param[2]]))
         print(gen_rule_prov_sql(start_id, 26, set_map[row_param[2]], amount_map[row_param[2]]))
@@ -65,7 +68,6 @@ def read_keynote_excel(file_path, start_num=2, limit_num=500, set_map={}, amount
         print(gen_rule_prov_sql(start_id, 9, set_map[row_param[6]], amount_map[row_param[6]]))
         # 黑龙江10
         print(gen_rule_prov_sql(start_id, 10, set_map[row_param[7]], amount_map[row_param[7]]))
-        start_id += 1
 
 
 # 生成普通分类sql
@@ -157,19 +159,28 @@ def read_special_excel(file_path, start_num=1, limit_num=500, default_id=1):
             default_id += 1
 
 
+def gen_up_rule_sql(rule_id, category_id_ng, rule_type):
+    return "update freight_rule set type = {rule_type} where id = {rule_id};".format(
+        rule_id=rule_id,  category_id_ng=category_id_ng, rule_type=rule_type)
+
+
+def gen_up_rule_prov_sql(freight_rule_id, prov_id, rule_set, freight_amount):
+    return "INSERT INTO freight_rule_prov(freight_rule_id, prov_id, rule_set, freight_amount) VALUES({freight_rule_id},{prov_id}, '{rule_set}', {freight_amount});".format(
+        freight_rule_id=freight_rule_id, prov_id=prov_id, rule_set=rule_set, freight_amount=freight_amount)
+
 def gen_rule_sql(rule_id, rule_name, category_id_ng, rule_type):
     return "INSERT INTO freight_rule(id, rule_name, category_id_ng, type) VALUES ({rule_id},'{rule_name}', {category_id_ng}, {rule_type});".format(
         rule_id=rule_id, rule_name=rule_name, category_id_ng=category_id_ng, rule_type=rule_type)
 
 
 def gen_rule_prov_sql(freight_rule_id, prov_id, rule_set, freight_amount):
-    return "INSERT INTO freight_rule_prov(freight_rule_id, prov_id, rule_set, freight_amount) VALUES({freight_rule_id},{prov_id}, '{rule_set}', {freight_amount});".format(
+    return "INSERT INTO freight_rule_prov(freight_rule_id, prov_id, rule_set, freight_amount) VALUES({freight_rule_id}, {prov_id}, '{rule_set}', {freight_amount});".format(
         freight_rule_id=freight_rule_id, prov_id=prov_id, rule_set=rule_set, freight_amount=freight_amount)
 
 
 # 获取spuId
 def get_freight_rule_id(value_id):
-    cur = bm.get_mia_test_cursor("test_admin")
+    cur = bm.get_mia_cursor("mia_mirror")
     sql = "SELECT id FROM freight_rule WHERE category_id_ng = " + str(value_id)
     cur.execute(sql)
     result_data = cur.fetchall()
@@ -216,6 +227,12 @@ def export_template_detail(freight_template_id):
     gansu = next((x for x in rows if x["prov_id"] == 28), None)
     ningxia = next((x for x in rows if x["prov_id"] == 30), None)
     qinghai = next((x for x in rows if x["prov_id"] == 29), None)
+    hainan = next((x for x in rows if x["prov_id"] == 23), None)
+    liaoning = next((x for x in rows if x["prov_id"] == 8), None)
+    jilin = next((x for x in rows if x["prov_id"] == 9), None)
+    heilongjiang = next((x for x in rows if x["prov_id"] == 10), None)
+    guizhou = next((x for x in rows if x["prov_id"] == 24), None)
+    yunnan = next((x for x in rows if x["prov_id"] == 25), None)
 
     xinjiang = handel_name(xinjiang)
     xizang = handel_name(xizang)
@@ -223,15 +240,34 @@ def export_template_detail(freight_template_id):
     gansu = handel_name(gansu)
     ningxia = handel_name(ningxia)
     qinghai = handel_name(qinghai)
+    hainan = handel_name(hainan)
+    liaoning = handel_name(liaoning)
+    jilin = handel_name(jilin)
+    heilongjiang = handel_name(heilongjiang)
+    guizhou = handel_name(guizhou)
+    yunnan = handel_name(yunnan)
 
-    sql = "SELECT count(*) AS use_count from item WHERE freight_template_id = " + str(freight_template_id)
+    sql = "SELECT id from item WHERE freight_template_id = " + str(freight_template_id)
     cur.execute(sql)
     use_status = "未使用"
-    if cur.fetchall()[0][0] > 0:
-        use_status = "已使用"
-    print(use_status, xinjiang, xizang, neimeng, gansu, ningxia, qinghai)
 
-    return ""
+    # skus = list(cur.fetchall())
+    skus = list(map(lambda x: str(x[0]), cur.fetchall()))
+    # print(skus)
+    if len(skus) > 0 and len(skus) <= 4000:
+        use_status = "使用中"
+        # skus = " ".join(skus)
+        skus = "--"
+    elif len(skus) > 4000:
+        print(freight_template_id, " ".join(skus))
+        use_status = "使用中"
+        skus = "--"
+    else:
+        skus = "--"
+
+    return ",".join(
+        [use_status, xinjiang, xizang, neimeng, gansu, ningxia, qinghai, hainan, liaoning, jilin, heilongjiang, guizhou,
+         yunnan])
 
 
 # 处理名称
@@ -251,65 +287,31 @@ def handel_name(xinjiang):
 
 if __name__ == "__main__":
     # 生成规则map
-    # duplicate_remove("F:/File/download/分类规则汇总_0321.xlsx", 2, 1, "")
+    # duplicate_remove("F:/File/download/gw_conf/运费规则分类汇总_特殊分类_已确认2.xlsx", 0, 2, "")
     keynote_amount = {
-        '不发/加收30元': 30,
-        '不发/加收20元': 20,
-        '加收50元': 50,
-        '加收20元': 20,
-        '包邮发': 0,
-        '加收120元': 120,
-        '不发/加收40元': 40,
-        '加收300元': 300,
         '不发/加收50元': 50,
-        '按单加收': 0,
-        '不发/加收15元': 15,
-        '加收80元发普通快递80,EMS60元顺丰200': 200,
-        '加收100元': 100,
-        '不发/加收200元': 200,
-        '不发/加收130元': 130,
-        '不发/加收60元': 60,
-        '不发/加收80元': 80,
-        '不发/包邮发': 0,
-        '按件加收': 0,
-        '加收30元': 30,
-        '不发/加收10元': 10,
-        '不发货': 0,
-        '不发货/加收20元': 20,
+        '不发/加收30元': 30,
         '不发': 0,
-        '加收10元': 10,
-        '不发/加收35元': 35,
-        '不发/加收100元': 100
+        '不发/加收10元': 10,
+        '不发/加收200元': 200,
+        '不发/加收100元': 100,
+         '不发/加收60元': 60,
+        '加收10元运费': 10,
+        '包邮发': 0,
+        '不发/包邮发': 0
     }
 
     keynote_set = {
-        '不发/加收40元': '1,3',
-        '不发/加收10元': '1,3',
-        '加收30元': '3',
-        '不发货': '1',
-        '不发/加收35元': '1,3',
-        '不发/加收100元': '1,3',
-        '不发/加收130元': '1,3',
-        '加收300元': '3',
-        '不发/加收50元': '1,3',
-        '不发货/加收20元': '1,3',
-        '不发/加收200元': '1,3',
-        '不发/加收15元': '1,3',
-        '不发/加收80元': '1,3',
-        '按单加收': '',
-        '不发/加收20元': '1,3',
-        '不发/包邮发': '1,2',
-        '加收100元': '3',
-        '加收50元': '3',
-        '加收120元': '3',
+        '不发/加收50元': '1,2,3',
+        '不发/加收30元': '1,2,3',
         '不发': '1',
-        '加收20元': '3',
-        '按件加收': '',
-        '加收10元': '3',
+        '不发/加收10元': '1,2,3',
+        '不发/加收200元': '1,2,3',
+        '不发/加收100元': '1,2,3',
+         '不发/加收60元': '1,2,3',
+        '加收10元运费': '2,3',
         '包邮发': '2',
-        '加收80元发普通快递80,EMS60元顺丰200': '3',
-        '不发/加收60元': '1,3',
-        '不发/加收30元': '1,3'
+        '不发/包邮发': '1,2'
     }
 
     common_amount = {'加收10元': 10, '按单加收': 0, '包邮发': 0}
@@ -317,11 +319,15 @@ if __name__ == "__main__":
 
     # TRUNCATE test_admin.freight_rule;
     # TRUNCATE test_admin.freight_rule_prov;
-    # read_keynote_excel("F:/File/download/分类规则汇总_0321.xlsx", 2, 500, keynote_set, keynote_amount, 1)
+    # read_keynote_excel("F:/File/download/gw_conf/运费规则分类汇总_特殊分类_已确认2.xlsx", 3, 500, keynote_set, keynote_amount, 1)
     # read_common_excel("F:/File/download/分类规则汇总_0321.xlsx", 2, 2570, common_set, common_amount, 473)
     # read_special_excel("F:/File/download/分类规则汇总_0321.xlsx", 1, 500, 3002)
 
     # export_rule_info()
     dd = [101]
-    for d in dd:
-        export_template_detail(d)
+    with open("F:/File/download/output.txt", "a+", encoding="utf8") as f:
+        for d in dd:
+            newline = export_template_detail(d)
+            f.writelines(newline + "\n")
+        f.close()
+

@@ -26,8 +26,8 @@ def test_local_orders_get():
         "format": "json",
         "method": "mia.order.get",
         "order_id": "1901286216431212",
-        "sign": "0c21a684185f2bce4797f303e0420d17",
-        "timestamp": "1552294038",
+        "sign": "e97486ea0b141585204f5561203c0347",
+        "timestamp": "1556184918",
         "vendor_key": "3084DBCE-AC0F-8681-F9B3-4E45C35FA68C",
         "version": "1.0"
     }
@@ -86,6 +86,46 @@ def test_local_item_search():
     print(r.content.decode("utf-8"))
 
 
+def test_item_online():
+    r_data = {"item_id": 2020037235}
+    r = requests.post("http://zuobaohui_dev.ums.intra.miyabaobei.com/report/pop_item_api/sync_item_status", data=r_data)
+    print(r.content.decode("utf-8"))
+
+
+def test_item_stock():
+    r_data = {"quantity": "700", "method": "mia.item.update.stock", "size": "75F以上", "format": "json",
+              "sign": "b6ecc3071ad15dbd3257cf0ecca4241c", "sku_id": "198309957", "item_barcode": "43re45re45ef",
+              "version": "1.0", "vendor_key": "test_40", "timestamp": "1555501155"}
+    r = requests.post("http://127.0.0.1:8080/openapi/app", data=r_data)
+    print(r.content.decode("utf-8"))
+
+
+def test_local_return_orders():
+    r_data = {
+        "end_date": "2019-02-28",
+        "method": "mia.returns.list",
+        "page": "1",
+        "page_size": "100",
+        "sign": "9a1af2cbacd70e732a4dc9576dcd700e",
+        "start_date": "2017-02-28",
+        "vendor_key": "test_40",
+        "timestamp": "1565170433",
+        "version": "1.0"
+    }
+    r = requests.post("http://172.16.96.119:8090/openapi/app", data=r_data)
+    print(r.content.decode("utf-8"))
+
+
+def test_return_order_get():
+    r_data = {"format": "json", "method": "mia.returns.get", "page": "1",
+              "page_size": "100",
+              "return_state": "1,2,3", "start_date": "2019-05-26 10:00:00", "end_date": "2019-05-28 10:00:00",
+              "sign": "ba90f8be6ca31e44bc244a5c37b4e54f", "timestamp": "1559033954",
+              "vendor_key": "1E056688-223D-8A49-D9F5-850276CA018D", "version": "1.0"}
+    r = requests.post("http://10.1.52.216:8080/openapi/app", data=r_data)
+    print(r.content.decode("utf-8"))
+
+
 if __name__ == "__main__":
     # test_freight_rule_saveii()
-    test_local_item_search()
+    test_local_return_orders()

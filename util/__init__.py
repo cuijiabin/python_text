@@ -30,6 +30,16 @@ def get_mia_cursor(db_name="mia_mirror"):
     return conn.cursor()
 
 
+def get_log_cursor(db_name="log"):
+    conn = pymysql.connect(host="10.1.103.19",
+                           port=3306,
+                           user="pop_cuijiabin",
+                           passwd="8dtx5EOUZASc#",
+                           db=db_name,
+                           charset="utf8")
+    return conn.cursor()
+
+
 def get_mia_test_cursor(db_name="mia_test2"):
     conn = pymysql.connect(host="172.16.104.207",
                            port=3307,

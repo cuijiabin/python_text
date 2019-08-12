@@ -24,3 +24,26 @@ def left_shift_one(s, i, j):
     for k in xrange(i, j - 1):
         s[k] = s[k + 1]
     s[j - 1] = t
+
+
+class Solution:
+    def integerBreak(self, n):
+        """
+        :type n: int
+        :rtype: int
+        """
+        if n <= 3:
+            return n - 1
+
+        result = 1
+        while n > 4:
+            n -= 3
+            result *= 3
+
+        return n * result
+
+
+
+if __name__ == '__main__':
+    s = Solution()
+    print(s.integerBreak(12))
