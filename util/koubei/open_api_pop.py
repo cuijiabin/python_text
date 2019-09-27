@@ -126,6 +126,14 @@ def test_return_order_get():
     print(r.content.decode("utf-8"))
 
 
+def test_return_order_get2():
+    r_data = {"platformBuyerId":"220107054","buyerVerified":"true","expressNo":"8765432","majorBusiness":"10004","expressCo":"33","sellerName":"直邮仓商户测试公司","sellerVerified":"true","buyerName":"","buyerCertNo":"610481198708270541","platformSellerId":"1291","platformOrderId":"1909207000026325","sellerCertNo":"faafsdasd","buyerContact":"13519183586","extraInfo":"{\"unitPrice\":169,\"amount\":169,\"expressSendTime\":\"20190920173058\",\"payTime\":\"20190920172749\",\"sellerAddress\":\"应用\",\"refundCount90D\":0,\"orderCount90D\":0,\"itemNum\":1,\"refundCount180D\":0,\"buyerAddress\":\"科技二路西安软件园\",\"buyerCity\":\"西安市\",\"orderTime\":\"20190920172611\",\"payAmount\":169,\"orderCount180D\":0,\"goodsInfo\":[{\"itemId\":2020037225,\"itemName\":\"法式芝士月饼 金色 54寸\",\"itemCatagoryId\":14956,\"skuId\":0,\"skuNum\":\"1\"}]}"}
+    r = requests.post("http://gaokaiwei_dev.oms.intra.miyabaobei.com/api/insurance/freightinsure?action=policyAdd",
+                      data=r_data)
+    print(r.content.decode("utf-8"))
+    print(r)
+
+
 if __name__ == "__main__":
     # test_freight_rule_saveii()
-    test_local_return_orders()
+    test_return_order_get2()

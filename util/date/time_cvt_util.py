@@ -61,12 +61,12 @@ def fib_matpow(n):
     return m.item(0)
 
 if __name__ == "__main__":
-    # convert_second(1526746808)
+    convert_second(1526746808)
     # convert_mill(1464278399999)
     # convert_str_second("2038-01-01 00:00:00")
     # convert_str_mill("2016-11-14", "%Y-%m-%d")
 
     # print(time.time())
     # print(get_day_nday_ago('2017-02-11', 7))
-    for i in range(1, 10):
-        print(i, fib_matpow(i))
+    # for i in range(1, 10):
+    #     print(i, fib_matpow(i))

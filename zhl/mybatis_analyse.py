@@ -14,26 +14,25 @@ from xml.etree.ElementTree import parse
 def traversing_file(root_dir):
     for lists in os.listdir(root_dir):
         path = os.path.join(root_dir, lists)
-        if (not os.path.isdir(path) and os.path.splitext(path)[1] == ".java"):
+        if not os.path.isdir(path) and os.path.splitext(path)[1] == ".xml":
             path = path.replace("\\", "/")
-            # if (".java" in path):
-                # print(path)
+            # if ".java" in path:
+            print(path)
             try:
-                # ana_mapper(path)
-                # ana_re_mapper(path)
-                count = len(open(path, 'rt').readlines())
-                if(count >= 1000):
-                    print(path,count)
+                ana_mapper(path)
+                ana_re_mapper(path)
+                # count = len(open(path, 'rt').readlines())
+                count = len(open(path, 'rb').readlines())
+                if count >= 1000:
+                    print(path, count)
             except Exception as e:
                 print("str(Exception):\t", str(Exception))
                 print("str(e):\t\t", str(e))
                 print("repr(e):\t", repr(e))
                 print("e.message:\t", e.message)
-                print("traceback.print_exc():\t", traceback.print_exc())
-                print("traceback.format_exc():\n%s" % traceback.format_exc())
 
-        elif (os.path.isdir(path) and ".git" not in path and ".idea" not in path):
-            if ("src" in path and "test" not in path):
+        elif os.path.isdir(path) and ".git" not in path and ".idea" not in path:
+            if "src" in path and "test" not in path:
                 traversing_file(path)
 
 
@@ -56,6 +55,7 @@ def ana_mapper(path):
             for result in results:
                 print(result)
 
+
 def ana_re_mapper(path):
     with open(path, 'rt', encoding="utf8") as f:
         js_content = reduce(lambda x, y: x + y, f.readlines())
@@ -65,14 +65,26 @@ def ana_re_mapper(path):
         for result in results:
             print(result[3])
 
-if __name__ == "__main__":
-    all_path = ["mia-common", "mia-customerservice-task", "mia-data-service", "mia-data-web", "mia-domain",
-                "mia-order-service", "mia-popscore-service", "mia-product-service", "mia-promotion-service",
-                "mia-read-service", "mia-service", "mia-store-service", "mia-store-web", "mia-supplierManager-service",
-                "mia-ums-service", "mia-ums-web", "mia_log"]
-    for pp in all_path:
-        traversing_file("F:/project_dir/mywork/mia-framework/" + pp)
 
-    # F:/workspace/mia-framework-new/mia-product-service/src/main/java/com/mia/pop/ums/product/main/dao/ProcurementOrderDetailMapper.xml 有问题的
-    # ana_re_mapper(
-    #     "F:/project_dir/javaspace/mia-framework-oneall/mia-service/src/main/java/com/mia/common/api/dao/CommunityTodoMapper.xml")
+def traversing_java_file(root_dir):
+    for lists in os.listdir(root_dir):
+        path = os.path.join(root_dir, lists)
+        if not os.path.isdir(path) and os.path.splitext(path)[1] == ".java" and "Mapper.java" in path:
+            path = path.replace("\\", "/")
+            print(path)
+            # print(path.split("/")[-1])
+
+        elif os.path.isdir(path) and ".git" not in path and ".idea" not in path:
+            if "src" in path and "test" not in path:
+                traversing_java_file(path)
+
+
+if __name__ == "__main__":
+    # traversing_java_file("E:/file/project_path/mia_product/mia-framework/mia-store-service")
+    # traversing_java_file("E:/file/project_path/mia_product/mia-framework/mia-supplierManager-service")
+    all_path = ['mia-common', 'mia-domain', 'mia_log', 'mia-plus-service', 'mia-service', 'mia-store-service',
+                'mia-cross-db-query', 'mia-read-service', 'mia-product-service', 'mia-promotion-service',
+                'mia-supplierManager-service', 'mia-ums-web', 'mia-order-service', 'mia-store-web',
+                'mia-customerservice-task']
+    for pp in all_path:
+        traversing_java_file("E:/file/project_path/mia_product/mia-framework/" + pp)
