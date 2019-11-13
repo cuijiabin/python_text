@@ -40,6 +40,8 @@ if __name__ == "__main__":
 
     # send_mq(insurance_send_map, json.dumps(paramsMap))
 
-    send_mq(insurance_send_map, '"{\\"subOrderId\\":\\"700002976\\",\\"orderCode\\":\\"1909257000029765\\",'
-                                '\\"parentDstSheetId\\":2254,\\"userId\\":220107054}"')
+    send_mq(insurance_send_map, '"{\\"subOrderId\\":\\"700003185\\",\\"orderCode\\":\\"1909297000031853\\",'
+                                '\\"parentDstSheetId\\":2312,\\"userId\\":220105928}"')
     # send_mq(insurance_send_map,'"{\\"supplierId\\":12386,\\"type\\":1}"')
+
+    # "[{\"itemId\":10489,\"opType\":10,\"orderCode\":\"10\",\"qty\":-10,\"stockItemId\":29,\"stockType\":0,\"test\":false,\"userId\":0,\"warehouseId\":40}]"
