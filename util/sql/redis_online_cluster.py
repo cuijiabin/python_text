@@ -24,6 +24,12 @@ def get_pre_qty_lock_key(item_id, wid):
     return "stock_init_pre_qty_lock_" + str(item_id) + "_" + str(wid)
 
 
+def get_stock(itemId):
+    redis_client = get_cluster_client()
+    print(redis_client.hgetall("stock_" + str(itemId)))
+    print(redis_client.hgetall("stock_" + str(itemId) + "_incr"))
+
+
 if __name__ == '__main__':
     # delete_stock(5078083)
     # print(get_stock(5078083))
@@ -45,8 +51,12 @@ if __name__ == '__main__':
             and oi.stock_item_id= (select id from stock_item WHERE item_id = 5021462)
             group by oi.stock_item_id;
     '''
-    lock_key = get_pre_qty_lock_key(5021462, 6976)
+    ss = ['4913549_4225']
 
     redis_client = get_cluster_client()
-    print(redis_client.get(lock_key))
-    redis_client.delete(lock_key)
+    for s in ss:
+        lock_key = "stock_init_pre_qty_lock_" + s
+        print(redis_client.get(lock_key))
+        redis_client.delete(lock_key)
+
+    # print(redis_client.get(lock_key))

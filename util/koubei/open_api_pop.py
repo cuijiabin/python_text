@@ -127,13 +127,147 @@ def test_return_order_get():
 
 
 def test_return_order_get2():
-    r_data = {"platformBuyerId":"220107054","buyerVerified":"true","expressNo":"8765432","majorBusiness":"10004","expressCo":"33","sellerName":"直邮仓商户测试公司","sellerVerified":"true","buyerName":"","buyerCertNo":"610481198708270541","platformSellerId":"1291","platformOrderId":"1909207000026325","sellerCertNo":"faafsdasd","buyerContact":"13519183586","extraInfo":"{\"unitPrice\":169,\"amount\":169,\"expressSendTime\":\"20190920173058\",\"payTime\":\"20190920172749\",\"sellerAddress\":\"应用\",\"refundCount90D\":0,\"orderCount90D\":0,\"itemNum\":1,\"refundCount180D\":0,\"buyerAddress\":\"科技二路西安软件园\",\"buyerCity\":\"西安市\",\"orderTime\":\"20190920172611\",\"payAmount\":169,\"orderCount180D\":0,\"goodsInfo\":[{\"itemId\":2020037225,\"itemName\":\"法式芝士月饼 金色 54寸\",\"itemCatagoryId\":14956,\"skuId\":0,\"skuNum\":\"1\"}]}"}
+    r_data = {"platformBuyerId": "220107054", "buyerVerified": "true", "expressNo": "8765432", "majorBusiness": "10004",
+              "expressCo": "33", "sellerName": "直邮仓商户测试公司", "sellerVerified": "true", "buyerName": "",
+              "buyerCertNo": "610481198708270541", "platformSellerId": "1291", "platformOrderId": "1909207000026325",
+              "sellerCertNo": "faafsdasd", "buyerContact": "13519183586",
+              "extraInfo": "{\"unitPrice\":169,\"amount\":169,\"expressSendTime\":\"20190920173058\",\"payTime\":\"20190920172749\",\"sellerAddress\":\"应用\",\"refundCount90D\":0,\"orderCount90D\":0,\"itemNum\":1,\"refundCount180D\":0,\"buyerAddress\":\"科技二路西安软件园\",\"buyerCity\":\"西安市\",\"orderTime\":\"20190920172611\",\"payAmount\":169,\"orderCount180D\":0,\"goodsInfo\":[{\"itemId\":2020037225,\"itemName\":\"法式芝士月饼 金色 54寸\",\"itemCatagoryId\":14956,\"skuId\":0,\"skuNum\":\"1\"}]}"}
     r = requests.post("http://gaokaiwei_dev.oms.intra.miyabaobei.com/api/insurance/freightinsure?action=policyAdd",
                       data=r_data)
     print(r.content.decode("utf-8"))
     print(r)
 
 
+# 获取订单列表 刷新预占redis锁 使用
+def get_all_stock_list():
+    ll = []
+    ss = ['3933399']
+    for s in ss:
+        ll.append({
+            "itemId": s,
+            "warehouseIds": [],
+            "isExact": 0
+        })
+    r_data = {"paramJSON": json.dumps(ll)}
+    r = requests.post("http://10.5.107.234:7777/getStockQtyForums.sc.sc", data=r_data)
+    print(r.content.decode("utf-8"))
+    print(r)
+
+
+# 测试苏宁订单确认功能
+def test_suning_order_confirm():
+    r_json = json.dumps({
+        "sn_request": {
+            "sn_body": {
+                "confirmOrder": {
+                    "orderId": "1912047000031383",
+                    "orderstatus": "02"
+                }
+            }
+        }
+    })
+
+    post_data = {
+        "method": "suning.online.order.confirm",
+        "request_data": r_json
+    }
+
+    r = requests.post("https://gateway.mia.com/sngateway", data=post_data)
+    print(r.content.decode("utf-8"))
+    print(r)
+
+
+# 测试苏宁订单支付结果通知
+def test_suning_order_update():
+    r_json = json.dumps({
+        "sn_request": {
+            "sn_body": {
+                "updateOrder": {
+                    "orderId": "1912027000032873",
+                    "orderStatus": "04"
+                }
+            }
+        }
+    })
+
+    post_data = {
+        "method": "suning.online.order.update",
+        "request_data": r_json
+    }
+
+    r = requests.post("https://gateway.mia.com/sngateway", data=post_data)
+    print(r.content.decode("utf-8"))
+    print(r)
+
+
+# 测试苏宁订单确认收货接口
+def test_suning_order_cmmdtyreceive():
+    r_json = json.dumps({
+        "sn_request": {
+            "sn_body": {
+                "confirmCmmdtyreceive": {
+                    "orderItemInfo": [
+                        {
+                            "operateTime": "20191210101220",
+                            "orderItemId": "2019125581",
+                            "statusDesc": "0"
+                        },
+                        {
+                            "operateTime": "20191210101220",
+                            "orderItemId": "2019125582",
+                            "statusDesc": "0"
+                        },
+                        {
+                            "operateTime": "20191210101220",
+                            "orderItemId": "2019125583",
+                            "statusDesc": "0"
+                        }
+
+                    ]
+
+                }
+            }
+        }
+    })
+
+    post_data = {
+        "method": "suning.online.cmmdtyreceive.confirm",
+        "request_data": r_json
+    }
+
+    r = requests.post("https://gateway.mia.com/sngateway", data=post_data)
+    print(r.content.decode("utf-8"))
+    print(r)
+
+
+# 测试苏宁订单支付前取消
+def test_suning_order_cancel():
+    r_json = json.dumps({
+        "sn_request": {
+            "sn_body": {
+                "cancelOrder": {
+                    "orderId": "1912027000032873",
+                    "orderStatus": "03",
+                    "flag": "02"
+                }
+            }
+        }
+    })
+
+    post_data = {
+        "method": "suning.online.order.cancel",
+        "request_data": r_json
+    }
+
+    r = requests.post("https://gateway.mia.com/sngateway", data=post_data)
+    print(r.content.decode("utf-8"))
+    print(r)
+
+
 if __name__ == "__main__":
     # test_freight_rule_saveii()
-    test_return_order_get2()
+    # get_all_stock_list()
+    # test_suning_order_confirm()
+    # test_suning_order_update()
+    test_suning_order_cmmdtyreceive()
+    # test_suning_order_cancel()

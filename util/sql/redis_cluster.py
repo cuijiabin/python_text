@@ -33,9 +33,15 @@ def get_stock(itemId):
     print(redis_client.hgetall("stock_" + str(itemId) + "_incr"))
 
 
-if __name__ == '__main__':
-    # get_stock(10489)
+def get_stock_test(itemId):
     redis_client = get_cluster_client()
-    # print(redis_client.get("spu_sku_relation_2020037627"))
-    print(redis_client.get("stockPreCheckDailyRedisLock"))
-    redis_client.delete("stockPreCheckDailyRedisLock")
+    print(redis_client.hgetall("stock_" + str(itemId) + "_test"))
+    print(redis_client.hgetall("stock_" + str(itemId) + "_test_incr"))
+
+
+if __name__ == '__main__':
+    get_stock_test(1000133)
+    # redis_client = get_cluster_client()
+    # # print(redis_client.get("spu_sku_relation_2020037627"))
+    # print(redis_client.get("stockPreCheckDailyRedisLock"))
+    # redis_client.delete("stockPreCheckDailyRedisLock")
