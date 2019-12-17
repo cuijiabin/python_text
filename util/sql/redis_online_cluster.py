@@ -30,33 +30,40 @@ def get_stock(itemId):
     print(redis_client.hgetall("stock_" + str(itemId) + "_incr"))
 
 
-if __name__ == '__main__':
-    # delete_stock(5078083)
-    # print(get_stock(5078083))
+def pre_incr_stock(itemId, wid):
+    redis_client = get_cluster_client()
+    s_key = "stock_" + str(itemId)
+    s_field = "wid_" + str(wid) + "_preQty"
+    redis_client.hincrby(s_key, s_field, 1)
+    print(redis_client.hgetall("stock_" + str(itemId)))
+    print(redis_client.hgetall("stock_" + str(itemId) + "_incr"))
 
-    # redis_client.delete("stock_init_pre_qty_lock_5210920_6773")
-    # redis_client.delete("stock_init_pre_qty_lock_5063863_7836")
-    # redis_client.delete("stock_init_pre_qty_lock_3215494_595")
-    # redis_client.delete("stock_init_pre_qty_lock_5021462_6976")
 
+def batch_delete():
     '''
-    select * from stock_item WHERE item_id = 5021462;
+        select * from stock_item WHERE item_id = 5021462;
 
-    select  count(oi.id) as number from order_item oi ,orders os
-            where oi.order_id =os.id
-            and os.warehouse_id= (select warehouse_id from stock_item WHERE item_id = 5021462)
-            and os.status in(1,2)
-            and os.wdgj_status=1
-            and os.is_test=0
-            and oi.stock_item_id= (select id from stock_item WHERE item_id = 5021462)
-            group by oi.stock_item_id;
-    '''
-    ss = ['4913549_4225']
+        select  count(oi.id) as number from order_item oi ,orders os
+                where oi.order_id =os.id
+                and os.warehouse_id= (select warehouse_id from stock_item WHERE item_id = 5021462)
+                and os.status in(1,2)
+                and os.wdgj_status=1
+                and os.is_test=0
+                and oi.stock_item_id= (select id from stock_item WHERE item_id = 5021462)
+                group by oi.stock_item_id;
+        '''
+    init_keys = ['33070202_6789']
 
     redis_client = get_cluster_client()
-    for s in ss:
-        lock_key = "stock_init_pre_qty_lock_" + s
+    for key in init_keys:
+        lock_key = "stock_init_pre_qty_lock_" + key
         print(redis_client.get(lock_key))
         redis_client.delete(lock_key)
 
-    # print(redis_client.get(lock_key))
+
+if __name__ == '__main__':
+    print("")
+    # get_stock(3070202)
+    delete_stock(3070202)
+    # pre_incr_stock(4880683, 6789)
+    # batch_delete()

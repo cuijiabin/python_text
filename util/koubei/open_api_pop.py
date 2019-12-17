@@ -141,7 +141,7 @@ def test_return_order_get2():
 # 获取订单列表 刷新预占redis锁 使用
 def get_all_stock_list():
     ll = []
-    ss = ['3933399']
+    ss = ['3070202']
     for s in ss:
         ll.append({
             "itemId": s,
@@ -160,7 +160,7 @@ def test_suning_order_confirm():
         "sn_request": {
             "sn_body": {
                 "confirmOrder": {
-                    "orderId": "1912047000031383",
+                    "orderId": "1912117000036250",
                     "orderstatus": "02"
                 }
             }
@@ -209,17 +209,17 @@ def test_suning_order_cmmdtyreceive():
                     "orderItemInfo": [
                         {
                             "operateTime": "20191210101220",
-                            "orderItemId": "2019125581",
+                            "orderItemId": "2147483647",
                             "statusDesc": "0"
                         },
                         {
                             "operateTime": "20191210101220",
-                            "orderItemId": "2019125582",
+                            "orderItemId": "2147483647",
                             "statusDesc": "0"
                         },
                         {
                             "operateTime": "20191210101220",
-                            "orderItemId": "2019125583",
+                            "orderItemId": "2147483647",
                             "statusDesc": "0"
                         }
 
@@ -260,14 +260,14 @@ def test_suning_order_cancel():
     }
 
     r = requests.post("https://gateway.mia.com/sngateway", data=post_data)
-    print(r.content.decode("utf-8"))
+    print(str(r.content.decode("utf-8")))
     print(r)
 
 
 if __name__ == "__main__":
     # test_freight_rule_saveii()
-    # get_all_stock_list()
+    get_all_stock_list()
     # test_suning_order_confirm()
     # test_suning_order_update()
-    test_suning_order_cmmdtyreceive()
+    # test_suning_order_cmmdtyreceive()
     # test_suning_order_cancel()
