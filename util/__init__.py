@@ -21,7 +21,7 @@ class ExtendJSONEncoder(json.JSONEncoder):
 
 
 def get_mia_cursor(db_name="mia_mirror"):
-    conn = pymysql.connect(host="10.1.3.33",
+    conn = pymysql.connect(host="10.5.96.80",
                            port=3306,
                            user="pop_cuijiabin",
                            passwd="8dtx5EOUZASc#",

@@ -39,6 +39,15 @@ def pre_incr_stock(itemId, wid):
     print(redis_client.hgetall("stock_" + str(itemId) + "_incr"))
 
 
+def hdel_incr_stock(itemId, wid):
+    redis_client = get_cluster_client()
+    s_key = "stock_" + str(itemId)
+    s_field = "wid_" + str(wid) + "_preQty"
+    redis_client.hdel(s_key, s_field)
+    print(redis_client.hgetall("stock_" + str(itemId)))
+    print(redis_client.hgetall("stock_" + str(itemId) + "_incr"))
+
+
 def batch_delete():
     '''
         select * from stock_item WHERE item_id = 5021462;
@@ -61,9 +70,18 @@ def batch_delete():
         redis_client.delete(lock_key)
 
 
+'''
+检查6789仓库的数据
+'''
+
+
+def compare_wid_6789():
+    print("")
+
+
 if __name__ == '__main__':
     print("")
-    # get_stock(3070202)
-    delete_stock(3070202)
-    # pre_incr_stock(4880683, 6789)
+    get_stock(4169717)
+    # delete_stock(3070202)
+    # pre_incr_stock(4881636, 6789)
     # batch_delete()
