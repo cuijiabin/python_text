@@ -52,6 +52,7 @@ def check_pre_qty(wid):
         pre_qty_field = "wid_" + str(wid) + "_preQty"
         redis_pre_qty = redis_client.hget(stock_key, pre_qty_field)
         if redis_pre_qty is None:
+            print(s['item_id'])
             continue
 
         amount = s['pre_qty'] - int(redis_pre_qty)
@@ -62,4 +63,7 @@ def check_pre_qty(wid):
 
 
 if __name__ == "__main__":
+    check_pre_qty(2985)
+    check_pre_qty(6789)
+    check_pre_qty(7772)
     check_pre_qty(7922)
