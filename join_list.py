@@ -1,4 +1,5 @@
 # coding=utf-8
+import json
 
 
 def exchagne(a, b):
@@ -8,20 +9,12 @@ def exchagne(a, b):
 
 
 def deppp():
-    linNum = 0
-    with open("E:/File/download/55.txt", encoding="utf8") as fn:
-        linNum = len(list(fn))
-        print("文件行数：", linNum)
-        fn.close()
-
-    with open("E:/File/download/55.txt", encoding="utf8") as f:
+    with open("E:/file/download/paidCancelOrder.log", encoding="utf8") as f:
         line = f.readline()
         while line:
             line = line.strip('\n')
-            if "d1" in line:
-                print(line)
-
-            # print(line)
+            p = json.loads(line)
+            print(p["attrs"]["superior_order_code"])
             line = f.readline()
         f.close()
 

@@ -50,20 +50,26 @@ def check_pre_qty(wid):
 
         stock_key = "stock_" + str(s['item_id'])
         pre_qty_field = "wid_" + str(wid) + "_preQty"
-        redis_pre_qty = redis_client.hget(stock_key, pre_qty_field)
-        if redis_pre_qty is None:
-            print(s['item_id'])
-            continue
+        print(redis_client.hgetall(stock_key))
 
-        amount = s['pre_qty'] - int(redis_pre_qty)
-        if amount != 0:
-            print(s)
-            print(redis_pre_qty)
-            redis_client.hincrby(stock_key, pre_qty_field, amount)
+        # redis_pre_qty = redis_client.hget(stock_key, pre_qty_field)
+        # if redis_pre_qty is None:
+        #     # print(s['item_id'])
+        #     continue
+        #
+        # amount = s['pre_qty'] - int(redis_pre_qty)
+        # if amount != 0:
+        #     print(s)
+        #     print(redis_pre_qty)
+        #     redis_client.hincrby(stock_key, pre_qty_field, amount)
 
 
 if __name__ == "__main__":
-    check_pre_qty(2985)
-    check_pre_qty(6789)
-    check_pre_qty(7772)
-    check_pre_qty(7922)
+    # wids = [7085, 7087, 7102, 7106, 7108]
+    #
+    # for w in wids:
+    #     print(w)
+    #     check_pre_qty(w)
+    check_pre_qty(7965)
+    # check_pre_qty(7772)
+    # check_pre_qty(7922)

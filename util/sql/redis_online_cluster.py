@@ -1,3 +1,6 @@
+import time
+
+import requests
 from rediscluster import RedisCluster
 
 
@@ -16,6 +19,10 @@ def get_cluster_client():
 
 def delete_stock(itemId):
     redis_client = get_cluster_client()
+
+    print(redis_client.hgetall("stock_" + str(itemId)))
+    print(redis_client.hgetall("stock_" + str(itemId) + "_incr"))
+
     redis_client.delete("stock_" + str(itemId))
     redis_client.delete("stock_" + str(itemId) + "_incr")
 
@@ -48,7 +55,7 @@ def hdel_incr_stock(itemId, wid):
     print(redis_client.hgetall("stock_" + str(itemId) + "_incr"))
 
 
-def batch_delete():
+def batch_delete_pre_init():
     '''
         select * from stock_item WHERE item_id = 5021462;
 
@@ -61,7 +68,7 @@ def batch_delete():
                 and oi.stock_item_id= (select id from stock_item WHERE item_id = 5021462)
                 group by oi.stock_item_id;
         '''
-    init_keys = ['33070202_6789']
+    init_keys = ['4498026_7329']
 
     redis_client = get_cluster_client()
     for key in init_keys:
@@ -79,9 +86,68 @@ def compare_wid_6789():
     print("")
 
 
+def get_stock_test(itemId):
+    redis_client = get_cluster_client()
+    print(redis_client.hgetall("stock_" + str(itemId) + "_test"))
+    print(redis_client.hgetall("stock_" + str(itemId) + "_test_incr"))
+
+
+def run_export_data():
+    data_list = ['2019-05-11', '2019-05-12', '2019-05-13', '2019-05-14']
+
+    redis_client = get_cluster_client()
+    for data in data_list:
+        create_value = redis_client.get("data_handel_create_lock:" + data)
+        while not create_value:
+            requests.get("http://10.5.107.234:9093/runCreateExport?day=" + data)
+            time.sleep(0.1)
+            create_value = redis_client.get("data_handel_create_lock:" + data)
+        while not create_value == "1":
+            time.sleep(0.1)
+            create_value = redis_client.get("data_handel_create_lock:" + data)
+        print(data + "创单完成")
+
+        pay_value = redis_client.get("data_handel_pay_lock:" + data)
+        while not pay_value:
+            requests.get("http://10.5.107.234:9093/runPayExport?day=" + data)
+            time.sleep(0.1)
+            pay_value = redis_client.get("data_handel_pay_lock:" + data)
+        while not pay_value == "1":
+            time.sleep(0.1)
+            pay_value = redis_client.get("data_handel_pay_lock:" + data)
+        print(data + "支付完成")
+
+        cancel_value = redis_client.get("data_handel_cancel_lock:" + data)
+        while not cancel_value:
+            requests.get("http://10.5.107.234:9093/runCancelExport?day=" + data)
+            time.sleep(0.1)
+            cancel_value = redis_client.get("data_handel_cancel_lock:" + data)
+        while not cancel_value == "1":
+            time.sleep(0.1)
+            cancel_value = redis_client.get("data_handel_cancel_lock:" + data)
+        print(data + "取消完成")
+
+
+def clear_export_key():
+    data_list = ['2019-05-13', '2019-05-14']
+
+    redis_client = get_cluster_client()
+    for data in data_list:
+        # redis_client.delete("data_handel_create_lock:" + data)
+        redis_client.delete("data_handel_pay_lock:" + data)
+        redis_client.delete("data_handel_cancel_lock:" + data)
+        # print(data, redis_client.get("data_handel_create_lock:" + data))
+        print(data, redis_client.get("data_handel_pay_lock:" + data))
+        print(data, redis_client.get("data_handel_cancel_lock:" + data))
+
+
 if __name__ == '__main__':
-    print("")
-    get_stock(4169717)
-    # delete_stock(3070202)
-    # pre_incr_stock(4881636, 6789)
-    # batch_delete()
+    # run_export_data()
+    # clear_export_key()
+    # get_stock_test(3070037)
+    delete_stock(4498026)
+    #
+    batch_delete_pre_init()
+    # dd = ['5301774', '5301791', '5301792', '5301793', '5301794', '5301795', '5309861', '5309862', '5309863', '5309864']
+    # for d in dd:
+    #     delete_stock(d)

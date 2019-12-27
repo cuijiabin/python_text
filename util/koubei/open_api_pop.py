@@ -141,7 +141,7 @@ def test_return_order_get2():
 # 获取订单列表 刷新预占redis锁 使用
 def get_all_stock_list():
     ll = []
-    ss = ['3070202']
+    ss = ['4498026']
     for s in ss:
         ll.append({
             "itemId": s,
@@ -149,7 +149,7 @@ def get_all_stock_list():
             "isExact": 0
         })
     r_data = {"paramJSON": json.dumps(ll)}
-    r = requests.post("http://10.5.107.234:7777/getStockQtyForums.sc.sc", data=r_data)
+    r = requests.post("http://10.5.107.234:7777/getStockQtyForums.sc", data=r_data)
     print(r.content.decode("utf-8"))
     print(r)
 
