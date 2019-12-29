@@ -4,6 +4,7 @@ import requests
 from rediscluster import RedisCluster
 
 
+# 库存redis集群
 def get_cluster_client():
     redis_nodes = [
         {'host': '10.5.96.169', 'port': 7012},
@@ -68,7 +69,7 @@ def batch_delete_pre_init():
                 and oi.stock_item_id= (select id from stock_item WHERE item_id = 5021462)
                 group by oi.stock_item_id;
         '''
-    init_keys = ['4498026_7329']
+    init_keys = ['2913685_6333']
 
     redis_client = get_cluster_client()
     for key in init_keys:
@@ -93,7 +94,7 @@ def get_stock_test(itemId):
 
 
 def run_export_data():
-    data_list = ['2019-05-11', '2019-05-12', '2019-05-13', '2019-05-14']
+    data_list = ['2019-12-27']
 
     redis_client = get_cluster_client()
     for data in data_list:
@@ -129,25 +130,24 @@ def run_export_data():
 
 
 def clear_export_key():
-    data_list = ['2019-05-13', '2019-05-14']
+    data_list = ['2019-12-27']
 
     redis_client = get_cluster_client()
     for data in data_list:
-        # redis_client.delete("data_handel_create_lock:" + data)
-        redis_client.delete("data_handel_pay_lock:" + data)
-        redis_client.delete("data_handel_cancel_lock:" + data)
-        # print(data, redis_client.get("data_handel_create_lock:" + data))
+        print(data, redis_client.get("data_handel_create_lock:" + data))
         print(data, redis_client.get("data_handel_pay_lock:" + data))
         print(data, redis_client.get("data_handel_cancel_lock:" + data))
+        redis_client.delete("data_handel_create_lock:" + data)
+        redis_client.delete("data_handel_pay_lock:" + data)
+        redis_client.delete("data_handel_cancel_lock:" + data)
 
 
 if __name__ == '__main__':
-    # run_export_data()
+    run_export_data()
     # clear_export_key()
     # get_stock_test(3070037)
-    delete_stock(4498026)
-    #
-    batch_delete_pre_init()
-    # dd = ['5301774', '5301791', '5301792', '5301793', '5301794', '5301795', '5309861', '5309862', '5309863', '5309864']
+    # delete_stock(5320789)
+    # batch_delete_pre_init()
+    # dd = [3072319]
     # for d in dd:
     #     delete_stock(d)

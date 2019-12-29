@@ -141,7 +141,7 @@ def test_return_order_get2():
 # 获取订单列表 刷新预占redis锁 使用
 def get_all_stock_list():
     ll = []
-    ss = ['4498026']
+    ss = [3070146]
     for s in ss:
         ll.append({
             "itemId": s,
