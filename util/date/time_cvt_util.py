@@ -43,12 +43,15 @@ def get_day_nday_ago(date, n):
     Date = str(datetime.datetime(y, m, d) - datetime.timedelta(n)).split()
     return Date[0]
 
+
 def fib(n):
-    return (4 << n*(3+n)) // ((4 << 2*n) - (2 << n) - 1) & ((2 << n) - 1)
+    return (4 << n * (3 + n)) // ((4 << 2 * n) - (2 << n) - 1) & ((2 << n) - 1)
+
 
 def fib_recursive(n):
     if n < 2: return 1
     return fib_recursive(n - 1) + fib_recursive(n - 2)
+
 
 def fib_iter(n):
     a, b = 1, 1
@@ -56,13 +59,15 @@ def fib_iter(n):
         a, b = a + b, a
     return b
 
+
 def fib_matpow(n):
     m = numpy.matrix('1 1 ; 1 0') ** n
     return m.item(0)
 
+
 if __name__ == "__main__":
     # convert_second(1571899194)
-    convert_mill(1576746255951)
+    convert_mill(1577809448000)
     convert_str_second("2019-05-11 00:00:00")
     # convert_str_mill("2019-05-13", "%Y-%m-%d")
 
