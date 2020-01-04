@@ -157,7 +157,7 @@ def check_pre_qty(wid):
         pre_qty_field = gen_pre_qty_field(wid)
         redis_pre_qty = redis_client.hget(stock_key, pre_qty_field)
         if redis_pre_qty is None:
-            # print("预占库存不存在 stock_item_id = %d, item_id = %d, wid = %d " % (stock['id'], item_id, wid))
+            print("预占库存不存在 stock_item_id = %d, item_id = %d, wid = %d " % (stock['id'], item_id, wid))
             continue
 
         amount = stock['pre_qty'] - int(redis_pre_qty)
@@ -198,7 +198,11 @@ def check_all_by_stock_item_id(stock_item_id=5291074, is_modify=False):
     sql = "SELECT * FROM stock_item WHERE id = " + str(stock_item_id)
     cur.execute(sql)
     columns = [col[0] for col in cur.description]
-    db_item = dict(zip(columns, cur.fetchall()[0]))
+    fetch = cur.fetchall()
+    if len(fetch) == 0:
+        print("数据库查询失败", stock_item_id)
+        return
+    db_item = dict(zip(columns, fetch[0]))
 
     item_id = db_item["item_id"]
     wid = db_item["warehouse_id"]
@@ -217,6 +221,10 @@ def check_all_by_stock_item_id(stock_item_id=5291074, is_modify=False):
     stock_key = gen_stock_key(item_id)
     pre_qty_field = gen_pre_qty_field(wid)
     redis_pre_qty = redis_client.hget(stock_key, pre_qty_field)
+    if redis_pre_qty is None:
+        print("预占库存不存在 stock_item_id = %d" % stock_item_id)
+        return
+
     redis_pre_qty = int(redis_pre_qty)
 
     if order_count != db_item["pre_qty"]:
@@ -246,10 +254,79 @@ def check_all_by_stock_item_id(stock_item_id=5291074, is_modify=False):
             print(content["result"])
 
 
+# 批量检查库存
+def batch_check_all_by_stock_item_id(stock_id_list=[6985391], is_modify=False):
+    cur = bm.get_mia_cursor("mia_mirror")
+    for stock_item_id in stock_id_list:
+
+        sql = "SELECT * FROM stock_item WHERE id = " + str(stock_item_id)
+        cur.execute(sql)
+        columns = [col[0] for col in cur.description]
+        fetch = cur.fetchall()
+        if len(fetch) == 0:
+            print("数据库查询失败", stock_item_id)
+            return
+        db_item = dict(zip(columns, fetch[0]))
+
+        item_id = db_item["item_id"]
+        wid = db_item["warehouse_id"]
+
+        order_sql = "select ifnull(count(oi.id), 0) as number " \
+                    "from order_item oi left join orders os on oi.order_id = os.id " + \
+                    "where os.warehouse_id= " + str(wid) + \
+                    " and os.status in(1,2) and os.wdgj_status=1 and os.is_test= 0 " + \
+                    "and oi.stock_item_id= " + str(db_item["id"]) + \
+                    " group by oi.stock_item_id"
+        cur.execute(order_sql)
+        fetch = cur.fetchall()
+        order_count = (0 if (len(fetch) == 0) else fetch[0][0])
+        redis_client = get_cluster_client()
+        stock_key = gen_stock_key(item_id)
+        pre_qty_field = gen_pre_qty_field(wid)
+        redis_pre_qty = redis_client.hget(stock_key, pre_qty_field)
+        if redis_pre_qty is None:
+            print("预占库存不存在 stock_item_id = %d" % stock_item_id)
+            return
+
+        redis_pre_qty = int(redis_pre_qty)
+
+        if order_count != db_item["pre_qty"]:
+            print("预占库存与订单不一致 stock_item_id = %d, db_pre_qty = %d, order_count= %d"
+                  % (stock_item_id, db_item["pre_qty"], order_count))
+            if is_modify:
+                pre_qty_lock_key = gen_pre_qty_lock_key(item_id, wid)
+                redis_client.delete(pre_qty_lock_key)
+                redis_client.delete(stock_key)
+                # 刷新
+                param_list = [{"itemId": item_id, "warehouseIds": [wid], "isExact": 0}]
+                r_data = {"paramJSON": json.dumps(param_list)}
+                r = requests.post("http://10.5.107.234:7777/getStockQtyForums.sc", data=r_data)
+                content = json.loads(r.content.decode("utf-8"))
+                print(content["result"])
+
+        elif redis_pre_qty != db_item["pre_qty"]:
+            print("预占库存与redis不一致 stock_item_id = %d, db_pre_qty = %d, redis_pre_qty= %d"
+                  % (stock_item_id, db_item["pre_qty"], redis_pre_qty))
+            if is_modify:
+                redis_client.delete(stock_key)
+                # 刷新
+                param_list = [{"itemId": item_id, "warehouseIds": [wid], "isExact": 0}]
+                r_data = {"paramJSON": json.dumps(param_list)}
+                r = requests.post("http://10.5.107.234:7777/getStockQtyForums.sc", data=r_data)
+                content = json.loads(r.content.decode("utf-8"))
+                print(content["result"])
+    cur.close()
+
+
 if __name__ == "__main__":
     # wid_list = [7254]
     # batch_check_pre_qty(wid_list)
     # get_all_stock_list(item_list)
     # get_stock(3070022)
-    # check_all_by_stock_item_id(5220090, True)
-    check_pre_qty(7254)
+    check_pre_qty(6789)
+
+    # item_list = [6973212, 6985399]
+    # batch_check_all_by_stock_item_id(item_list, True)
+    # for item in item_list:
+    #     # print("当前检查:", item)
+    # check_all_by_stock_item_id(6449308, False)

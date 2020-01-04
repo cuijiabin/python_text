@@ -141,7 +141,7 @@ def test_return_order_get2():
 # 获取订单列表 刷新预占redis锁 使用
 def get_all_stock_list():
     ll = []
-    ss = [3070146]
+    ss = [4688934, 4688887]
     for s in ss:
         ll.append({
             "itemId": s,
@@ -264,9 +264,21 @@ def test_suning_order_cancel():
     print(r)
 
 
+# 修复用户蜜豆
+def repair_mi_bean_list():
+    user_ids = '1096645'
+    r_data = {
+        "userIds": user_ids,
+        "write": False
+    }
+    r = requests.post("http://10.5.107.217:9999/userJob/batchRepairUserLevelInfo", data=r_data)
+    print(r.content.decode("utf-8"))
+    print(r.status_code)
+
+
 if __name__ == "__main__":
     # test_freight_rule_saveii()
-    get_all_stock_list()
+    repair_mi_bean_list()
     # test_suning_order_confirm()
     # test_suning_order_update()
     # test_suning_order_cmmdtyreceive()
