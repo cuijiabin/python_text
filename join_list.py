@@ -17,7 +17,7 @@ def mkSubFile(lines, head, srcName, sub):
     print('make file: %s' % filename)
     fout = open(filename, 'w')
     try:
-        fout.writelines([head])
+        # fout.writelines([head])
         fout.writelines(lines)
         return sub + 1
     finally:
@@ -43,16 +43,12 @@ def splitByLineCount(filename, count):
 
 @vthread.pool(6)
 def some(a, b, c):
-    import time;
     time.sleep(1)
     print(a + b + c)
 
 
 if __name__ == '__main__':
-    # begin = time.time()
-    # splitByLineCount('E:/file/download/tmp_05_1.txt', 10000)
-    # end = time.time()
-    # print('time is %d seconds ' % (end - begin))
-
-    for i in range(10):
-        some(i, i, i)
+    begin = time.time()
+    splitByLineCount('E:/file/download/tt/stock_item.txt', 1000)
+    end = time.time()
+    print('time is %d seconds ' % (end - begin))

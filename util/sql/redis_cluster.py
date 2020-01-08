@@ -112,7 +112,9 @@ def clear_export_key():
 
 
 if __name__ == '__main__':
-    run_export_data()
+    # run_export_data()
+    # get_stock(10489)
+    delete_stock(10489)
     # clear_export_key()
     # get_stock_test(1000133)
     # redis_client = get_cluster_client()

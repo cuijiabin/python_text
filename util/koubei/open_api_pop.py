@@ -266,10 +266,10 @@ def test_suning_order_cancel():
 
 # 修复用户蜜豆
 def repair_mi_bean_list():
-    user_ids = '1096645'
+    user_ids = '10281386,10280380,31755103,6793590,26955482,29402741,27151827,16117210,26942019,1133480,16117210,28433617,15759101,13890964,4512376'
     r_data = {
         "userIds": user_ids,
-        "write": False
+        "write": True
     }
     r = requests.post("http://10.5.107.217:9999/userJob/batchRepairUserLevelInfo", data=r_data)
     print(r.content.decode("utf-8"))
@@ -278,8 +278,8 @@ def repair_mi_bean_list():
 
 if __name__ == "__main__":
     # test_freight_rule_saveii()
-    repair_mi_bean_list()
+    # repair_mi_bean_list()
     # test_suning_order_confirm()
     # test_suning_order_update()
     # test_suning_order_cmmdtyreceive()
-    # test_suning_order_cancel()
+    get_all_stock_list()

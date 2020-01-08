@@ -124,8 +124,8 @@ def test_tup():
 
 
 if __name__ == '__main__':
-    # batch_delete_pre_init()
+    batch_delete_pre_init()
     # delete_stock(3070146)
-    get_stock(3070005)
+    # get_stock(3070005)
 
     # test_tup()

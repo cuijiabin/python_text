@@ -1,7 +1,10 @@
 # coding=utf-8
 import json
+import time
+from itertools import islice
 
 import requests
+from vthread import vthread
 
 import util as bm
 import util.mia_db as mu
@@ -318,15 +321,46 @@ def batch_check_all_by_stock_item_id(stock_id_list=[6985391], is_modify=False):
     cur.close()
 
 
-if __name__ == "__main__":
-    # wid_list = [7254]
-    # batch_check_pre_qty(wid_list)
-    # get_all_stock_list(item_list)
-    # get_stock(3070022)
-    check_pre_qty(6789)
+@vthread.pool(30)
+def l_read_file(filename, N):
+    with open(filename, 'r') as infile:
+        lines_gen = islice(infile, N)
+        ids = list(map(lambda x: x.strip('\n'), lines_gen))
+        while len(ids) > 0:
+            stock_item_ids = ",".join(ids)
+            r_data = {
+                "stockItemIds": stock_item_ids,
+                "type": 0
+            }
+            r = requests.post("http://10.5.107.234:7777/repairPreQty.sc", data=r_data)
+            content = json.loads(r.content.decode("utf-8"))
+            if len(content) > 0:
+                for c in content:
+                    if c["content"] == "预占库存与订单不一致" or c["content"] == "预占库存与redis不一致":
+                        print(c)
 
-    # item_list = [6973212, 6985399]
-    # batch_check_all_by_stock_item_id(item_list, True)
-    # for item in item_list:
-    #     # print("当前检查:", item)
-    # check_all_by_stock_item_id(6449308, False)
+            time.sleep(0.5)
+            lines_gen = islice(infile, N)
+            ids = list(map(lambda x: x.strip('\n'), lines_gen))
+    infile.close()
+
+
+def re_send_mq(mq):
+    r = requests.post("http://127.0.0.1:9089/stock/reSendMq", data=mq)
+
+    print(r.content.decode("utf-8"))
+
+
+if __name__ == '__main__':
+    # l_read_file("E:/file/download/tt/filter.txt", 10)
+
+    for s in range(37):
+        l_read_file("E:/file/download/tt/stock_item_" + str(s + 1) + ".txt", 500)
+
+    # item_list = [2941417,2941413,3268165,4975912,5105788,5131115]
+    # get_all_stock_list(item_list)
+    # get_stock(1681779)
+    # delete_stock(5131115)
+    # for i in item_list:
+    #     # get_stock(i)
+    #     delete_stock(i)

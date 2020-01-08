@@ -143,10 +143,10 @@ def clear_export_key():
 
 
 if __name__ == '__main__':
-    run_export_data()
+    # run_export_data()
     # clear_export_key()
     # get_stock_test(3070037)
-    # delete_stock(5320789)
+    delete_stock(10489)
     # batch_delete_pre_init()
     # dd = [3072319]
     # for d in dd:

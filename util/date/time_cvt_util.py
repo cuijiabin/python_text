@@ -69,7 +69,7 @@ if __name__ == "__main__":
     # convert_second(1571899194)
     convert_mill(1577809448000)
     convert_str_second("2019-05-11 00:00:00")
-    # convert_str_mill("2019-05-13", "%Y-%m-%d")
+    convert_str_mill("2019-05-13", "%Y-%m-%d")
 
     # print(time.time())
     # print(get_day_nday_ago('2017-02-11', 7))
