@@ -18,6 +18,20 @@ def send_mq(publish_map, body_content):
     connection.close()
 
 
+def send_headers_mq(headers, publish_map, body_content):
+    credentials = pika.PlainCredentials('miya_amqp_admin', 'miya_admin_pwd')
+    connection = pika.BlockingConnection(pika.ConnectionParameters('172.16.96.87', 5672, '/', credentials))
+    channel = connection.channel()
+
+    # 声明queue
+    channel.queue_declare(publish_map["queue"], True)
+    headers = {"__TypeId__": headers}
+    properties = pika.BasicProperties('application/json', 'UTF-8', headers, 1, 0)
+    channel.basic_publish(publish_map["exchange"], publish_map["routing_key"], body_content, properties)
+    print(" [x] Sent %r" % body_content)
+    connection.close()
+
+
 if __name__ == "__main__":
     paramsMap = {
         "subOrderId": "700002976",
@@ -38,10 +52,29 @@ if __name__ == "__main__":
         "routing_key": "partner.order.send.delay.routkey"
     }
 
+    group_send_map = {
+        "queue": "groupon.order.left.pay.success.queue",
+        "exchange": "groupon.order.left.pay.success.exchange",
+        "routing_key": "groupon.order.left.pay.success.routkey"
+    }
+
+    group_pay_map = {
+        "queue": "groupon.order.pay.success.queue",
+        "exchange": "groupon.order.pay.success.exchange",
+        "routing_key": "groupon.order.pay.success.routkey"
+    }
+
+
     # send_mq(insurance_send_map, json.dumps(paramsMap))
 
-    send_mq(insurance_send_map, '"{\\"subOrderId\\":\\"700003185\\",\\"orderCode\\":\\"1909297000031853\\",'
-                                '\\"parentDstSheetId\\":2312,\\"userId\\":220105928}"')
+    # send_mq(insurance_send_map, '"{\\"subOrderId\\":\\"700003185\\",\\"orderCode\\":\\"1909297000031853\\",'
+    #                             '\\"parentDstSheetId\\":2312,\\"userId\\":220105928}"')
+
+    # send_mq(group_send_map, '"{\\"superiorOrderCode\\":\\"202002197000056064\\",\\"fromType\\":4,,\\"status\\":1,'
+    #                         '\\"relationId\\":16936121,\\"userId\\":220109011}"')
+    send_headers_mq("com.mia.srv.order.mq.GrouponOrderInfo", group_pay_map,
+                    '{"superiorOrderCode":"202002197000056064","status":1,"fromType":4,"relationId":16936121,"userId":220109011}')
     # send_mq(insurance_send_map,'"{\\"supplierId\\":12386,\\"type\\":1}"')
 
     # "[{\"itemId\":10489,\"opType\":10,\"orderCode\":\"10\",\"qty\":-10,\"stockItemId\":29,\"stockType\":0,\"test\":false,\"userId\":0,\"warehouseId\":40}]"
+    # "{\"superiorOrderCode\":\"202002197000056064\",\"status\":1,\"fromType\":4,\"relationId\":16936121,\"userId\":220109011}"

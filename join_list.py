@@ -47,8 +47,15 @@ def some(a, b, c):
     print(a + b + c)
 
 
+def remove_file(num):
+    for s in range(num):
+        file_path = "E:/file/download/tt/stock_item_" + str(s + 1) + ".txt"
+        if os.path.exists(file_path):
+            os.remove(file_path)
+
+
 if __name__ == '__main__':
-    begin = time.time()
-    splitByLineCount('E:/file/download/tt/stock_item.txt', 1000)
-    end = time.time()
-    print('time is %d seconds ' % (end - begin))
+    # splitByLineCount('E:/file/download/tt/stock_item.txt', 1000)
+    remove_file(37)
+
+    # splitByLineCount('E:/file/download/error/cancel.txt', 2000)

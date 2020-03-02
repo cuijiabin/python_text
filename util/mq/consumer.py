@@ -19,4 +19,4 @@ def consume_mq(q):
 
 
 # consume_mq("partner.promotion.monitored.queue")
-consume_mq("stock.synStockItemQty.queue_dev")
+consume_mq("groupon.order.left.pay.success.queue")
