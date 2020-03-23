@@ -29,7 +29,13 @@ if __name__ == '__main__':
     # for s in file_list:
     #     l_read_file("E:/file/download/tmp/tmp_05_" + s + ".txt", 1000)
 
-    file_list = ["1", "2", "3", "4", "5"]
-    for s in file_list:
-        # print("E:/file/download/tt/tmp_05_1_1_" + s + ".txt")
-        l_read_file("E:/file/download/tmp/tmp_05_" + s + ".txt", 500)
+    # file_list = ["1", "2", "3", "4", "5"]
+    # for s in file_list:
+    #     # print("E:/file/download/tt/tmp_05_1_1_" + s + ".txt")
+    #     l_read_file("E:/file/download/tmp/tmp_05_" + s + ".txt", 500)
+
+    m = []
+    n = [44019136]
+    for i in m:
+        if i not in n:
+            print(i)

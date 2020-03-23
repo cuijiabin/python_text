@@ -61,9 +61,10 @@ def get_stock(item_id):
     redis_client = get_cluster_client()
     stock_key = gen_stock_key(item_id)
     change_key = gen_change_key(item_id)
+    qty_key = gen_qty_field(7575)
 
+    # print(item_id, redis_client.hget(stock_key, qty_key))
     print(redis_client.hgetall(stock_key))
-    print(redis_client.hgetall(change_key))
 
 
 # 根据itemId 获取redis测试库存
@@ -321,7 +322,7 @@ def batch_check_all_by_stock_item_id(stock_id_list=[6985391], is_modify=False):
     cur.close()
 
 
-@vthread.pool(30)
+@vthread.pool(1)
 def l_read_file(filename, N):
     with open(filename, 'r') as infile:
         lines_gen = islice(infile, N)
@@ -336,7 +337,8 @@ def l_read_file(filename, N):
             content = json.loads(r.content.decode("utf-8"))
             if len(content) > 0:
                 for c in content:
-                    if c["content"] == "预占库存与订单不一致" or c["content"] == "预占库存与redis不一致":
+                    # if c["content"] == "预占库存与订单不一致" or c["content"] == "预占库存与redis不一致":
+                    if c["content"] == "预占库存与redis不一致":
                         print(c)
 
             time.sleep(0.5)
@@ -351,16 +353,29 @@ def re_send_mq(mq):
     print(r.content.decode("utf-8"))
 
 
+''''' 
+   每n秒执行一次 
+'''
+
+
+def timer_task(n):
+    while True:
+        print(time.strftime('%Y-%m-%d %X', time.localtime()))
+        l_read_file("E:/file/download/tt/filter.txt", 500)
+        time.sleep(n * 60)
+
+
 if __name__ == '__main__':
-    # l_read_file("E:/file/download/tt/filter.txt", 10)
+    # l_read_file("E:/file/download/tt/filter.txt", 500)
 
-    for s in range(37):
-        l_read_file("E:/file/download/tt/stock_item_" + str(s + 1) + ".txt", 500)
-
-    # item_list = [2941417,2941413,3268165,4975912,5105788,5131115]
+    # for s in range(85):
+    #     l_read_file("E:/file/download/tt/stock_item_" + str(s + 1) + ".txt", 500)
+    #
+    # timer_task(7)
+    item_list = [3072467, 3563563, 4090435, 4713814]
     # get_all_stock_list(item_list)
-    # get_stock(1681779)
+    # get_stock(5210368)
     # delete_stock(5131115)
-    # for i in item_list:
-    #     # get_stock(i)
-    #     delete_stock(i)
+    for i in item_list:
+        get_stock(i)
+        # delete_stock(i)

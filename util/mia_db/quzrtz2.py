@@ -29,8 +29,8 @@ def printTime(inc):
     if len(queue) > 0:
         uurl = queue.popleft()
         print(uurl)
-        r = requests.get(uurl)
-        print(r.content.decode("utf-8"))
+        # r = requests.get(uurl)
+        # print(r.content.decode("utf-8"))
         schedule.enter(inc, 0, printTime, (inc,))
     else:
         print("完成了")

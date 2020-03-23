@@ -56,6 +56,6 @@ def remove_file(num):
 
 if __name__ == '__main__':
     # splitByLineCount('E:/file/download/tt/stock_item.txt', 1000)
-    remove_file(37)
+    remove_file(85)
 
     # splitByLineCount('E:/file/download/error/cancel.txt', 2000)
