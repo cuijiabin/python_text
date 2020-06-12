@@ -13,9 +13,22 @@ def get_cluster_client():
         {'host': '10.5.96.228', 'port': 7024},
         {'host': '10.5.97.18', 'port': 7024},
         {'host': '10.5.96.169', 'port': 7013}
+        # {'host': '10.5.96.181', 'port': 7006},
+        # {'host': '10.5.96.228', 'port': 7009},
+        # {'host': '10.5.96.228', 'port': 7020},
+        # {'host': '10.5.97.18', 'port': 7011},
+        # {'host': '10.5.96.174', 'port': 7011},
+        # {'host': '10.5.97.18', 'port': 7018}
     ]
 
     return RedisCluster(startup_nodes=redis_nodes, decode_responses=True)
+
+
+def test_add_data(user_list):
+    redis_client = get_cluster_client()
+    for user_id in user_list:
+        mod = user_id % 100
+        print(redis_client.hget("crm_uid_phone_relation:" + str(mod), str(user_id)))
 
 
 def delete_stock(itemId):
@@ -130,7 +143,7 @@ def run_export_data():
 
 
 def clear_export_key():
-    data_list = ['2019-12-27']
+    data_list = ['2020-04-06']
 
     redis_client = get_cluster_client()
     for data in data_list:
@@ -146,8 +159,9 @@ if __name__ == '__main__':
     # run_export_data()
     # clear_export_key()
     # get_stock_test(3070037)
-    delete_stock(10489)
+    # 1000239 1000847
+    # delete_stock(4733141)
     # batch_delete_pre_init()
-    # dd = [3072319]
-    # for d in dd:
-    #     delete_stock(d)
+    # test_add_data([33696279])
+    get_stock(4824183)
+    # delete_stock(4824183)

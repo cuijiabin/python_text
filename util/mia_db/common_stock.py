@@ -139,7 +139,8 @@ def test_tup():
 # 根据仓库id获取可用库存列表
 def get_stock_item(wid):
     cur = bm.get_mia_cursor("mia_mirror")
-    sql = "SELECT * FROM stock_item WHERE warehouse_id = " + str(wid) + " AND status = 1 ORDER BY modify_time DESC"
+    sql = "SELECT id,item_id,pre_qty FROM stock_item WHERE warehouse_id = " + str(
+        wid) + " AND status = 1 AND modify_time > ADDDATE(NOW(),INTERVAL -1 HOUR) ORDER BY modify_time DESC"
     cur.execute(sql)
 
     columns = [col[0] for col in cur.description]
@@ -331,14 +332,14 @@ def l_read_file(filename, N):
             stock_item_ids = ",".join(ids)
             r_data = {
                 "stockItemIds": stock_item_ids,
-                "type": 0
+                "type": 1
             }
             r = requests.post("http://10.5.107.234:7777/repairPreQty.sc", data=r_data)
             content = json.loads(r.content.decode("utf-8"))
             if len(content) > 0:
                 for c in content:
-                    # if c["content"] == "预占库存与订单不一致" or c["content"] == "预占库存与redis不一致":
-                    if c["content"] == "预占库存与redis不一致":
+                    if c["content"] == "预占库存与订单不一致" or c["content"] == "预占库存与redis不一致":
+                        # if c["content"] == "预占库存与redis不一致":
                         print(c)
 
             time.sleep(0.5)
@@ -365,17 +366,44 @@ def timer_task(n):
         time.sleep(n * 60)
 
 
+def check_warehouse_qty(wid_list=[7694, 7697]):
+    while True:
+        print(time.strftime('%Y-%m-%d %X', time.localtime()))
+        ids = []
+        for wid in wid_list:
+            rows = get_stock_item(wid)
+            tmp_ids = list(map(lambda x: x['id'], rows))
+            for stock_id in tmp_ids:
+                ids.append(str(stock_id))
+
+        print(len(ids))
+        if len(ids) > 0:
+            stock_item_ids = ",".join(ids)
+            r_data = {
+                "stockItemIds": stock_item_ids,
+                "type": 1
+            }
+            r = requests.post("http://10.5.107.234:7777/repairPreQty.sc", data=r_data)
+            content = json.loads(r.content.decode("utf-8"))
+            if len(content) > 0:
+                for c in content:
+                    if c["content"] == "预占库存与订单不一致" or c["content"] == "预占库存与redis不一致":
+                        print(c)
+        time.sleep(10 * 60)
+
+
 if __name__ == '__main__':
     # l_read_file("E:/file/download/tt/filter.txt", 500)
 
     # for s in range(85):
     #     l_read_file("E:/file/download/tt/stock_item_" + str(s + 1) + ".txt", 500)
     #
-    # timer_task(7)
-    item_list = [3072467, 3563563, 4090435, 4713814]
+    # timer_task(10)
+    check_warehouse_qty()
+    # item_list = [2481497, 25067509]
     # get_all_stock_list(item_list)
     # get_stock(5210368)
     # delete_stock(5131115)
-    for i in item_list:
-        get_stock(i)
-        # delete_stock(i)
+    # for i in item_list:
+    #     get_stock(i)
+    #     # delete_stock(i)

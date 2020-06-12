@@ -9,14 +9,34 @@ def get_cluster_client():
         {'host': '172.16.96.189', 'port': 7000},
         {'host': '172.16.96.190', 'port': 7001},
         {'host': '172.16.96.191', 'port': 7002}
+        # {'host': '172.16.96.190', 'port': 7000},
+        # {'host': '172.16.96.191', 'port': 7000}
     ]
 
     return RedisCluster(startup_nodes=redis_nodes, decode_responses=True)
 
 
+def test_add_data():
+    redis_client = get_cluster_client()
+
+    # redis_client.hset("crm_uid_phone_relation:99", "159388999", "13651054199")
+    # redis_client.hset("crm_uid_phone_relation:47", "220105847", "17600965516")
+    # redis_client.hset("crm_uid_phone_relation:64", "1508764", "15011346605")
+    # redis_client.hset("crm_uid_phone_relation:15", "220108515", "15100327518")
+    # redis_client.hset("crm_uid_phone_relation:21", "13789821", "18611458501")
+    # redis_client.hset("crm_uid_phone_relation:14", "220109414", "13629205802")
+    # redis_client.hset("crm_uid_phone_relation:46", "220109446", "15691978761")
+    # redis_client.hset("crm_uid_phone_relation:21", "220105921", "13572504251")
+    # redis_client.hset("crm_uid_phone_relation:53", "220107053", "18602988591")
+    # redis_client.hset("crm_uid_phone_relation:88", "220108488", "17310853906")
+    # print(redis_client.hget("crm_uid_phone_relation:99", "159388999"))
+    print(redis_client.get("stock_spu_sku_relation_33356"))
+    # print(redis_client.delete("stock_spu_sku_relation_33356"))
+
+
 def test_match():
     redis_client = get_cluster_client()
-    for key in redis_client.scan_iter("SynUmsError_*"):
+    for key in redis_client.scan_iter("crm_uid_phone_relation*"):
         print(key)
         if redis_client.type(key) == 'string':
             print(redis_client.get(key))
@@ -26,6 +46,8 @@ def test_match():
 
 def delete_stock(itemId):
     redis_client = get_cluster_client()
+    print(redis_client.hgetall("stock_" + str(itemId)))
+    print(redis_client.hgetall("stock_" + str(itemId) + "_incr"))
     redis_client.delete("stock_" + str(itemId))
     redis_client.delete("stock_" + str(itemId) + "_incr")
 
@@ -50,15 +72,7 @@ def test_queue():
 
 
 def run_export_data():
-    data_list = ['2019-10-26', '2019-10-27', '2019-10-28', '2019-10-29', '2019-10-30', '2019-10-31', '2019-11-01',
-                 '2019-11-02', '2019-11-03', '2019-11-04', '2019-11-05', '2019-11-06', '2019-11-07', '2019-11-08',
-                 '2019-11-09', '2019-11-10', '2019-11-11', '2019-11-12', '2019-11-13', '2019-11-14', '2019-11-15',
-                 '2019-11-16', '2019-11-17', '2019-11-18', '2019-11-19', '2019-11-20', '2019-11-21', '2019-11-22',
-                 '2019-11-23', '2019-11-24', '2019-11-25', '2019-11-26', '2019-11-27', '2019-11-28', '2019-11-29',
-                 '2019-11-30', '2019-12-01', '2019-12-02', '2019-12-03', '2019-12-04', '2019-12-05', '2019-12-06',
-                 '2019-12-07', '2019-12-08', '2019-12-09', '2019-12-10', '2019-12-11', '2019-12-12', '2019-12-13',
-                 '2019-12-14', '2019-12-15', '2019-12-16', '2019-12-17', '2019-12-18', '2019-12-19', '2019-12-20',
-                 '2019-12-21', '2019-12-22', '2019-12-23', '2019-12-24']
+    data_list = ['2019-12-24']
 
     redis_client = get_cluster_client()
     for data in data_list:
@@ -94,15 +108,7 @@ def run_export_data():
 
 
 def clear_export_key():
-    data_list = ['2019-10-26', '2019-10-27', '2019-10-28', '2019-10-29', '2019-10-30', '2019-10-31', '2019-11-01',
-                 '2019-11-02', '2019-11-03', '2019-11-04', '2019-11-05', '2019-11-06', '2019-11-07', '2019-11-08',
-                 '2019-11-09', '2019-11-10', '2019-11-11', '2019-11-12', '2019-11-13', '2019-11-14', '2019-11-15',
-                 '2019-11-16', '2019-11-17', '2019-11-18', '2019-11-19', '2019-11-20', '2019-11-21', '2019-11-22',
-                 '2019-11-23', '2019-11-24', '2019-11-25', '2019-11-26', '2019-11-27', '2019-11-28', '2019-11-29',
-                 '2019-11-30', '2019-12-01', '2019-12-02', '2019-12-03', '2019-12-04', '2019-12-05', '2019-12-06',
-                 '2019-12-07', '2019-12-08', '2019-12-09', '2019-12-10', '2019-12-11', '2019-12-12', '2019-12-13',
-                 '2019-12-14', '2019-12-15', '2019-12-16', '2019-12-17', '2019-12-18', '2019-12-19', '2019-12-20',
-                 '2019-12-21', '2019-12-22', '2019-12-23', '2019-12-24']
+    data_list = ['2019-12-24']
 
     redis_client = get_cluster_client()
     for data in data_list:
@@ -111,10 +117,20 @@ def clear_export_key():
         redis_client.delete("data_handel_cancel_lock:" + data)
 
 
+def get_set_info():
+    r = get_cluster_client()
+    # print(r.exists("crm_strategy_task_zset"))
+    s = r.zscan("crm_strategy_task_zset", 20)
+    print(s)
+    print(r.zcard("crm_strategy_task_zset"))
+
+
 if __name__ == '__main__':
-    # run_export_data()
-    # get_stock(10489)
-    delete_stock(10489)
+    test_add_data()
+    # get_stock(2020037933)
+    # d_list = [2020037710, 2020037663, 2020037662, 38765444, 2020037657]
+    # for d in d_list:
+    #     delete_stock(d)
     # clear_export_key()
     # get_stock_test(1000133)
     # redis_client = get_cluster_client()

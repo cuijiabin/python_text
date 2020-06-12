@@ -31,5 +31,6 @@ class MyFtp:
 if __name__ == '__main__':
     ftp = MyFtp('10.5.97.74')
     ftp.login('admin', 'ilbhxuosnfm4736u')
-    ftp.downloadFile('E:/file/download/', '/jobs/results/DES-202003231042-38526646000000/', '0614650c-e268-408c-bb9b-e749b69842db.csv')
+    ftp.downloadFile('E:/file/download/', ' /jobs/results/DES-202004070858-32309900000000/',
+                     '323613d7-2993-4df5-a492-759fecc06b35.csv')
     ftp.close()

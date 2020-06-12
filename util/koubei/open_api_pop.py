@@ -276,10 +276,84 @@ def repair_mi_bean_list():
     print(r.status_code)
 
 
+# 扣减失败返还库存数量
+def tradeStockRollback_repair():
+    ll = [
+        {
+            "itemId": 2474342,
+            "optPre": 0,
+            "orderCode": "2003232311592843",
+            "qty": 120,
+            "stockItemId": 4998839,
+            "superiorOrderCode": "202003232311592843",
+            "userId": 0,
+            "warehouseId": 6868
+        },
+        {
+            "itemId": 2474565,
+            "optPre": 0,
+            "orderCode": "2003232311592843",
+            "qty": 76,
+            "stockItemId": 5001407,
+            "superiorOrderCode": "202003232311592843",
+            "userId": 0,
+            "warehouseId": 6868
+        },
+        {
+            "itemId": 2506746,
+            "optPre": 0,
+            "orderCode": "2003232311592843",
+            "qty": 80,
+            "stockItemId": 5018890,
+            "superiorOrderCode": "202003232311592843",
+            "userId": 0,
+            "warehouseId": 6868
+        },
+        {
+            "itemId": 2506748,
+            "optPre": 0,
+            "orderCode": "2003232311592843",
+            "qty": 36,
+            "stockItemId": 5030235,
+            "superiorOrderCode": "202003232311592843",
+            "userId": 0,
+            "warehouseId": 6868
+        },
+        {
+            "itemId": 2474573,
+            "optPre": 0,
+            "orderCode": "2003232311592843",
+            "qty": 36,
+            "stockItemId": 5040792,
+            "superiorOrderCode": "202003232311592843",
+            "userId": 0,
+            "warehouseId": 6868
+        }
+    ]
+
+    r_data = {"paramJSON": json.dumps(ll)}
+    r = requests.post("http://10.5.107.234:7777/tradeStockRollback.sc", data=r_data)
+    print(r.content.decode("utf-8"))
+    print(r)
+
+
+def delay_queue():
+    r_data = {
+        "topic": "task_a",
+        "delayTime": 1585116600,
+        "ttrTime": 600,
+        "message": "hello2"
+    }
+    r = requests.post("http://127.0.0.1:8080/push", data=r_data)
+    print(r.content.decode("utf-8"))
+    print(r.status_code)
+
+
 if __name__ == "__main__":
     # test_freight_rule_saveii()
     # repair_mi_bean_list()
     # test_suning_order_confirm()
     # test_suning_order_update()
     # test_suning_order_cmmdtyreceive()
-    get_all_stock_list()
+    # tradeStockRollback_repair()
+    delay_queue()
