@@ -5,7 +5,7 @@ import requests
 import vthread
 
 
-@vthread.pool(3)
+# @vthread.pool(3)
 def l_read_file(filename, N):
     with open(filename, 'r') as infile:
         lines_gen = islice(infile, N)
@@ -24,18 +24,28 @@ def l_read_file(filename, N):
     infile.close()
 
 
+# 文件对比
+def file_check(file_a, file_b):
+    relation = {}
+    with open("E:/file/download/" + file_a) as mf:
+        line = mf.readline()
+        while line:
+            line = line.strip('\n')
+            relation.setdefault(line, "1")
+            line = mf.readline()
+        mf.close()
+
+    with open("E:/file/download/" + file_b) as genf:
+        line = genf.readline()
+        while line:
+            line = line.strip('\n')
+            if relation.get(line) != "1":
+                print(line)
+
+            line = genf.readline()
+        genf.close()
+
+
 if __name__ == '__main__':
-    # file_list = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"]
-    # for s in file_list:
-    #     l_read_file("E:/file/download/tmp/tmp_05_" + s + ".txt", 1000)
-
-    # file_list = ["1", "2", "3", "4", "5"]
-    # for s in file_list:
-    #     # print("E:/file/download/tt/tmp_05_1_1_" + s + ".txt")
-    #     l_read_file("E:/file/download/tmp/tmp_05_" + s + ".txt", 500)
-
-    m = []
-    n = [44019136]
-    for i in m:
-        if i not in n:
-            print(i)
+    # file_check("白金-mysql.txt", "白金用户列表.txt")
+    file_check("pro.txt", "pro-mysql.txt")

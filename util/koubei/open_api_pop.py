@@ -141,7 +141,7 @@ def test_return_order_get2():
 # 获取订单列表 刷新预占redis锁 使用
 def get_all_stock_list():
     ll = []
-    ss = [4688934, 4688887]
+    ss = [2873150]
     for s in ss:
         ll.append({
             "itemId": s,
@@ -150,8 +150,8 @@ def get_all_stock_list():
         })
     r_data = {"paramJSON": json.dumps(ll)}
     r = requests.post("http://10.5.107.234:7777/getStockQtyForums.sc", data=r_data)
-    print(r.content.decode("utf-8"))
-    print(r)
+    content = json.loads(r.content.decode("utf-8"))
+    print(content["result"])
 
 
 # 测试苏宁订单确认功能
@@ -349,11 +349,179 @@ def delay_queue():
     print(r.status_code)
 
 
+def bindCouponByCode():
+    r_data = {
+        "orderCode": 1509180,
+        "userId": "DD",
+        "remark": "DD",
+        "operatorId": 10000
+    }
+    r = requests.post("http://localhost:8080/coupon/bindCoupon.sc", data=r_data)
+    print(r.content.decode("utf-8"))
+
+
+def forceCancelOrder(orderCode, userId):
+    r_data = {
+        "orderCode": orderCode,
+        "userId": userId,
+        "remark": "不想要了",
+        "operatorId": 10000
+    }
+    r = requests.post("http://10.5.107.177:8082/order/forceCancelSubOrder.sc", data=r_data)
+    print(r.content.decode("utf-8"))
+
+
+# 批量调取接口
+def batch_get(order_code):
+    r = requests.get("http://service.api.miyabaobei.com/tik_tok/tik_tok_open/refundTikTokOrders/" + order_code)
+    print(order_code, r.content.decode("utf-8"))
+
+
+def test_autoCheckoutMulti():
+    dd = {
+        "canUseChannel": 1,
+        "checkedCouponCodes": [
+            "YXZAA2CAB9A6F7F"
+        ],
+        "platform": "Normal",
+        "tContent": {
+            "couponsSize": 0,
+            "orderItems": [
+                {
+                    "balancePrice": "0",
+                    "batchCodePlatform": "normal-200416-fa350c13c15834ee",
+                    "brandId": 1,
+                    "cashCouponPrice": "33.00",
+                    "categoryId": 109,
+                    "categoryIdNg": 15050,
+                    "couponCode": "YXZAA2CAB9A6F7F",
+                    "couponCodePlatform": "YXZAA2CAB9A6F7F",
+                    "couponLimitType": 1,
+                    "couponPrice": "0.00",
+                    "couponPriceDetails": [
+                        {
+                            "batchCode": "normal-200416-fa350c13c15834ee",
+                            "cashCouponPrice": "33.00",
+                            "couponCode": "YXZAA2CAB9A6F7F",
+                            "couponPrice": "0",
+                            "type": 1
+                        }
+                    ],
+                    "dealPrice": "45.00",
+                    "giftType": 0,
+                    "isPlusPack": 0,
+                    "isSpu": 0,
+                    "itemId": 20181201,
+                    "itemName": "勿改--秋季暖心毛衣",
+                    "itemSalePrice": "45.00",
+                    "itemSize": "SINGLE",
+                    "itemType": 0,
+                    "nonPlatformCashCouponPrice": "0",
+                    "nonPlatformCouponPrice": "0",
+                    "parentCategoryId": 0,
+                    "payPrice": "12.00",
+                    "platformCashCouponPrice": "33.00",
+                    "platformCouponPrice": "0",
+                    "redbagPrice": "0",
+                    "reducePrice": "0",
+                    "seckill": 0,
+                    "shipPrice": "0",
+                    "shopId": 16,
+                    "shopName": "蜜芽精选商家",
+                    "spuSkus": [
+
+                    ],
+                    "supplierId": 1291,
+                    "taxPrice": "0",
+                    "uniqKey": "20181201-SINGLE-0",
+                    "warehouseId": 1016,
+                    "warehouseType": 5
+                }
+            ],
+            "orders": {
+                "balancePrice": "0",
+                "cashCouponPrice": "33.00",
+                "channel": "4",
+                "ckSuperiorOrderCode": "202010211593889991005158400",
+                "ckType": 2,
+                "couponPrice": "0.00",
+                "dealPrice": "45.00",
+                "orderTime": "2020-10-21 11:43:16",
+                "payPrice": "12.00",
+                "salePrice": "45.00",
+                "shipPrice": "0",
+                "subChannel": "9.5.2|",
+                "taxPrice": "0",
+                "totalRedbagPrice": "0",
+                "usedRedbagPrice": "0",
+                "userId": 159388999
+            }
+        }
+    }
+    r_data = {
+        "json": json.dumps(dd)
+    }
+    r = requests.post("http://127.0.0.1:8080/couponTrade/autoCheckoutMulti.sc", data=r_data)
+    print(r.content.decode("utf-8"))
+
+
+def test_useCoupon():
+    dd = {
+        "opUser": "order_transfer",
+        "platform": "Normal",
+        "uid": 159388999,
+        "useRecords": [
+            {
+                "ckSuperiorOrderCode": "",
+                "couponCode": "YXZAA2CAB9A6F7F",
+                "orderCode": "",
+                "superiorOrderCode": "202010219000026400"
+            }
+        ]
+    }
+    r_data = {
+        "json": json.dumps(dd)
+    }
+    r = requests.post("http://127.0.0.1:8080/couponTrade/useCoupon.sc", data=r_data)
+    print(r.content.decode("utf-8"))
+
+
+def test_preUseCoupon():
+    dd = {
+        "ckSuperiorOrderCode": "202010211593889991005158400",
+        "couponCodes": [
+            "YXZAA2CAB9A6F7F"
+        ],
+        "opUser": "order",
+        "platform": "Normal",
+        "uid": 159388999
+    }
+    r_data = {
+        "json": json.dumps(dd)
+    }
+    r = requests.post("http://127.0.0.1:8080/couponTrade/preUseCoupon.sc", data=r_data)
+    print(r.content.decode("utf-8"))
+
+
+def test_preUseCoupon_remote():
+    dd = {
+        "ckSuperiorOrderCode": "202010211593889991005158400",
+        "couponCodes": [
+            "YXZAA2CAB9A6F7F"
+        ],
+        "opUser": "order",
+        "platform": "Normal",
+        "uid": 159388999
+    }
+    r_data = {
+        "json": json.dumps(dd)
+    }
+    r = requests.post("http://127.0.0.1:8889/coupon/preUseCoupon.sc", data=r_data)
+    print(r.content.decode("utf-8"))
+
+
 if __name__ == "__main__":
-    # test_freight_rule_saveii()
-    # repair_mi_bean_list()
-    # test_suning_order_confirm()
-    # test_suning_order_update()
-    # test_suning_order_cmmdtyreceive()
-    # tradeStockRollback_repair()
-    delay_queue()
+    # test_useCoupon()
+    test_preUseCoupon_remote()
+    # test_preUseCoupon()
+    # test_autoCheckoutMulti()

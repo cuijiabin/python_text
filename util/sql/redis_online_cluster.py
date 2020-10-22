@@ -1,6 +1,7 @@
 import time
 
 import requests
+import json
 from rediscluster import RedisCluster
 
 
@@ -155,13 +156,35 @@ def clear_export_key():
         redis_client.delete("data_handel_cancel_lock:" + data)
 
 
+def get_all_stock_list(itemId):
+    ll = []
+    ll.append({
+        "itemId": itemId,
+        "warehouseIds": [],
+        "isExact": 0,
+        "isTest": 1,
+    })
+    r_data = {"paramJSON": json.dumps(ll)}
+    r = requests.post("http://10.5.107.234:7777/getStockQtyForums.sc", data=r_data)
+    content = json.loads(r.content.decode("utf-8"))
+    print(content["result"])
+
+
 if __name__ == '__main__':
     # run_export_data()
     # clear_export_key()
     # get_stock_test(3070037)
     # 1000239 1000847
-    # delete_stock(4733141)
+    # delete_stock(5460752)
     # batch_delete_pre_init()
     # test_add_data([33696279])
-    get_stock(4824183)
-    # delete_stock(4824183)
+    item_list = [5546637]
+
+    for id in item_list:
+        # delete_stock(id)
+        get_stock(id)
+        get_all_stock_list(id)
+    # delete_stock(3035634)
+    # redis_client = get_cluster_client()
+    # print(redis_client.get("data_handel_create_lock:2020-06-29"))
+    # print(redis_client.delete("data_handel_create_lock:2020-06-29"))

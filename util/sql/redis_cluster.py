@@ -30,8 +30,8 @@ def test_add_data():
     # redis_client.hset("crm_uid_phone_relation:53", "220107053", "18602988591")
     # redis_client.hset("crm_uid_phone_relation:88", "220108488", "17310853906")
     # print(redis_client.hget("crm_uid_phone_relation:99", "159388999"))
-    print(redis_client.get("stock_spu_sku_relation_33356"))
-    # print(redis_client.delete("stock_spu_sku_relation_33356"))
+    print(redis_client.get("stock_spu_sku_relation_20200024"))
+    print(redis_client.delete("stock_spu_sku_relation_20200024"))
 
 
 def test_match():
@@ -126,8 +126,8 @@ def get_set_info():
 
 
 if __name__ == '__main__':
-    test_add_data()
-    # get_stock(2020037933)
+    # test_add_data()
+    get_stock(2065355)
     # d_list = [2020037710, 2020037663, 2020037662, 38765444, 2020037657]
     # for d in d_list:
     #     delete_stock(d)

@@ -399,11 +399,11 @@ if __name__ == '__main__':
     #     l_read_file("E:/file/download/tt/stock_item_" + str(s + 1) + ".txt", 500)
     #
     # timer_task(10)
-    check_warehouse_qty()
+    # check_warehouse_qty()
     # item_list = [2481497, 25067509]
     # get_all_stock_list(item_list)
-    # get_stock(5210368)
-    # delete_stock(5131115)
+    # get_stock(5698172)
+    delete_stock(5685366)
     # for i in item_list:
-    #     get_stock(i)
+    # get_stock(1768174)
     #     # delete_stock(i)
