@@ -149,7 +149,7 @@ def filter_url_host(urls, hostname):
 if __name__ == "__main__":
 
     # 获取目录下所有的url
-    urls = get_all_urls("F:/File/浏览记录/2018年/08月")
+    urls = get_all_urls("E:/File/浏览记录/2020年/08月")
     # 分析url的关键搜索词
     # get_grap_words(urls)
 

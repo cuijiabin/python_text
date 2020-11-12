@@ -80,7 +80,4 @@ if __name__ == "__main__":
     #                         '\\"relationId\\":16936121,\\"userId\\":220109011}"')
     send_headers_mq("com.mia.srv.order.mq.PaySyncInfo", front_pay_map,
                     '{"superiorOrderCode":"202002197000056064","userId":220109011}')
-    # send_mq(insurance_send_map,'"{\\"supplierId\\":12386,\\"type\\":1}"')
 
-    # "[{\"itemId\":10489,\"opType\":10,\"orderCode\":\"10\",\"qty\":-10,\"stockItemId\":29,\"stockType\":0,\"test\":false,\"userId\":0,\"warehouseId\":40}]"
-    # "{\"superiorOrderCode\":\"202002197000056064\",\"status\":1,\"fromType\":4,\"relationId\":16936121,\"userId\":220109011}"
