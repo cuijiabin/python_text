@@ -392,6 +392,12 @@ def check_warehouse_qty(wid_list=[7694, 7697]):
         time.sleep(10 * 60)
 
 
+def re_send_mq(mq):
+    r = requests.post("http://10.5.105.104:9089/stock/reSendMq", data=mq)
+
+    print(r.content.decode("utf-8"))
+
+
 if __name__ == '__main__':
     # l_read_file("E:/file/download/tt/filter.txt", 500)
 

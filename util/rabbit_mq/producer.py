@@ -78,6 +78,6 @@ if __name__ == "__main__":
 
     # send_mq(group_send_map, '"{\\"superiorOrderCode\\":\\"202002197000056064\\",\\"fromType\\":4,,\\"status\\":1,'
     #                         '\\"relationId\\":16936121,\\"userId\\":220109011}"')
-    send_headers_mq("com.mia.srv.order.mq.PaySyncInfo", front_pay_map,
+    send_headers_mq("com.mia.srv.order.rabbit_mq.PaySyncInfo", front_pay_map,
                     '{"superiorOrderCode":"202002197000056064","userId":220109011}')
 

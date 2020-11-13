@@ -41,7 +41,7 @@ def dump():
     for key in a:
         dt[key] = dt.get(key, 0) + 1
 
-    # 按value值排序
+    # 按value值排序 什么语法？
     dt = sorted(dt.items(), key=lambda item: item[1], reverse=True)
     for v in dt:
         print(v[0], " ", v[1])

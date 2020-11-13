@@ -4,6 +4,7 @@ import time
 
 import pymysql
 import requests
+from string import Template
 
 
 def get_mia_cursor(db_name="mia_mirror"):
@@ -16,10 +17,11 @@ def get_mia_cursor(db_name="mia_mirror"):
     return conn.cursor()
 
 
-def get_stock_item(wid):
-    cur = get_mia_cursor("mia_mirror")
-    sql = "SELECT id,item_id,pre_qty FROM stock_item WHERE warehouse_id = " + str(
-        wid) + " AND status = 1 AND modify_time > ADDDATE(NOW(),INTERVAL -1 HOUR) ORDER BY modify_time DESC"
+def get_bmp_pre_stock_list():
+    cur = get_mia_cursor("mia_bmp")
+    sql = "select item_id,warehouse_id,pre_qty from brand_stock_item_channel " \
+          "WHERE warehouse_id in (40,3364,6868,7575) AND channel_id = 1 and `status` =1 and pre_qty != 0 " \
+          "ORDER BY pre_qty DESC"
     cur.execute(sql)
 
     columns = [col[0] for col in cur.description]
@@ -27,31 +29,43 @@ def get_stock_item(wid):
     return rows
 
 
-def check_warehouse_qty(wid_list=[7694, 7697]):
-    while True:
-        print(time.strftime('%Y-%m-%d %X', time.localtime()))
-        ids = []
-        for wid in wid_list:
-            rows = get_stock_item(wid)
-            tmp_ids = list(map(lambda x: x['id'], rows))
-            for stock_id in tmp_ids:
-                ids.append(str(stock_id))
+def get_mia_pre_stock_list():
+    cur = get_mia_cursor("mia_mirror")
+    sql = "SELECT s.item_id AS item_id, s.warehouse_id AS warehouse_id, s.pre_qty AS pre_qty " \
+          "from stock_item s LEFT JOIN stock_warehouse sw on s.warehouse_id = sw.id  " \
+          "WHERE sw.type in (1,6,8) and s.`status` =1 and s.pre_qty != 0 ORDER BY s.pre_qty DESC"
+    cur.execute(sql)
 
-        print(len(ids))
-        if len(ids) > 0:
-            stock_item_ids = ",".join(ids)
-            r_data = {
-                "stockItemIds": stock_item_ids,
-                "type": 1
-            }
-            r = requests.post("http://10.5.107.234:7777/repairPreQty.sc", data=r_data)
-            content = json.loads(r.content.decode("utf-8"))
-            if len(content) > 0:
-                for c in content:
-                    if c["content"] == "预占库存与订单不一致" or c["content"] == "预占库存与redis不一致":
-                        print(c)
-        time.sleep(10 * 60)
+    columns = [col[0] for col in cur.description]
+    rows = [dict(zip(columns, row)) for row in cur.fetchall()]
+    return rows
 
 
+def get_order_pre_qty(info):
+    sql_tmp = Template("SELECT COALESCE(SUM(oi.qty),0) AS preQty FROM orders os "
+                       "INNER JOIN order_item oi ON oi.order_id = os.id "
+                       "WHERE os.warehouse_id = $wid AND os.`status` IN (1, 2) AND oi.item_id = $item_id AND os.is_test = 0")
+    sql = sql_tmp.substitute(wid=info["warehouse_id"], item_id=info["item_id"])
+    cur = get_mia_cursor("mia_mirror")
+    cur.execute(sql)
+
+    result_data = cur.fetchall()
+    if not result_data[0][0] == info["pre_qty"]:
+        url = "http://10.5.105.104:9089/stock/resetStockPreQty?itemId=" + str(info["item_id"]) + "&warehouseId=" + str(
+            info["warehouse_id"])
+        # requests.get(url)
+        print(info, info["pre_qty"] - result_data[0][0])
+    return result_data[0][0]
+
+
+# 重置预占库存
+# 地址 http://10.5.105.104:9089/stock/resetStockPreQty?itemId=5822719&warehouseId=3364
 if __name__ == '__main__':
-    check_warehouse_qty()
+    rows = get_bmp_pre_stock_list()
+    for r in rows:
+        get_order_pre_qty(r)
+
+    print("mia 处理开始")
+    rows = get_mia_pre_stock_list()
+    for r in rows:
+        get_order_pre_qty(r)
