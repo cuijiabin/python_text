@@ -30,6 +30,7 @@ def get_bmp_pre_stock_list(m_date):
 
     columns = [col[0] for col in cur.description]
     rows = [dict(zip(columns, row)) for row in cur.fetchall()]
+    cur.close()
     return rows
 
 
@@ -45,6 +46,7 @@ def get_mia_pre_stock_list(m_date):
 
     columns = [col[0] for col in cur.description]
     rows = [dict(zip(columns, row)) for row in cur.fetchall()]
+    cur.close()
     return rows
 
 
@@ -62,6 +64,7 @@ def get_order_pre_qty(info):
             info["warehouse_id"])
         # requests.get(url)
         print(info, info["pre_qty"] - result_data[0][0])
+    cur.close()
     return result_data[0][0]
 
 
