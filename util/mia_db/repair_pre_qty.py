@@ -1,4 +1,5 @@
 # coding=utf-8
+import datetime
 import json
 import time
 
@@ -17,11 +18,14 @@ def get_mia_cursor(db_name="mia_mirror"):
     return conn.cursor()
 
 
-def get_bmp_pre_stock_list():
+def get_bmp_pre_stock_list(m_date):
     cur = get_mia_cursor("mia_bmp")
-    sql = "select item_id,warehouse_id,pre_qty from brand_stock_item_channel " \
-          "WHERE warehouse_id in (40,3364,6868,7575) AND channel_id = 1 and `status` =1 and pre_qty != 0 " \
-          "ORDER BY pre_qty DESC"
+    sql_tmp = Template(
+        "select item_id,warehouse_id,pre_qty,lastmodified_date as modify_time from brand_stock_item_channel "
+        "WHERE warehouse_id in (select id from stock_warehouse WHERE type in (1,6,8) and `status` = 1) "
+        "AND channel_id = 1 and `status` =1 and pre_qty != 0 "
+        "and lastmodified_date < '$lastmodified_date' ORDER BY pre_qty DESC")
+    sql = sql_tmp.substitute(lastmodified_date=m_date)
     cur.execute(sql)
 
     columns = [col[0] for col in cur.description]
@@ -29,11 +33,14 @@ def get_bmp_pre_stock_list():
     return rows
 
 
-def get_mia_pre_stock_list():
+def get_mia_pre_stock_list(m_date):
     cur = get_mia_cursor("mia_mirror")
-    sql = "SELECT s.item_id AS item_id, s.warehouse_id AS warehouse_id, s.pre_qty AS pre_qty " \
-          "from stock_item s LEFT JOIN stock_warehouse sw on s.warehouse_id = sw.id  " \
-          "WHERE sw.type in (1,6,8) and s.`status` =1 and s.pre_qty != 0 ORDER BY s.pre_qty DESC"
+    sql_tmp = Template(
+        "SELECT s.item_id AS item_id, s.warehouse_id AS warehouse_id, s.pre_qty AS pre_qty, s.modify_time as modify_time "
+        "from stock_item s LEFT JOIN stock_warehouse sw on s.warehouse_id = sw.id  "
+        "WHERE sw.type in (1,6,8) and s.`status` =1 and s.pre_qty != 0 "
+        "and modify_time < '$modify_time' ORDER BY s.pre_qty DESC")
+    sql = sql_tmp.substitute(modify_time=m_date)
     cur.execute(sql)
 
     columns = [col[0] for col in cur.description]
@@ -61,11 +68,13 @@ def get_order_pre_qty(info):
 # 重置预占库存
 # 地址 http://10.5.105.104:9089/stock/resetStockPreQty?itemId=5822719&warehouseId=3364
 if __name__ == '__main__':
-    rows = get_bmp_pre_stock_list()
+    m_date = (datetime.datetime.now() - datetime.timedelta(minutes=30)).strftime("%Y-%m-%d %H:%M")
+    print(m_date)
+    rows = get_bmp_pre_stock_list(m_date)
     for r in rows:
         get_order_pre_qty(r)
 
     print("mia 处理开始")
-    rows = get_mia_pre_stock_list()
+    rows = get_mia_pre_stock_list(m_date)
     for r in rows:
         get_order_pre_qty(r)
