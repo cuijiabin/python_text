@@ -137,9 +137,10 @@ def forceCancelOrder(orderCode, userId):
 
 def test_get_bmp_stock():
     head = {"Content-Type": "application/json; charset=UTF-8", 'Connection': 'close'}
-    businessParams = json.dumps({"brandChannel": 228,
-                                 "itemIdList": [1000002, 1001840],
-                                 "warehouseId": 0
+    businessParams = json.dumps({"warehouseId": 40,
+                                 "userId": 9999,
+                                 "sourceList": [{"itemId": 1001840, "tzItemId": 0, "brandChannel": 1, "qty": 1}],
+                                 "targetList": [{"itemId": 1001840, "tzItemId": 0, "brandChannel": 222, "qty": 1}],
                                  })
     commonParams = json.dumps({"appVersion": "1.0",
                                "clientVersion": "1.0",
@@ -151,7 +152,8 @@ def test_get_bmp_stock():
         "businessParams": businessParams,
         "commonParams": commonParams
     }
-    r = requests.post("http://172.16.96.197:9999/order-stock-service-api/stockBmp/bmpTradeStockQty",
+    # print(json.dumps(r_data))
+    r = requests.post("http://172.16.96.197:9999/order-stock-service-api/stockBmp/bmpDistributeStockQty",
                       data=json.dumps(r_data), headers=head)
     print(r.content.decode("utf-8"))
 
@@ -162,19 +164,23 @@ def batch_get(uul):
     print(r.content.decode("utf-8"))
 
 
+def get_third_order():
+    head = {
+        "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+        "Third-Token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJqd3RfYWRtaW4iLCJzdWIiOiJ1bXMifQ.NqYPhBsMWuoq8BZzOI7cF_QWXhBhTteJm0lUYeTePic"}
+    r_data = {
+        "open_id": 7977427,
+        "third_order_code": "4734125129332012869A"
+    }
+    print(json.dumps(r_data))
+    r = requests.post("https://third-trade-api.mia.com/api/Tiktok_orders/get_third_order_detail",
+                      data=json.dumps(r_data), headers=head)
+    print(r.content.decode("utf-8"))
+
+
 if __name__ == "__main__":
-    # test_useCoupon()
-    ll = ['http://10.5.105.104:9089/stock/resetStockPreQty?itemId=5096240&warehouseId=3364',
-          'http://10.5.105.104:9089/stock/resetStockPreQty?itemId=5096235&warehouseId=3364',
-          'http://10.5.105.104:9089/stock/resetStockPreQty?itemId=5486199&warehouseId=3364',
-          'http://10.5.105.104:9089/stock/resetStockPreQty?itemId=5489629&warehouseId=3364',
-          'http://10.5.105.104:9089/stock/resetStockPreQty?itemId=5546644&warehouseId=3364',
-          'http://10.5.105.104:9089/stock/resetStockPreQty?itemId=2838106&warehouseId=3364',
-          'http://10.5.105.104:9089/stock/resetStockPreQty?itemId=2991891&warehouseId=3364',
-          'http://10.5.105.104:9089/stock/resetStockPreQty?itemId=5461014&warehouseId=3364',
-          'http://10.5.105.104:9089/stock/resetStockPreQty?itemId=5546643&warehouseId=3364',
-          'http://10.5.105.104:9089/stock/resetStockPreQty?itemId=5546633&warehouseId=3364',
-          'http://10.5.105.104:9089/stock/resetStockPreQty?itemId=5546639&warehouseId=3364',
-          'http://10.5.105.104:9089/stock/resetStockPreQty?itemId=2991872&warehouseId=3364']
-    for m in ll:
-        batch_get(m)
+    # test_get_bmp_stock()
+    get_third_order()
+    # ll = []
+    # for m in ll:
+    #     batch_get(m)

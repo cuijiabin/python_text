@@ -409,7 +409,9 @@ if __name__ == '__main__':
     # item_list = [2481497, 25067509]
     # get_all_stock_list(item_list)
     # get_stock(5698172)
-    delete_stock(5685366)
+    ll = [1001105, 1001106]
+    for i in ll:
+        delete_stock(i)
     # for i in item_list:
     # get_stock(1768174)
     #     # delete_stock(i)

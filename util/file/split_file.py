@@ -1,5 +1,6 @@
 # coding=utf-8
 import os
+import re
 import time
 
 import vthread
@@ -52,6 +53,14 @@ def remove_file(num):
         file_path = "E:/file/download/tt/stock_item_" + str(s + 1) + ".txt"
         if os.path.exists(file_path):
             os.remove(file_path)
+
+
+def split_txt(txt):
+    pattern = r',|\.|/|;|\'|`|\[|\]|<|>|\?|:|"|\{|\}|\~|!|@|#|\$|%|\^|&|\(|\)|-|=|\_|\+|，|。|、|；|‘|’|【|】|·|！| |…|（|）'
+    # pattern = r'\.|/|;|\'|`|\[|\]|<|>|\?|:|"|\{|\}|\~|!|@|#|\$|%|\^|&|\(|\)|-|=|\_|\+|。|、|；|‘|’|【|】|·|！| |…|（|）'
+    result_list = re.split(pattern, txt)
+    for r in result_list:
+        print(r)
 
 
 if __name__ == '__main__':
