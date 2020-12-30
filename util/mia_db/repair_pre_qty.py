@@ -62,14 +62,28 @@ def get_order_pre_qty(info):
 
     result_data = cur.fetchall()
     if not result_data[0][0] == info["pre_qty"]:
+        wms_qty = get_wms_qty(info)
         url = "http://10.5.105.104:9089/stock/setPreQty?itemId=" + str(info["item_id"]) + "&warehouseId=" + str(
-            info["warehouse_id"]) + "&preQty=" + str(result_data[0][0])
+            info["warehouse_id"]) + "&preQty=" + str(result_data[0][0] + wms_qty)
 
-        # if info["pre_qty"] - result_data[0][0] < 0 or result_data[0][0] == 0:
-        if info["pre_qty"] - result_data[0][0] < 0:
+        if info["pre_qty"] - result_data[0][0] - wms_qty != 0:
             print(url)
             requests.get(url)
-        print(info, info["pre_qty"] - result_data[0][0])
+        print(info, info["pre_qty"] - result_data[0][0], wms_qty)
+    cur.close()
+    return result_data[0][0]
+
+
+def get_wms_qty(info):
+    sql_tmp = Template("SELECT count(oi.item_id)AS preQty FROM oms_sync_delivery_order o "
+                       "INNER JOIN oms_orders oo ON o.order_code = oo.order_code "
+                       "INNER JOIN oms_order_item oi ON oo.order_id = oi.order_id "
+                       "WHERE o.sync_order = 2 AND o.sync_stock = 1 AND o.warehouse_id = $wid AND oi.item_id = $item_id")
+    sql = sql_tmp.substitute(wid=info["warehouse_id"], item_id=info["item_id"])
+    cur = get_mia_cursor("mia_wms")
+    cur.execute(sql)
+
+    result_data = cur.fetchall()
     cur.close()
     return result_data[0][0]
 
@@ -77,14 +91,14 @@ def get_order_pre_qty(info):
 # 重置预占库存
 # 地址 http://10.5.105.104:9089/stock/resetStockPreQty?itemId=5822719&warehouseId=3364
 if __name__ == '__main__':
-    start_date = (datetime.datetime.now() - datetime.timedelta(minutes=60)).strftime("%Y-%m-%d %H:%M")
-    m_date = (datetime.datetime.now() - datetime.timedelta(minutes=30)).strftime("%Y-%m-%d %H:%M")
+    start_date = (datetime.datetime.now() - datetime.timedelta(minutes=1440)).strftime("%Y-%m-%d %H:%M")
+    m_date = (datetime.datetime.now() - datetime.timedelta(minutes=360)).strftime("%Y-%m-%d %H:%M")
     print(start_date, m_date)
     rows = get_bmp_pre_stock_list(start_date, m_date)
     for r in rows:
         get_order_pre_qty(r)
 
-    # time.sleep(10)
+    time.sleep(2)
     print("mia 处理开始")
     rows = get_mia_pre_stock_list(start_date, m_date)
     for r in rows:
