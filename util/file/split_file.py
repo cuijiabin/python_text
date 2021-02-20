@@ -64,7 +64,7 @@ def split_txt(txt):
 
 
 if __name__ == '__main__':
-    # splitByLineCount('E:/file/download/tt/stock_item.txt', 1000)
-    remove_file(85)
+    splitByLineCount('E:/file/download/订单删除/001.txt', 30000)
+    # remove_file(85)
 
     # splitByLineCount('E:/file/download/error/cancel.txt', 2000)

@@ -48,4 +48,9 @@ def file_check(file_a, file_b):
 
 if __name__ == '__main__':
     # file_check("白金-mysql.txt", "白金用户列表.txt")
-    file_check("pro.txt", "pro-mysql.txt")
+    # file_check("pro.txt", "pro-mysql.txt")
+    r_data = {
+        "logIds": "343883662,343971348,343871316"
+    }
+    r = requests.post("http://10.5.107.217:9999/userJob/batchDelLog", data=r_data)
+    print(r.status_code)

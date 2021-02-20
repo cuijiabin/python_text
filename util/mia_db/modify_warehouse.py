@@ -4,31 +4,17 @@ import util as bm
 from string import Template
 
 target_warehouse_map = {
-    8100: 6868,
-    8103: 7575,
-    8104: 6868,
-    8105: 3364,
-    8106: 40,
-    8117: 40,
-    8131: 40,
-    8132: 3364,
-    8133: 6868,
-    8134: 7575,
-    8135: 40,
-    8136: 3364,
-    8137: 6868,
-    8138: 7575,
-    8156: 40,
-    8157: 3364,
-    8158: 6868,
-    8159: 7575
+    6868: 3364,
+    7575: 3364
 }
 
 
 # 根据仓库id获取可用库存列表
 def get_order_list():
     cur = bm.get_mia_cursor("mia_mirror")
-    sql = "select id, order_code, warehouse_id from orders WHERE warehouse_id in (8100,8103,8104,8105,8106,8117,8131,8132,8133,8134,8135,8136,8137,8138,8156,8157,8158,8159) and wdgj_status = 1 and `status` !=6"
+    # sql = "select id, order_code, warehouse_id from orders WHERE order_code in ('2012052398902155') and `status` !=6"
+    sql = "select DISTINCT o.id, o.order_code,o.warehouse_id from orders o LEFT JOIN order_item t on o.id = t.order_id " + \
+          "where o.order_time>'2021-1-4' and t.spu_id=5876088 and o.`status`<3 AND o.warehouse_id in (6868,7575)"
     cur.execute(sql)
 
     columns = [col[0] for col in cur.description]
@@ -101,7 +87,8 @@ def gen_update_order_item_sql(order_item_list, stock_map):
                 print("item_id new stock_item_id is null " + json.dumps(order_item))
                 continue
             else:
-                print(sql_tmp.substitute(id=order_item["id"], wid=wid, stock_item_id=stock_item_id, pre_wid=order_item["warehouse_id"], pre_stock_id=order_item["stock_item_id"]))
+                print(sql_tmp.substitute(id=order_item["id"], wid=wid, stock_item_id=stock_item_id,
+                                         pre_wid=order_item["warehouse_id"], pre_stock_id=order_item["stock_item_id"]))
                 continue
 
         order_item_map.setdefault(order_item["id"], wid)
@@ -186,27 +173,27 @@ if __name__ == '__main__':
     print("-- order_item update sql")
     order_item_map = gen_update_order_item_sql(order_item_list, stock_map)
 
-    order_item_ids = list(map(lambda x: x['id'], order_item_list))
-    # 预售商品查询
-    order_presell_item_list = get_order_presell_item_list(order_item_ids)
-    if len(order_presell_item_list) > 0:
-        print("-- order_presell_item update sql")
-        gen_update_detail_sql(order_presell_item_list, "order_presell_item", order_item_map)
+    # order_item_ids = list(map(lambda x: x['id'], order_item_list))
+    # # 预售商品查询
+    # order_presell_item_list = get_order_presell_item_list(order_item_ids)
+    # if len(order_presell_item_list) > 0:
+    #     print("-- order_presell_item update sql")
+    #     gen_update_detail_sql(order_presell_item_list, "order_presell_item", order_item_map)
 
     # 退货单查询
-    return_list = get_returns_list(order_code_list)
-    if len(return_list) > 0:
-        print("-- returns update sql")
-        gen_returns_sql(return_list, order_warehouse_map)
+    # return_list = get_returns_list(order_code_list)
+    # if len(return_list) > 0:
+    #     print("-- returns update sql")
+    #     gen_returns_sql(return_list, order_warehouse_map)
 
     # 退货商品查询
-    return_items_list = get_return_items_list(order_item_ids)
-    if len(return_items_list) > 0:
-        print("-- return_items update sql")
-        gen_update_detail_sql(return_items_list, "return_items", order_item_map)
+    # return_items_list = get_return_items_list(order_item_ids)
+    # if len(return_items_list) > 0:
+    #     print("-- return_items update sql")
+    #     gen_update_detail_sql(return_items_list, "return_items", order_item_map)
 
     # 售后退货处理详细表查询
-    return_process_item_list = get_return_process_item_list(order_item_ids)
-    if len(return_process_item_list) > 0:
-        print("-- return_process_item update sql")
-        gen_update_detail_sql(return_process_item_list, "return_process_item", order_item_map)
+    # return_process_item_list = get_return_process_item_list(order_item_ids)
+    # if len(return_process_item_list) > 0:
+    #     print("-- return_process_item update sql")
+    #     gen_update_detail_sql(return_process_item_list, "return_process_item", order_item_map)

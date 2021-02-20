@@ -1,11 +1,9 @@
 # coding=utf-8
-import datetime
-import json
-import time
+
+from string import Template
 
 import pymysql
 import requests
-from string import Template
 
 
 def get_mia_cursor(db_name="mia_mirror"):
@@ -88,18 +86,35 @@ def get_wms_qty(info):
     return result_data[0][0]
 
 
+def get_bmp_pre_stock_by_ids(bmp_ids):
+    cur = get_mia_cursor("mia_bmp")
+    sql_tmp = Template(
+        "select item_id,warehouse_id,pre_qty,lastmodified_date as modify_time from brand_stock_item_channel "
+        "WHERE id in ($ids)")
+    ids = ", ".join(list(map(lambda x: str(x), bmp_ids)))
+    sql = sql_tmp.substitute(ids=ids)
+    cur.execute(sql)
+    columns = [col[0] for col in cur.description]
+    rows = [dict(zip(columns, row)) for row in cur.fetchall()]
+    cur.close()
+    return rows
+
+
 # 重置预占库存
 # 地址 http://10.5.105.104:9089/stock/resetStockPreQty?itemId=5822719&warehouseId=3364
+# 1440 2880 4320 5760 7200
 if __name__ == '__main__':
-    start_date = (datetime.datetime.now() - datetime.timedelta(minutes=1440)).strftime("%Y-%m-%d %H:%M")
-    m_date = (datetime.datetime.now() - datetime.timedelta(minutes=360)).strftime("%Y-%m-%d %H:%M")
-    print(start_date, m_date)
-    rows = get_bmp_pre_stock_list(start_date, m_date)
+    # start_date = (datetime.datetime.now() - datetime.timedelta(minutes=7200)).strftime("%Y-%m-%d %H:%M")
+    # m_date = (datetime.datetime.now() - datetime.timedelta(minutes=5760)).strftime("%Y-%m-%d %H:%M")
+    # print(start_date, m_date)
+    # rows = get_bmp_pre_stock_list(start_date, m_date)
+    ids = [7125, 7912, 9262]
+    rows = get_bmp_pre_stock_by_ids(ids)
     for r in rows:
         get_order_pre_qty(r)
 
-    time.sleep(2)
-    print("mia 处理开始")
-    rows = get_mia_pre_stock_list(start_date, m_date)
-    for r in rows:
-        get_order_pre_qty(r)
+    # time.sleep(2)
+    # print("mia 处理开始")
+    # rows = get_mia_pre_stock_list(start_date, m_date)
+    # for r in rows:
+    #     get_order_pre_qty(r)
