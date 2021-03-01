@@ -227,7 +227,7 @@ def auto_checkout_multi():
          "minPriceOk": True, "mutexCouponItem": {}, "oneUsable": 1, "password_code": "", "selected": 1,
          "startTime": "2020.11.18", "superpositionType": 1, "timeValidType": 1, "title": "", "type": 1, "typeUse": 1,
          "useEndTime": "2021.11.26", "useRang": "无门槛", "useStartTime": "2020.11.18", "validDay": 0, "value": "9.90"}],
-                                                                     "couponsSize": 1, "orderItems": [
+        "couponsSize": 1, "orderItems": [
             {"balancePrice": "0", "batchCodePlatform": "normal-201118-142674567ec14d5d", "brandId": 6769,
              "cashCouponPrice": "0.00", "categoryId": 0, "categoryIdNg": 12867, "couponCode": "UAB1A8913FC0E00",
              "couponCodePlatform": "UAB1A8913FC0E00", "couponLimitType": 1, "couponPrice": "9.90",
@@ -258,5 +258,27 @@ def auto_checkout_multi():
     print(r.content.decode("utf-8"))
 
 
+def test_zero_bmp_stock():
+    head = {"Content-Type": "application/json; charset=UTF-8", 'Connection': 'close'}
+    businessParams = json.dumps({"warehouseId": 1016,
+                                 "userId": 9999,
+                                 "itemIdList": [2020037713],
+                                 })
+    commonParams = json.dumps({"appVersion": "1.0",
+                               "clientVersion": "1.0",
+                               "opUser": "pop",
+                               "requestId": "5c53da49-e075-4d82-b9c7-52edbc0e92dc",
+                               "timestamp": "1604561779971"
+                               })
+    r_data = {
+        "businessParams": businessParams,
+        "commonParams": commonParams
+    }
+    # print(json.dumps(r_data))
+    r = requests.post("http://172.16.96.197:9999/order-stock-service-api/stockBmp/bmpDistributeStockQty",
+                      data=json.dumps(r_data), headers=head)
+    print(r.content.decode("utf-8"))
+
+
 if __name__ == "__main__":
-    auto_checkout_multi()
+    test_zero_bmp_stock()

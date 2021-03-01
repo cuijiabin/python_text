@@ -108,7 +108,7 @@ if __name__ == '__main__':
     # m_date = (datetime.datetime.now() - datetime.timedelta(minutes=5760)).strftime("%Y-%m-%d %H:%M")
     # print(start_date, m_date)
     # rows = get_bmp_pre_stock_list(start_date, m_date)
-    ids = [7125, 7912, 9262]
+    ids = [17949]
     rows = get_bmp_pre_stock_by_ids(ids)
     for r in rows:
         get_order_pre_qty(r)
