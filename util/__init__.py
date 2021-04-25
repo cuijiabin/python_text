@@ -42,7 +42,7 @@ def get_log_cursor(db_name="log"):
 
 def get_mia_test_cursor(db_name="mia_test2"):
     conn = pymysql.connect(host="172.16.104.207",
-                           port=3307,
+                           port=3308,
                            user="write_user",
                            passwd="write_pwd",
                            db=db_name,
@@ -85,6 +85,7 @@ def is_number(s):
     except (TypeError, ValueError):
         pass
     return False
+
 
 # 打开excel文件
 def open_excel(file):

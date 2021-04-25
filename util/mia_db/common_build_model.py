@@ -9,13 +9,15 @@ import util.mia_db as mu
 """
 
 if __name__ == "__main__":
-    cursor = bm.get_mia_cursor("db_pop")
-    tables = mu.get_table_list("item_spu_draft", cursor)
+    cursor = bm.get_mia_test_cursor()
+    # tables = mu.get_table_list("order", cursor)
+    tables = mu.get_all_table_name("mia_test2", cursor)
     for name in tables:
         columns = mu.get_columns_name(name, cursor)
 
-        print("表名" + name)
+        # print("表名" + name)
         for c in columns:
-            print(c)
+            if "channel" in c:
+                print("表名" + name + " 字段" + c)
 
-        print("======================")
+        # print("======================")

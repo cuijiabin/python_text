@@ -491,7 +491,7 @@ def clear_bmp_pre_qty():
         stock_key = gen_stock_key(t[0])
         pre_qty_field = gen_pre_qty_field(t[1])
         print(t, redis_client.hget(stock_key, pre_qty_field))
-        redis_client.hdel(stock_key, pre_qty_field)
+        # redis_client.hdel(stock_key, pre_qty_field)
 
 
 if __name__ == '__main__':

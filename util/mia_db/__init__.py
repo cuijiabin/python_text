@@ -27,6 +27,13 @@ def get_columns_name(db_table, db_cursor):
     return list(map(lambda x: x[0], column_data))
 
 
+def get_all_table_name(db_table, db_cursor):
+    sql = "select table_name from information_schema.tables where table_schema = '" + db_table + "'"
+    db_cursor.execute(sql)
+    column_data = db_cursor.fetchall()
+    return list(map(lambda x: x[0], column_data))
+
+
 def get_sql_param(table_name, field, param):
     sql = "SELECT * FROM " + table_name + " WHERE " + field + " IN (%s)"
     condition = ", ".join(list(map(lambda x: "%s", param)))

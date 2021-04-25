@@ -66,8 +66,8 @@ def fib_matpow(n):
 
 
 if __name__ == "__main__":
-    convert_second(1614268800)
-    # convert_mill(2147483647)
+    # convert_second(1617789650)
+    convert_mill(1627747199000)
     # # convert_str_second("2020-07-09 14:10:00")
     # # convert_str_mill("2020-03-13", "%Y-%m-%d")
     # for i in range(143, 1428):

@@ -8,8 +8,8 @@ def callback(ch, method, properties, body):
 
 
 def consume_mq(q):
-    credentials = pika.PlainCredentials('yue', '123qwe')
-    connection = pika.BlockingConnection(pika.ConnectionParameters('172.16.96.82', 5672, '/', credentials))
+    credentials = pika.PlainCredentials('root', 'root')
+    connection = pika.BlockingConnection(pika.ConnectionParameters('172.16.104.185', 5672, '/', credentials))
     channel = connection.channel()
 
     channel.queue_declare(q, True)
@@ -19,4 +19,4 @@ def consume_mq(q):
 
 
 # consume_mq("partner.promotion.monitored.queue")
-consume_mq("order_status_change_que2")
+consume_mq("order.pay.sync.queue")

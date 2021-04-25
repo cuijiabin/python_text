@@ -26,7 +26,7 @@ def mkSubFile(lines, head, srcName, sub):
 
 
 def splitByLineCount(filename, count):
-    fin = open(filename, 'r')
+    fin = open(filename, 'r', encoding='UTF-8')
     try:
         head = fin.readline()
         buf = []
@@ -64,7 +64,7 @@ def split_txt(txt):
 
 
 if __name__ == '__main__':
-    splitByLineCount('E:/file/download/订单删除/001.txt', 30000)
+    splitByLineCount('E:/file/download/lock_order.txt', 500)
     # remove_file(85)
 
     # splitByLineCount('E:/file/download/error/cancel.txt', 2000)

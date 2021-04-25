@@ -19,8 +19,8 @@ def send_mq(publish_map, body_content):
 
 
 def send_headers_mq(headers, publish_map, body_content):
-    credentials = pika.PlainCredentials('root', 'root')
-    connection = pika.BlockingConnection(pika.ConnectionParameters('172.16.104.185', 5672, '/', credentials))
+    credentials = pika.PlainCredentials('miya_amqp_admin', 'miya_admin_pwd')
+    connection = pika.BlockingConnection(pika.ConnectionParameters('172.16.96.87', 5672, '/', credentials))
     channel = connection.channel()
 
     # 声明queue
@@ -69,7 +69,11 @@ if __name__ == "__main__":
         "exchange": "order.pay.sync.exchange",
         "routing_key": "order.pay.sync.routeKey"
     }
-
+    pd_group_pay_map = {
+        "queue": "local_groupon.order.pay.success.queue",
+        "exchange": "local_groupon.order.pay.success.exchange",
+        "routing_key": "local_groupon.order.pay.success.routkey"
+    }
 
     # send_mq(insurance_send_map, json.dumps(paramsMap))
 
@@ -78,6 +82,5 @@ if __name__ == "__main__":
 
     # send_mq(group_send_map, '"{\\"superiorOrderCode\\":\\"202002197000056064\\",\\"fromType\\":4,,\\"status\\":1,'
     #                         '\\"relationId\\":16936121,\\"userId\\":220109011}"')
-    send_headers_mq("com.mia.srv.order.rabbit_mq.PaySyncInfo", front_pay_map,
-                    '{"superiorOrderCode":"202002197000056064","userId":220109011}')
-
+    send_headers_mq("com.mia.srv.orderpd.mq.GrouponOrderInfo", pd_group_pay_map,
+                    '{"superiorOrderCode":"202104109000082655","status":1,"fromType":18,"relationId":512,"userId":220111366}')

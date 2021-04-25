@@ -25,11 +25,18 @@ def get_cluster_client():
     return RedisCluster(startup_nodes=redis_nodes, decode_responses=True)
 
 
-def test_add_data(user_list):
+def test_add_data():
     redis_client = get_cluster_client()
-    for user_id in user_list:
-        mod = user_id % 100
-        print(redis_client.hget("crm_uid_phone_relation:" + str(mod), str(user_id)))
+
+    print(redis_client.get("stock_self_bmp_warehouse"))
+    # print(redis_client.delete("stock_self_bmp_warehouse"))
+
+
+# def test_add_data(user_list):
+#     redis_client = get_cluster_client()
+#     for user_id in user_list:
+#         mod = user_id % 100
+#         print(redis_client.hget("crm_uid_phone_relation:" + str(mod), str(user_id)))
 
 
 def delete_stock(itemId):
@@ -177,14 +184,14 @@ if __name__ == '__main__':
     # 1000239 1000847
     # delete_stock(5460752)
     # batch_delete_pre_init()
-    # test_add_data([33696279])
-    item_list = [5546637]
-
-    for id in item_list:
-        # delete_stock(id)
-        get_stock(id)
-        get_all_stock_list(id)
-    # delete_stock(3035634)
+    # test_add_data()
+    # item_list = [5546637]
+    #
+    # for id in item_list:
+    #     # delete_stock(id)
+    #     get_stock(id)
+    #     get_all_stock_list(id)
+    delete_stock(5641520)
     # redis_client = get_cluster_client()
     # print(redis_client.get("data_handel_create_lock:2020-06-29"))
     # print(redis_client.delete("data_handel_create_lock:2020-06-29"))

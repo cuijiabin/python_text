@@ -31,8 +31,9 @@ def test_add_data():
     # redis_client.hset("crm_uid_phone_relation:88", "220108488", "17310853906")
     # print(redis_client.hgetall("crm_upload_uid_phone_relation:424"))
     # print(redis_client.lrange("crm_upload_uid_phone_list:424", 0, -1))
-    print(redis_client.get("stock_spu_sku_relation_1000087"))
-    print(redis_client.delete("stock_spu_sku_relation_1000087"))
+    # print(redis_client.get("stock_spu_sku_relation_33356"))
+    print(redis_client.delete("stock_spu_sku_relation_33356"))
+    # print(redis_client.delete("stock_self_bmp_warehouse"))
 
 
 def test_match():
