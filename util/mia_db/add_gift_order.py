@@ -1,8 +1,9 @@
+from itertools import chain
+
 import pymysql
-from itertools import groupby, chain
-from string import Template
 
 
+# 获取数据库游标
 def get_default_cursor():
     conn = pymysql.connect(host="10.5.96.80",
                            port=3306,
@@ -12,12 +13,13 @@ def get_default_cursor():
     return conn.cursor()
 
 
+# 获取最近锁定的手机号
 def get_lock_phone_set():
     cur = get_default_cursor()
     sql = "SELECT DISTINCT o.dst_mobile " \
           "FROM mia_wms.`oms_intercept_policy_order_rels` r " \
           "INNER JOIN mia.orders o on r.order_id = o.id " \
-          "WHERE r.policy_id = 41 and r.is_lock = 1 and o.`status` < 6"
+          "WHERE r.policy_id = 41 and r.is_lock = 1 and o.`status` < 6 and r.create_time > '2021-04-22 09:00'"
     cur.execute(sql)
 
     rows = cur.fetchall()
@@ -26,6 +28,7 @@ def get_lock_phone_set():
     return result_list
 
 
+# 获取可被解锁的订单
 def get_unlock_phone_set(p_list):
     code_lists = ','.join(p_list)
     cur = get_default_cursor()
@@ -70,16 +73,17 @@ def get_unlock_order_set(p_list):
 
 
 def stat_row_data(rows):
-    # result_list = []
-    for k, g in groupby(rows, lambda x: x["dst_mobile"]):
-        print(k)
-        print(g)
-        # sub_list = list(map(lambda x: x["id"], g))
-        # if len(sub_list) < 2:
-        #     continue
-        #
-        # del (sub_list[0])
-        # result_list += sub_list
+    mobile_set = set(map(lambda x: str(x['dst_mobile']), rows))
+    # 初始化
+    result_map = dict()
+    for m in mobile_set:
+        result_map.setdefault(m, [])
+
+    for r in rows:
+        m = r['dst_mobile']
+        result_map[m].append(r['superior_order_code'])
+
+    return result_map
 
 
 """
@@ -97,17 +101,32 @@ def split_list_by_n(list_collection, n):
 
 if __name__ == '__main__':
     print("开始数据处理")
-    # lock_phone_list = get_lock_phone_set()
-    # lock_phone_list = split_list_by_n(lock_phone_list, 100)
-    # for lock_phone in lock_phone_list:
-    #     unlock_phone = get_unlock_phone_set(lock_phone)
-    #     if len(unlock_phone) < 1:
-    #         continue
-    #     unlock_order = get_unlock_order_set(unlock_phone)
-    #     for o in unlock_order:
-    #         print(o["superior_order_code"], o["dst_mobile"], o["oc"])
 
-    unlock_order = get_unlock_order_set(['13910915709', '15563141306', '15640811172'])
-    stat_row_data(unlock_order)
-    # for o in unlock_order:
-    #     print(o["superior_order_code"], o["dst_mobile"], o["third_order_time"])
+    # 也可以创建一个.doc的word文档
+    unlock_file = open("E:\\file\\download\\unlock_order.txt", 'w', encoding='UTF-8')
+    lock_file = open("E:\\file\\download\\lock_order.txt", 'w', encoding='UTF-8')
+    # msg也就是下面的Hello world!
+    unlock_file.write("手机号 待解锁父订单号 当前关联锁定订单数" + "\n")
+    lock_file.write("手机号 锁定父订单号" + "\n")
+
+    lock_phone_list = get_lock_phone_set()
+    lock_phone_list = split_list_by_n(lock_phone_list, 100)
+    for lock_phone in lock_phone_list:
+        unlock_phone = get_unlock_phone_set(lock_phone)
+        if len(unlock_phone) < 1:
+            continue
+        unlock_order = get_unlock_order_set(unlock_phone)
+        mobile_map = stat_row_data(unlock_order)
+        for dst_mobile in mobile_map:
+            superior_list = mobile_map[dst_mobile]
+            first_code = superior_list[0]
+            superior_set = set(superior_list)
+            superior_set.remove(first_code)
+
+            unlock_file.write(dst_mobile + " " + first_code + " " + str(len(superior_set) + 1) + "\n")
+            if len(superior_set) > 0:
+                for c in superior_set:
+                    lock_file.write(dst_mobile + " " + c + "\n")
+
+    unlock_file.close()
+    lock_file.close()
