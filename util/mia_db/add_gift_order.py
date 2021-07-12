@@ -19,7 +19,7 @@ def get_lock_phone_set():
     sql = "SELECT DISTINCT o.dst_mobile " \
           "FROM mia_wms.`oms_intercept_policy_order_rels` r " \
           "INNER JOIN mia.orders o on r.order_id = o.id " \
-          "WHERE r.policy_id = 41 and r.is_lock = 1 and o.`status` < 6 and r.create_time > '2021-04-22 09:00'"
+          "WHERE r.policy_id = 41 and r.is_lock = 1 and o.`status` < 6 and o.is_lock = 1 and r.create_time > '2021-04-10 09:00' and r.create_time < '2021-05-27 00:00' "
     cur.execute(sql)
 
     rows = cur.fetchall()

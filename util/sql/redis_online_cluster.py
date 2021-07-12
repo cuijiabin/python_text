@@ -184,14 +184,14 @@ if __name__ == '__main__':
     # 1000239 1000847
     # delete_stock(5460752)
     # batch_delete_pre_init()
-    # test_add_data()
+    test_add_data()
     # item_list = [5546637]
     #
     # for id in item_list:
     #     # delete_stock(id)
     #     get_stock(id)
     #     get_all_stock_list(id)
-    delete_stock(5641520)
+    # delete_stock(5641520)
     # redis_client = get_cluster_client()
     # print(redis_client.get("data_handel_create_lock:2020-06-29"))
     # print(redis_client.delete("data_handel_create_lock:2020-06-29"))

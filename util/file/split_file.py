@@ -120,6 +120,6 @@ def split_txt(txt):
 
 
 if __name__ == '__main__':
-    # split_file_line_count('E:/file/download/unlock_order.txt', 10, False)
+    # split_file_line_count('E:/file/download/unlock_order_提取.txt', 200, False)
     # remove_file('E:/file/download/unlock_order', 2)
     extract_file_line_count('E:/file/download/unlock_order.txt', 100)

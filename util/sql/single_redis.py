@@ -7,9 +7,9 @@ import redis
 #     r = redis.StrictRedis(host='172.16.104.185', port=6379, db=0)
 #     print(r.info())
 
-
+# 线上master
 def get_set_info():
-    r = redis.StrictRedis(host='10.5.111.139', port=6379, db=0)
+    r = redis.StrictRedis(host='10.5.111.125', port=6379, db=0)
     # print(r.exists("crm_strategy_task_zset"))
     # s = r.zscan("crm_strategy_task_zset", 20)
     # print(s)
@@ -21,4 +21,13 @@ def get_set_info():
 
 
 if __name__ == '__main__':
-    get_set_info()
+    r = redis.StrictRedis(host='10.5.111.125', port=6379, db=0)
+
+    m_list = ['15225860225']
+    wx_list = ['oRMfI5Y2zmdJHP_iAugHTAGXsZm8']
+    for m in wx_list:
+        print(m, r.hget("yao_xin_groupon_v3_dst_mobile_115", m))
+        # print(m, r.hdel("yao_xin_groupon_v3_dst_mobile_115", m))
+    for m in m_list:
+        print(m, r.hget("yao_xin_groupon_v3_open_id_115", m))
+        # print(m, r.hdel("yao_xin_groupon_v3_open_id_115", m))

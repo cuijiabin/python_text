@@ -8,12 +8,13 @@ from multiprocessing import Queue
 from collections import deque
 
 queue = deque()
-f_data = ['http://10.5.105.104:9089/stock/resetStockPreQty?itemId=5917249&warehouseId=6868',
-          'http://10.5.105.104:9089/stock/resetStockPreQty?itemId=5917243&warehouseId=6868',
-          'http://10.5.105.104:9089/stock/resetStockPreQty?itemId=5917242&warehouseId=6868',
-          'http://10.5.105.104:9089/stock/resetStockPreQty?itemId=5917241&warehouseId=6868',
-          'http://10.5.105.104:9089/stock/resetStockPreQty?itemId=5917250&warehouseId=6868',
-          'http://10.5.105.104:9089/stock/resetStockPreQty?itemId=5917239&warehouseId=6868']
+f_data = ['http://10.5.105.104:9089/stock/resetStockPreQty?itemId=5937766&warehouseId=6868',
+          'http://10.5.105.104:9089/stock/resetStockPreQty?itemId=5937768&warehouseId=6868',
+          'http://10.5.105.104:9089/stock/resetStockPreQty?itemId=5937765&warehouseId=6868',
+          'http://10.5.105.104:9089/stock/resetStockPreQty?itemId=5937764&warehouseId=6868',
+          'http://10.5.105.104:9089/stock/resetStockPreQty?itemId=5937767&warehouseId=6868',
+          'http://10.5.105.104:9089/stock/resetStockPreQty?itemId=5950394&warehouseId=3364',
+          'http://10.5.105.104:9089/stock/resetStockPreQty?itemId=5950394&warehouseId=6868']
 # print("本次需要跑出的数组长度 ", len(f_data))
 for dd in f_data:
     queue.append(dd)
