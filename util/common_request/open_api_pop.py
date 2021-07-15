@@ -262,7 +262,20 @@ def test_zero_bmp_stock():
     head = {"Content-Type": "application/json; charset=UTF-8", 'Connection': 'close'}
     businessParams = json.dumps({"warehouseId": 1016,
                                  "userId": 9999,
-                                 "itemIdList": [2020037713],
+                                 "sourceList": [{
+                                     "brandChannel": 1,
+                                     "id": 6746,
+                                     "itemId": 5486217,
+                                     "qty": 4,
+                                     "tzItemId": 0
+                                 }],
+                                 "targetList": [{
+                                     "brandChannel": 10,
+                                     "id": 6747,
+                                     "itemId": 5486217,
+                                     "qty": 4,
+                                     "tzItemId": 0
+                                 }]
                                  })
     commonParams = json.dumps({"appVersion": "1.0",
                                "clientVersion": "1.0",
