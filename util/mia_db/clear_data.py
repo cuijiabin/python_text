@@ -76,8 +76,16 @@ def l_read_file(filename, num, N):
 
 if __name__ == '__main__':
     # for i in range(0, 133):
-    for i in range(0, 1):
-        file_name = "E:/file/download/mibean/bean_total_" + str(i + 1) + ".txt"
-        print(file_name)
-        l_read_file(file_name, i, 500)
-        time.sleep(1)
+    # for i in range(0, 1):
+    #     file_name = "E:/file/download/mibean/bean_total_" + str(i + 1) + ".txt"
+    #     print(file_name)
+    #     l_read_file(file_name, i, 500)
+    #     time.sleep(1)
+    oo = []
+    for o in oo:
+        post_data = {
+            "orderCodes": str(o)
+        }
+
+        r = requests.post("http://10.5.107.177:8082/order/batchDecryptOrder.sc", data=post_data)
+        print(r.content.decode("utf-8"))
