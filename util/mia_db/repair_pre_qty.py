@@ -104,11 +104,11 @@ def get_bmp_pre_stock_by_ids(bmp_ids):
 # 地址 http://10.5.105.104:9089/stock/resetStockPreQty?itemId=5822719&warehouseId=3364
 # 1440 2880 4320 5760 7200
 if __name__ == '__main__':
-    # start_date = (datetime.datetime.now() - datetime.timedelta(minutes=1440)).strftime("%Y-%m-%d %H:%M")
-    # end_date = (datetime.datetime.now() - datetime.timedelta(minutes=180)).strftime("%Y-%m-%d %H:%M")
+    # start_date = (datetime.datetime.now() - datetime.timedelta(minutes=180)).strftime("%Y-%m-%d %H:%M")
+    # end_date = (datetime.datetime.now() - datetime.timedelta(minutes=40)).strftime("%Y-%m-%d %H:%M")
     # print(start_date, end_date)
     # rows = get_bmp_pre_stock_list(start_date, end_date)
-    ids = [17948]
+    ids = [44848]
     rows = get_bmp_pre_stock_by_ids(ids)
     for r in rows:
         get_order_pre_qty(r)

@@ -1,116 +1,7 @@
 # coding=utf-8
+import pymysql
 import requests
 import json
-
-
-# 测试苏宁订单确认功能
-def test_suning_order_confirm():
-    r_json = json.dumps({
-        "sn_request": {
-            "sn_body": {
-                "confirmOrder": {
-                    "orderId": "1912117000036250",
-                    "orderstatus": "02"
-                }
-            }
-        }
-    })
-
-    post_data = {
-        "method": "suning.online.order.confirm",
-        "request_data": r_json
-    }
-
-    r = requests.post("https://gateway.mia.com/sngateway", data=post_data)
-    print(r.content.decode("utf-8"))
-    print(r)
-
-
-# 测试苏宁订单支付结果通知
-def test_suning_order_update():
-    r_json = json.dumps({
-        "sn_request": {
-            "sn_body": {
-                "updateOrder": {
-                    "orderId": "1912027000032873",
-                    "orderStatus": "04"
-                }
-            }
-        }
-    })
-
-    post_data = {
-        "method": "suning.online.order.update",
-        "request_data": r_json
-    }
-
-    r = requests.post("https://gateway.mia.com/sngateway", data=post_data)
-    print(r.content.decode("utf-8"))
-    print(r)
-
-
-# 测试苏宁订单确认收货接口
-def test_suning_order_cmmdtyreceive():
-    r_json = json.dumps({
-        "sn_request": {
-            "sn_body": {
-                "confirmCmmdtyreceive": {
-                    "orderItemInfo": [
-                        {
-                            "operateTime": "20191210101220",
-                            "orderItemId": "2147483647",
-                            "statusDesc": "0"
-                        },
-                        {
-                            "operateTime": "20191210101220",
-                            "orderItemId": "2147483647",
-                            "statusDesc": "0"
-                        },
-                        {
-                            "operateTime": "20191210101220",
-                            "orderItemId": "2147483647",
-                            "statusDesc": "0"
-                        }
-
-                    ]
-
-                }
-            }
-        }
-    })
-
-    post_data = {
-        "method": "suning.online.cmmdtyreceive.confirm",
-        "request_data": r_json
-    }
-
-    r = requests.post("https://gateway.mia.com/sngateway", data=post_data)
-    print(r.content.decode("utf-8"))
-    print(r)
-
-
-# 测试苏宁订单支付前取消
-def test_suning_order_cancel():
-    r_json = json.dumps({
-        "sn_request": {
-            "sn_body": {
-                "cancelOrder": {
-                    "orderId": "1912027000032873",
-                    "orderStatus": "03",
-                    "flag": "02"
-                }
-            }
-        }
-    })
-
-    post_data = {
-        "method": "suning.online.order.cancel",
-        "request_data": r_json
-    }
-
-    r = requests.post("https://gateway.mia.com/sngateway", data=post_data)
-    print(str(r.content.decode("utf-8")))
-    print(r)
 
 
 def bindCouponByCode():
@@ -177,102 +68,21 @@ def get_third_order():
     print(r.content.decode("utf-8"))
 
 
-def query_coupon_for_checkout_multi():
-    # r_data = {"canUseChannel": 5, "checkedCouponCodes": [], "checkedCouponCodesSize": 0, "platform": "Normal",
-    #           "tContent": {"couponsSize": 0, "orderItems": [
-    #               {"balancePrice": "0", "brandId": 6769, "cashCouponPrice": "0", "categoryId": 0, "categoryIdNg": 12867,
-    #                "couponCode": "0", "couponLimitType": 0, "couponPrice": "0", "couponPriceDetailsSize": 0,
-    #                "dealPrice": "110.00", "giftType": 0, "isPlusPack": 0, "isSpu": 0, "itemId": 1000110,
-    #                "itemName": " 限定版护翼日用卫生巾 23cm*20片", "itemSalePrice": "110.00", "itemSize": "SINGLE", "itemType": 0,
-    #                "nonPlatformCashCouponPrice": "0", "nonPlatformCouponPrice": "0", "parentCategoryId": 0,
-    #                "payPrice": "110.00", "platformCashCouponPrice": "0", "platformCouponPrice": "0", "redbagPrice": "0",
-    #                "reducePrice": "0", "seckill": 0, "shipPrice": "0", "shopId": 1192, "shopName": "", "spuSkus": [],
-    #                "spuSkusSize": 0, "supplierId": 0, "taxPrice": "0", "uniqKey": "0", "warehouseId": 0,
-    #                "warehouseType": 6}], "orderItemsSize": 1,
-    #                        "orders": {"balancePrice": "0", "cashCouponPrice": "0.00", "channel": "211",
-    #                                   "ckSuperiorOrderCode": "", "ckType": 110, "couponPrice": "0.00",
-    #                                   "dealPrice": "110.00", "orderTime": "2021-02-09 16:08:54", "payPrice": "110.00",
-    #                                   "salePrice": "110.00", "shipPrice": "0", "subChannel": "0", "taxPrice": "0",
-    #                                   "totalRedbagPrice": "0", "usedRedbagPrice": "0", "userId": 220111262}}}
-    r_data = {"canUseChannel": 5, "checkedCouponCodes": [], "checkedCouponCodesSize": 0, "platform": "Normal",
-              "tContent": {"couponsSize": 0, "orderItems": [
-                  {"balancePrice": "0", "brandId": 6769, "cashCouponPrice": "0", "categoryId": 0,
-                   "categoryIdNg": 12867, "couponCode": "0", "couponLimitType": 0, "couponPrice": "0",
-                   "couponPriceDetailsSize": 0, "dealPrice": "99.10", "giftType": 0, "isPlusPack": 0, "isSpu": 0,
-                   "itemId": 1000110, "itemName": " 限定版护翼日用卫生巾 23cm*20片", "itemSalePrice": "99.10",
-                   "itemSize": "SINGLE", "itemType": 0, "nonPlatformCashCouponPrice": "0",
-                   "nonPlatformCouponPrice": "0", "parentCategoryId": 0, "payPrice": "99.10",
-                   "platformCashCouponPrice": "0", "platformCouponPrice": "0", "redbagPrice": "0",
-                   "reducePrice": "0", "seckill": 0, "shipPrice": "0", "shopId": 1192, "shopName": "蜜芽自营",
-                   "spuSkus": [], "spuSkusSize": 0, "supplierId": 0, "taxPrice": "0",
-                   "uniqKey": "1000110-SINGLE-0", "warehouseId": 40, "warehouseType": 1}], "orderItemsSize": 1,
-                           "orders": {"balancePrice": "0", "cashCouponPrice": "0", "channel": "211",
-                                      "ckSuperiorOrderCode": "", "ckType": 112, "couponPrice": "0",
-                                      "dealPrice": "99.10", "orderTime": "2021-02-09 16:08:10",
-                                      "payPrice": "99.10", "salePrice": "99.10", "shipPrice": "0",
-                                      "subChannel": "weixinxcx_pick", "taxPrice": "0", "totalRedbagPrice": "0",
-                                      "usedRedbagPrice": "0", "userId": 220111262}}}
-    r = requests.post("http://127.0.0.1:8080/couponTrade/queryCouponForCheckoutMulti",
-                      data={"json": json.dumps(r_data)})
-    print(r.content.decode("utf-8"))
-
-
-def auto_checkout_multi():
-    r_data = {"canUseChannel": 5, "platform": "Normal", "tContent": {"coupons": [
-        {"afterCouponOrderMinPrice": "0.00", "allOk": True, "batchCode": "normal-201118-142674567ec14d5d",
-         "bindTime": "2021.02.09", "bindUserId": 220111262, "businessId": 0, "businessType": 1, "canGroupon": 0,
-         "canNormal": 1, "canSeckill": 0, "canVirtualItem": 0, "canXiaoHuan": 0, "couponCode": "UAB1A8913FC0E00",
-         "couponDetailOk": True, "couponInfoOk": True, "expireTime": "2021.11.26", "isFreeShip": 0, "isGlobalUse": 1,
-         "isPassword": 1, "isShowSearchLink": 0, "isUsable": 1, "itemOk": True, "leftUseNum": 1, "minPrice": "0.00",
-         "minPriceOk": True, "mutexCouponItem": {}, "oneUsable": 1, "password_code": "", "selected": 1,
-         "startTime": "2020.11.18", "superpositionType": 1, "timeValidType": 1, "title": "", "type": 1, "typeUse": 1,
-         "useEndTime": "2021.11.26", "useRang": "无门槛", "useStartTime": "2020.11.18", "validDay": 0, "value": "9.90"}],
-        "couponsSize": 1, "orderItems": [
-            {"balancePrice": "0", "batchCodePlatform": "normal-201118-142674567ec14d5d", "brandId": 6769,
-             "cashCouponPrice": "0.00", "categoryId": 0, "categoryIdNg": 12867, "couponCode": "UAB1A8913FC0E00",
-             "couponCodePlatform": "UAB1A8913FC0E00", "couponLimitType": 1, "couponPrice": "9.90",
-             "couponPriceDetailsSize": 0, "dealPrice": "111.11", "giftType": 0, "isPlusPack": 0, "isSpu": 0,
-             "itemId": 1000112, "itemName": " 柔肤夜用护翼卫生巾 33cm*9片多花色红色红色红色红色红色红色红色红色", "itemSalePrice": "111.11",
-             "itemSize": "SINGLE", "itemType": 0, "nonPlatformCashCouponPrice": "0", "nonPlatformCouponPrice": "0",
-             "parentCategoryId": 0, "payPrice": "101.21", "platformCashCouponPrice": "0", "platformCouponPrice": "9.90",
-             "redbagPrice": "0", "reducePrice": "0", "seckill": 0, "shipPrice": "0", "shopId": 1192, "shopName": "蜜芽自营",
-             "spuSkus": [], "spuSkusSize": 0, "supplierId": 0, "taxPrice": "0", "uniqKey": "1000112-SINGLE-0",
-             "warehouseId": 40, "warehouseType": 1}], "orderItemsSize": 1, "orders": {"balancePrice": "0",
-                                                                                      "cashCouponPrice": "0.00",
-                                                                                      "channel": "211",
-                                                                                      "ckSuperiorOrderCode": "",
-                                                                                      "ckType": 112,
-                                                                                      "couponPrice": "9.90",
-                                                                                      "dealPrice": "111.11",
-                                                                                      "orderTime": "2021-02-18 17:47:04",
-                                                                                      "payPrice": "101.21",
-                                                                                      "salePrice": "111.11",
-                                                                                      "shipPrice": "0",
-                                                                                      "subChannel": "weixinxcx_pick",
-                                                                                      "taxPrice": "0",
-                                                                                      "totalRedbagPrice": "0",
-                                                                                      "usedRedbagPrice": "0",
-                                                                                      "userId": 220111262}}}
-    r = requests.post("http://127.0.0.1:8080/couponTrade/autoCheckoutMulti",
-                      data={"json": json.dumps(r_data)})
-    print(r.content.decode("utf-8"))
-
-
 def test_zero_bmp_stock():
     head = {"Content-Type": "application/json; charset=UTF-8", 'Connection': 'close'}
-    businessParams = json.dumps({"warehouseId": 1016,
+    businessParams = json.dumps({"warehouseId": 9757,
                                  "userId": 9999,
                                  "sourceList": [{
                                      "brandChannel": 1,
-                                     "id": 6746,
-                                     "itemId": 5486217,
+                                     "id": 42259,
+                                     "itemId": 6056781,
                                      "qty": 4,
                                      "tzItemId": 0
                                  }],
                                  "targetList": [{
-                                     "brandChannel": 10,
-                                     "id": 6747,
-                                     "itemId": 5486217,
+                                     "brandChannel": 264,
+                                     "id": 43775,
+                                     "itemId": 6056781,
                                      "qty": 4,
                                      "tzItemId": 0
                                  }]
@@ -293,5 +103,81 @@ def test_zero_bmp_stock():
     print(r.content.decode("utf-8"))
 
 
+def order_decrypt(order_code):
+    post_data = {
+        "order_code": str(order_code)
+    }
+    r = requests.post("http://ums.intra.miyabaobei.com/server_api/order_api/getThirdOrderDecryptData", data=post_data)
+    print(r.content.decode("utf-8"))
+
+
+def get_mia_cursor(db_name="mia"):
+    conn = pymysql.connect(host="10.5.96.80",
+                           port=3306,
+                           user="pop_cuijiabin",
+                           passwd="8dtx5EOUZASc#",
+                           db=db_name,
+                           charset="utf8")
+    return conn.cursor()
+
+
+# SELECT rp.id
+# FROM open_order_channel ooc
+# LEFT JOIN orders o on ooc.superior_order_code = o.superior_order_code
+# LEFT JOIN return_process rp on rp.order_code = o.order_code
+# WHERE ooc.open_order_id  = '210701-035481242541403';
+
+def get_return_process_order(s_code):
+    cur = get_mia_cursor("mia")
+
+    sql = "SELECT rp.id " + \
+          "FROM open_order_channel ooc  " + \
+          "LEFT JOIN orders o on ooc.superior_order_code = o.superior_order_code " + \
+          "LEFT JOIN return_process rp on rp.order_code = o.order_code " + \
+          "WHERE ooc.open_order_id  = '" + str(s_code) + "'"
+    # print(sql)
+    cur.execute(sql)
+    result_data = cur.fetchall()
+    if len(result_data) > 0 and result_data[0][0] is not None:
+        # print(result_data[0])
+        return "是"
+    return "否"
+
+
+def get_qimen_process_order(s_code):
+    cur = get_mia_cursor("mia")
+
+    sql = "SELECT id " + \
+          "FROM qimen_return_item  " + \
+          "WHERE open_order_id  = '" + str(s_code) + "'"
+    cur.execute(sql)
+    result_data = cur.fetchall()
+    if len(result_data) > 0 and result_data[0][0] is not None:
+        return "是"
+    return "否"
+
+
+# 根据mia子单号查询快递单号信息
+def get_dst_sheet(order_code):
+    cur = get_mia_cursor("mia")
+
+    sql = "SELECT DISTINCT o.order_code,ec.name as express_name,ds.sheet_code,sw.`name` as warehouse_name " + \
+          "FROM orders o LEFT JOIN parent_dst_sheet ds on o.id = ds.order_id " + \
+          "LEFT JOIN express_company ec on ec.id = ds.express_id " + \
+          "LEFT JOIN stock_warehouse sw on sw.id = o.warehouse_id " + \
+          "WHERE o.order_code  = '" + str(order_code) + "'"
+    cur.execute(sql)
+    columns = [col[0] for col in cur.description]
+    rows = [dict(zip(columns, row)) for row in cur.fetchall()]
+    cur.close()
+    if len(rows) < 1:
+        print("")
+    else:
+        print(rows[0])
+
+
 if __name__ == "__main__":
-    test_zero_bmp_stock()
+    ll = ['2108182447165443']
+    for o in ll:
+        # print(get_return_process_order(o))
+        get_dst_sheet(o)

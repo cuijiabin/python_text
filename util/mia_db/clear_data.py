@@ -84,8 +84,10 @@ if __name__ == '__main__':
     oo = []
     for o in oo:
         post_data = {
-            "orderCodes": str(o)
+            "orderCode": str(o),
+            "targetWarehouseId": 9757,
+            "confirmTime": "2021-08-24 16:30:00",
         }
 
-        r = requests.post("http://10.5.107.177:8082/order/batchDecryptOrder.sc", data=post_data)
-        print(r.content.decode("utf-8"))
+        r = requests.post("http://10.5.107.177:8082/order/changeOrderWarehouse.sc", data=post_data)
+        print(str(o), r.content.decode("utf-8"))

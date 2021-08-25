@@ -111,7 +111,7 @@ def gen_bmp_update_sql(item_list):
     for bmp_id, num in return_map.items():
         sql = sql_tmp.substitute(id=str(bmp_id), num="+" + str(num))
         print(sql)
-        print("扣减")
+        print("默认扣减")
         d_bmp = bmp_map.get(bmp_id)
         default_bmp = get_bmp_stock_info(1, d_bmp['item_id'], 0, 0)
         for bb in default_bmp:
@@ -119,7 +119,7 @@ def gen_bmp_update_sql(item_list):
                 continue
             msg = "库存不足" if bb['stock_quantity'] < num else "库存充足"
             reduce_sql = sql_tmp.substitute(id=str(bb['id']), num="-" + str(num))
-            print(reduce_sql, msg, bb['warehouse_id'])
+            print(reduce_sql, msg, bb['warehouse_id'], bb['stock_quantity'])
 
 
 # 原路退还sql
@@ -133,6 +133,9 @@ def gen_original_bmp_update_sql(order_dict, item_list):
         order_id = item['order_id']
         oo = order_dict.get(order_id)
         default_bmp = get_bmp_stock_info(oo['brand_channel'], item['item_id'], item['spu_id'], item['warehouse_id'])
+        if len(default_bmp) < 1:
+            print("原路查询失败")
+            return
         d_bmp = default_bmp[0]
         return_list.append(d_bmp['id'])
         bmp_map[d_bmp['id']] = d_bmp
@@ -140,9 +143,9 @@ def gen_original_bmp_update_sql(order_dict, item_list):
     return_map = dict(Counter(return_list))
     sql_tmp = Template("update brand_stock_item_channel set stock_quantity = stock_quantity$num where id = $id;")
     for bmp_id, num in return_map.items():
-        sql = sql_tmp.substitute(id=str(bmp_id), num="+" + str(num))
-        print(sql)
-        print("扣减")
+        # sql = sql_tmp.substitute(id=str(bmp_id), num="+" + str(num))
+        # print(sql)
+        print("渠道扣减")
         d_bmp = bmp_map.get(bmp_id)
         default_bmp = get_bmp_stock_info(d_bmp['channel_id'], d_bmp['item_id'], d_bmp['tz_item_id'], 0)
         for bb in default_bmp:
@@ -150,11 +153,12 @@ def gen_original_bmp_update_sql(order_dict, item_list):
                 continue
             msg = "库存不足" if bb['stock_quantity'] < num else "库存充足"
             reduce_sql = sql_tmp.substitute(id=str(bb['id']), num="-" + str(num))
-            print(reduce_sql, msg, bb['warehouse_id'])
+            print(reduce_sql, msg, bb['warehouse_id'], bb['stock_quantity'])
 
 
 if __name__ == '__main__':
-    order_code_list = ['2107132439633044']
+    order_code_list = [2108242448213983, 2108242448213963, 2108242448217873, 2108242448217903, 2108242448214013, 2108242448217893,
+          2108242448217883]
     # 获取订单列表
     o_list = get_order_info(order_code_list)
     # 获取明细列表
@@ -168,5 +172,5 @@ if __name__ == '__main__':
     gen_original_bmp_update_sql(order_map, order_item_list)
 
     # 确定目标仓库后生成转仓sql
-    gen_update_order_sql(o_list, 6868)
-    gen_update_item_sql(order_item_list, 6868)
+    gen_update_order_sql(o_list, 9757)
+    gen_update_item_sql(order_item_list, 9757)

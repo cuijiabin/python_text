@@ -1,11 +1,13 @@
 import pymysql
+import requests
+import time
 
 
 def get_mia_cursor(db_name="mia"):
-    conn = pymysql.connect(host="10.5.110.107",
+    conn = pymysql.connect(host="10.5.96.80",
                            port=3306,
-                           user="coupon_mia_read",
-                           passwd="xzpd857gyy3mo",
+                           user="pop_cuijiabin",
+                           passwd="8dtx5EOUZASc#",
                            db=db_name,
                            charset="utf8")
     return conn.cursor()
@@ -38,5 +40,30 @@ def get_select_result():
     return rows
 
 
+def get_decrypt_order():
+    cur = get_mia_cursor("mia")
+
+    sql = "SELECT DISTINCT too.third_order_code " + \
+          "FROM third_process_order too INNER JOIN open_order_channel ooc on ooc.open_order_id = too.third_order_code " + \
+          "LEFT JOIN third_order_decrypt tod on ooc.superior_order_code = tod.mia_order_code " + \
+          "WHERE too.third_order_time BETWEEN '2021-08-16 00:00' AND '2021-08-20 00:00' " + \
+          "AND too.dst_phone_encrypt is not NULL " + \
+          "AND tod.id is null LIMIT 500"
+    cur.execute(sql)
+    result_data = cur.fetchall()
+    if len(result_data) > 0:
+        f_data = list(map(lambda x: x[0], result_data))
+        return f_data
+    return []
+
+
 if __name__ == '__main__':
-    print(get_select_result())
+    oo_list = [2107272442773593]
+    for o in oo_list:
+        post_data = {
+            "orderCodes": str(o)
+        }
+
+        r = requests.post("http://10.5.107.177:8082/order/batchDecryptOrder.sc", data=post_data)
+        print(r.content.decode("utf-8"))
+        time.sleep(0.3)
