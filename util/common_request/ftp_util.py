@@ -28,6 +28,7 @@ class MyFtp:
         self.ftp.quit()
 
 
+# ftp协议文件传输
 if __name__ == '__main__':
     ftp = MyFtp('10.5.97.74')
     ftp.login('admin', 'ilbhxuosnfm4736u')

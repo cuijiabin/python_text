@@ -414,8 +414,8 @@ def clear_bmp_pre_qty():
 
 
 if __name__ == '__main__':
-    # get_stock(5486228)
-    delete_stock(2893734)
+    get_stock(5486227)
+    # delete_stock(5486227)
     # mq = {
     #     "itemId": 2474565,
     #     "opType": 9,

@@ -4,28 +4,6 @@ import requests
 import json
 
 
-def bindCouponByCode():
-    r_data = {
-        "orderCode": 1509180,
-        "userId": "DD",
-        "remark": "DD",
-        "operatorId": 10000
-    }
-    r = requests.post("http://localhost:8080/coupon/bindCoupon.sc", data=r_data)
-    print(r.content.decode("utf-8"))
-
-
-def forceCancelOrder(orderCode, userId):
-    r_data = {
-        "orderCode": orderCode,
-        "userId": userId,
-        "remark": "不想要了",
-        "operatorId": 10000
-    }
-    r = requests.post("http://10.5.107.177:8082/order/forceCancelSubOrder.sc", data=r_data)
-    print(r.content.decode("utf-8"))
-
-
 def test_get_bmp_stock():
     head = {"Content-Type": "application/json; charset=UTF-8", 'Connection': 'close'}
     businessParams = json.dumps({"warehouseId": 1016,
@@ -121,12 +99,6 @@ def get_mia_cursor(db_name="mia"):
     return conn.cursor()
 
 
-# SELECT rp.id
-# FROM open_order_channel ooc
-# LEFT JOIN orders o on ooc.superior_order_code = o.superior_order_code
-# LEFT JOIN return_process rp on rp.order_code = o.order_code
-# WHERE ooc.open_order_id  = '210701-035481242541403';
-
 def get_return_process_order(s_code):
     cur = get_mia_cursor("mia")
 
@@ -171,13 +143,43 @@ def get_dst_sheet(order_code):
     rows = [dict(zip(columns, row)) for row in cur.fetchall()]
     cur.close()
     if len(rows) < 1:
-        print("")
+        print("##")
     else:
-        print(rows[0])
+        r = rows[0]
+        express_name = r['express_name']
+        sheet_code = r['sheet_code']
+        warehouse_name = r['warehouse_name']
+        result = ""
+        if express_name is None:
+            express_name = ""
+
+        if sheet_code is None:
+            sheet_code = ""
+
+        if warehouse_name is None:
+            warehouse_name = ""
+        print(express_name + "\t" + sheet_code + "\t" + warehouse_name)
+
+
+# 抖音订单解密
+def decrypt_third_order(s_code):
+    head = {
+        "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+        "Third-Token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJqd3RfYWRtaW4iLCJzdWIiOiJ1bXMifQ.NqYPhBsMWuoq8BZzOI7cF_QWXhBhTteJm0lUYeTePic"}
+    r_data = {
+        "third_order_code": str(s_code),
+        "decrypt_field": [
+            "phone", "name", "address"
+        ]
+    }
+    print(json.dumps(r_data))
+    r = requests.post("http://third-trade-api.miaidc.com/api/Tiktok_orders/tiktok_order_decrypt",
+                      data=json.dumps(r_data), headers=head)
+    print(r.content.decode("utf-8"))
 
 
 if __name__ == "__main__":
-    ll = ['2108182447165443']
+
+    ll = []
     for o in ll:
-        # print(get_return_process_order(o))
-        get_dst_sheet(o)
+        decrypt_third_order(str(o))

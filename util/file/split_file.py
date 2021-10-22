@@ -42,7 +42,7 @@ def split_file_line_count(filename, count, add_header):
         fin.close()
 
 
-# 提取文本字段
+# 提取文本字段 并把列转换成行
 def extract_file_line_count(filename, count):
     file_in = open(filename, 'r', encoding='UTF-8')
     try:
@@ -89,14 +89,16 @@ def extract_sub_file(lines, filename, sub, last):
         file_out.close()
 
 
+# 行数据转化
 def convert_line(lines):
     result_list = []
     for line in lines:
-        split_array = line.split(" ")
-        if len(split_array) < 2:
-            continue
+        # split_array = line.split(" ")
+        # if len(split_array) < 2:
+        #     continue
 
-        content = split_array[1].replace('  ', '').replace('\n', '')
+        # content = split_array[1].replace('  ', '').replace('\n', '')
+        content = line.replace('  ', '').replace('\n', '')
         content = "'" + content + "'"
         result_list.append(content)
 
@@ -119,7 +121,20 @@ def split_txt(txt):
         print(r)
 
 
+def read_csv(file_path):
+    with open(file_path, encoding="GB2312") as f:
+        line = f.readline()
+        while line:
+            print(line)
+            line = f.readline()
+        f.close()
+
+
 if __name__ == '__main__':
     # split_file_line_count('E:/file/download/unlock_order_提取.txt', 200, False)
     # remove_file('E:/file/download/unlock_order', 2)
-    split_file_line_count('E:/file/download/工作文本/历史数据处理/05.txt', 10000, False)
+    # split_file_line_count('E:/file/download/对账数据导出/所有父单号.txt', 10000, False)
+    # read_csv('E:/file/download/8152e680f9978d76400e7a9dcfccfe95.csv')
+    # read_csv('E:/file/download/xxx.txt')
+
+    extract_file_line_count('E:/file/download/line_convert.txt', 100)

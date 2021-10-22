@@ -6,10 +6,12 @@ update orders set warehouse_id = 6868, wdgj_status = 1, oms_sync_status = 1 wher
 -- 订单明细转仓
 update order_item set warehouse_id = 6868 where id = 679459348 and warehouse_id = 7575;
 """
+import time
 from collections import Counter
 from string import Template
 
 import pymysql
+import requests
 
 
 def get_mia_cursor(db_name="mia"):
@@ -157,8 +159,7 @@ def gen_original_bmp_update_sql(order_dict, item_list):
 
 
 if __name__ == '__main__':
-    order_code_list = [2108242448213983, 2108242448213963, 2108242448217873, 2108242448217903, 2108242448214013, 2108242448217893,
-          2108242448217883]
+    order_code_list = ['2110182457576374']
     # 获取订单列表
     o_list = get_order_info(order_code_list)
     # 获取明细列表
@@ -172,5 +173,32 @@ if __name__ == '__main__':
     gen_original_bmp_update_sql(order_map, order_item_list)
 
     # 确定目标仓库后生成转仓sql
-    gen_update_order_sql(o_list, 9757)
-    gen_update_item_sql(order_item_list, 9757)
+    gen_update_order_sql(o_list, 9769)
+    gen_update_item_sql(order_item_list, 9769)
+
+    # for i in range(56, 28, -1):
+    #     file_name = "E:/file/download/tb/tb_" + str(i) + ".txt"
+    #     print(file_name)
+    #     oo_list = []
+    #
+    #     with open(file_name, encoding="utf8") as f:
+    #         line = f.readline()
+    #         while line:
+    #             line = line.strip('\n')
+    #             if len(line) > 0:
+    #                 # print(line)
+    #                 oo_list.append(line)
+    #             line = f.readline()
+    #         f.close()
+    #
+    #     for o in oo_list:
+    #         post_data = {
+    #             "orderCodes": str(o)
+    #         }
+    #
+    #         r = requests.post("http://10.5.107.177:8082/order/batchEncryptOrder.sc", data=post_data)
+    #         if r.content.decode("utf-8") != "更新成功":
+    #             print(o)
+    #         else:
+    #             print(r.content.decode("utf-8"))
+    #     time.sleep(10)

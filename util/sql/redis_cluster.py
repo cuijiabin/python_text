@@ -6,11 +6,13 @@ import requests
 
 def get_cluster_client():
     redis_nodes = [
-        {'host': '172.16.96.189', 'port': 7000},
-        {'host': '172.16.96.190', 'port': 7001},
-        {'host': '172.16.96.191', 'port': 7002}
-        # {'host': '172.16.96.190', 'port': 7000},
-        # {'host': '172.16.96.191', 'port': 7000}
+        {'host': '172.16.130.100', 'port': 7001},
+        {'host': '172.16.130.100', 'port': 7002},
+        {'host': '172.16.130.100', 'port': 7003},
+        {'host': '172.16.130.100', 'port': 7004},
+        {'host': '172.16.130.100', 'port': 7005},
+        {'host': '172.16.130.100', 'port': 7006}
+
     ]
 
     return RedisCluster(startup_nodes=redis_nodes, decode_responses=True)
@@ -33,7 +35,7 @@ def test_add_data():
     # print(redis_client.lrange("crm_upload_uid_phone_list:424", 0, -1))
     # print(redis_client.get("stock_spu_sku_relation_33356"))
     # print(redis_client.delete("stock_spu_sku_relation_20181229"))
-    print(redis_client.delete("stock_spu_sku_relation_20200024"))
+    print(redis_client.delete("stock_spu_sku_relation_20200017"))
     # print(redis_client.delete("stock_self_bmp_warehouse"))
 
 

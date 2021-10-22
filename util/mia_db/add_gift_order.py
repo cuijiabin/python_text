@@ -99,6 +99,7 @@ def split_list_by_n(list_collection, n):
         yield list_collection[i: i + n]
 
 
+# 订单风控相关数据处理
 if __name__ == '__main__':
     print("开始数据处理")
 
