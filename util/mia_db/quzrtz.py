@@ -1,19 +1,14 @@
 # coding=utf-8
 import sched
 import time
-from datetime import datetime
-import util as bm
-import requests
-from multiprocessing import Queue
 from collections import deque
 
+import requests
+
 queue = deque()
-url_list = ['http://10.5.105.104:9089/stock/resetStockPreQty?itemId=6047969&warehouseId=3364',
-            'http://10.5.105.104:9089/stock/resetStockPreQty?itemId=5887008&warehouseId=6868',
-            'http://10.5.105.104:9089/stock/resetStockPreQty?itemId=2474565&warehouseId=6868',
-            'http://10.5.105.104:9089/stock/resetStockPreQty?itemId=5917246&warehouseId=6868',
-            'http://10.5.105.104:9089/stock/resetStockPreQty?itemId=5960244&warehouseId=6868',
-            'http://10.5.105.104:9089/stock/resetStockPreQty?itemId=5960245&warehouseId=6868'
+url_list = ['http://10.5.105.104:9089/stock/resetStockPreQty?itemId=6047973&warehouseId=3364',
+            'http://10.5.105.104:9089/stock/resetStockPreQty?itemId=6047972&warehouseId=3364'
+
             ]
 # print("本次需要跑出的数组长度 ", len(url_list))
 for url in url_list:

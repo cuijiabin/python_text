@@ -58,7 +58,7 @@ def extract_file_line_count(filename, count):
             extract_sub_file(buf, filename, sub, True)
     finally:
         file_in.close()
-        os.system("start explorer E:\\file\\download")
+        # os.system("start explorer E:\\file\\download")
 
 
 '''

@@ -81,12 +81,13 @@ if __name__ == '__main__':
     #     print(file_name)
     #     l_read_file(file_name, i, 500)
     #     time.sleep(1)
-    oo = [2110202458227703]
+    oo = [
+          ]
     for o in oo:
         post_data = {
             "orderCode": str(o),
-            # "targetWarehouseId": 6868,
-            "confirmTime": "2021-10-21 14:00:00",
+            "targetWarehouseId": 9769,
+            # "confirmTime": "2021-10-21 14:00:00",
         }
 
         r = requests.post("http://10.5.107.177:8082/order/changeOrderWarehouse.sc", data=post_data)

@@ -1,4 +1,6 @@
 # coding=utf-8
+from datetime import datetime
+
 import pymysql
 import requests
 import json
@@ -178,8 +180,57 @@ def decrypt_third_order(s_code):
     print(r.content.decode("utf-8"))
 
 
-if __name__ == "__main__":
+def test_zero_http_stock():
+    head = {"Content-Type": "application/json; charset=UTF-8", 'Connection': 'close'}
+    businessParams = json.dumps({"isTest": 0,
+                                 "items": [
+                                     {"isExact": 0, "itemId": 1000176, "warehouseIds": [], "warehouseIdsSize": 0},
+                                     {"isExact": 0, "itemId": 1000069, "warehouseIds": [], "warehouseIdsSize": 0},
+                                     {"isExact": 0, "itemId": 1000067, "warehouseIds": [], "warehouseIdsSize": 0},
+                                     {"isExact": 0, "itemId": 1000068, "warehouseIds": [], "warehouseIdsSize": 0},
+                                     {"isExact": 0, "itemId": 11111, "warehouseIds": [], "warehouseIdsSize": 0},
+                                     {"isExact": 0, "itemId": 1137666, "warehouseIds": [], "warehouseIdsSize": 0},
+                                     {"isExact": 0, "itemId": 1048263, "warehouseIds": [], "warehouseIdsSize": 0},
+                                     {"isExact": 0, "itemId": 1000150, "warehouseIds": [], "warehouseIdsSize": 0},
+                                     {"isExact": 0, "itemId": 1000002, "warehouseIds": [], "warehouseIdsSize": 0},
+                                     {"isExact": 0, "itemId": 123412, "warehouseIds": [], "warehouseIdsSize": 0},
+                                     {"isExact": 0, "itemId": 888891, "warehouseIds": [], "warehouseIdsSize": 0},
+                                     {"isExact": 0, "itemId": 1000113, "warehouseIds": [], "warehouseIdsSize": 0},
+                                     {"isExact": 0, "itemId": 1000112, "warehouseIds": [], "warehouseIdsSize": 0},
+                                     {"isExact": 0, "itemId": 1000111, "warehouseIds": [], "warehouseIdsSize": 0},
+                                     {"isExact": 0, "itemId": 1000110, "warehouseIds": [], "warehouseIdsSize": 0},
+                                     {"isExact": 0, "itemId": 4464708, "warehouseIds": [], "warehouseIdsSize": 0},
+                                     {"isExact": 0, "itemId": 2377989, "warehouseIds": [], "warehouseIdsSize": 0},
+                                     {"isExact": 0, "itemId": 2348459, "warehouseIds": [], "warehouseIdsSize": 0},
+                                     {"isExact": 0, "itemId": 2065355, "warehouseIds": [], "warehouseIdsSize": 0},
+                                     {"isExact": 0, "itemId": 33346, "warehouseIds": [], "warehouseIdsSize": 0},
+                                 ]
+                                 })
+    commonParams = json.dumps({"appVersion": "1.0",
+                               "clientVersion": "1.0",
+                               "opUser": "pop",
+                               "requestId": "5c53da49-e075-4d82-b9c7-52edbc0e92dc",
+                               "timestamp": "1604561779971"
+                               })
+    r_data = {
+        "businessParams": businessParams,
+        "commonParams": commonParams
+    }
+    # print(json.dumps(r_data))
+    r = requests.post("http://172.16.130.143:9999/order-stock-service-api/stockTrade/stockQueryQty",
+                      data=json.dumps(r_data), headers=head)
+    print(r.content.decode("utf-8"))
 
-    ll = []
-    for o in ll:
-        decrypt_third_order(str(o))
+
+if __name__ == "__main__":
+    a = datetime.now()
+    test_zero_http_stock()
+    b = datetime.now()  # 获取当前时间
+    durn = (b - a).microseconds  # 两个时间差，并以秒显示出来
+    print(durn)
+    # ll = [
+    #     2111022461615053, 2111022461615663, 2111022461613013
+    # ]
+    # for o in ll:
+    #     # decrypt_third_order(str(o))
+    #     order_decrypt(str(o))

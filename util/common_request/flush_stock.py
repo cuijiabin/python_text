@@ -1,4 +1,5 @@
 # coding=utf-8
+import math
 from string import Template
 import pymysql
 import requests
@@ -18,18 +19,18 @@ def get_mia_cursor(db_name="mia"):
 # 10.5.1.10 api.gateway.miaidc.com
 def test_zero_bmp_stock():
     head = {"Content-Type": "application/json; charset=UTF-8", 'Connection': 'close'}
-    businessParams = json.dumps({"warehouseId": 3364,
+    businessParams = json.dumps({"warehouseId": 6868,
                                  "userId": 9999,
                                  "sourceList": [{
-                                     "brandChannel": 1,
-                                     "itemId": 2474174,
-                                     "qty": 1,
-                                     "tzItemId": 0
+                                     "brandChannel": 142,
+                                     "itemId": 5486209,
+                                     "qty": 4,
+                                     "tzItemId": 5827204
                                  }],
                                  "targetList": [{
-                                     "brandChannel": 10,
-                                     "itemId": 2474174,
-                                     "qty": 1,
+                                     "brandChannel": 1,
+                                     "itemId": 5486209,
+                                     "qty": 4,
                                      "tzItemId": 0
                                  }]
                                  })
@@ -116,15 +117,15 @@ def get_stock_turnover(item_id, channel_id, warehouse_id, stock_qty, fd_day):
     return [int(fd_day * sum_sale_count / 60), round(turnover_day, 2), fd_day, round(fd_day / 2.0, 2)]
 
 
-def clear_bmp_stock(item_id, warehouse_id, channel_id):
+def clear_bmp_stock(item_id, tz_item_id, warehouse_id, channel_id):
     cur = get_mia_cursor("mia_bmp")
     sql_tmp = Template(
         "SELECT item_id,warehouse_id,channel_id,tz_item_id,stock_quantity,`status` "
         "from brand_stock_item_channel "
         "where channel_id = $channel_id and warehouse_id = $warehouse_id "
-        "and tz_item_id = $item_id and stock_quantity > 0"
+        "and item_id = $item_id and tz_item_id = $tz_item_id and stock_quantity > 0"
     )
-    sql = sql_tmp.substitute(item_id=item_id, channel_id=channel_id, warehouse_id=warehouse_id)
+    sql = sql_tmp.substitute(item_id=item_id, tz_item_id=tz_item_id, channel_id=channel_id, warehouse_id=warehouse_id)
     cur.execute(sql)
 
     columns = [col[0] for col in cur.description]
@@ -138,17 +139,19 @@ def clear_bmp_stock(item_id, warehouse_id, channel_id):
     sourceList = []
     targetList = []
     for row in rows:
+        # qty = math.floor(row["stock_quantity"] / 2)
+        qty = row["stock_quantity"]
         sourceList.append({
             "brandChannel": channel_id,
             "itemId": row["item_id"],
-            "qty": row["stock_quantity"],
+            "qty": qty,
             "tzItemId": row["tz_item_id"]
         })
 
         targetList.append({
-            "brandChannel": 1,
+            "brandChannel": 10,
             "itemId": row["item_id"],
-            "qty": row["stock_quantity"],
+            "qty": qty,
             "tzItemId": 0
         })
 
@@ -174,6 +177,38 @@ def clear_bmp_stock(item_id, warehouse_id, channel_id):
                       data=json.dumps(r_data), headers=head)
     print(r.content.decode("utf-8"))
     return
+
+
+'''
+-- 未迁移的私域库存数据参数组装
+SELECT concat("(",item_id,",",tz_item_id,",",warehouse_id,",",channel_id,")"),lastmodified_date,stock_quantity,item_id,tz_item_id,id
+from brand_stock_item_channel 
+WHERE channel_id IN (
+228,229
+) 
+AND stock_quantity > 0 
+AND `status` = 1
+ORDER BY lastmodified_date DESC;
+
+'''
+
+
+def get_transfer_pd_list():
+    cur = get_mia_cursor("mia_bmp")
+    sql_tmp = Template(
+        "SELECT DISTINCT item_id,tz_item_id,warehouse_id,channel_id "
+        "FROM brand_stock_item_channel "
+        "WHERE channel_id IN (228 ,229) "
+        "AND stock_quantity > 0 AND `status` = 1 ORDER BY lastmodified_date DESC"
+    )
+    sql = sql_tmp.substitute()
+    cur.execute(sql)
+
+    # columns = [col[0] for col in cur.description]
+    # rows = [dict(zip(columns, row)) for row in cur.fetchall()]
+    rows = cur.fetchall()
+    cur.close()
+    return rows
 
 
 # bmp库存数据刷库相关的操作内容
@@ -202,6 +237,7 @@ if __name__ == "__main__":
     #                 str(row['item_id']) + "\t" + str(row['warehouse_id']) + "\t" + str(row['channel_id']) + "\t" + str(
     #                     num))
 
-    tuple_list = []
+    tuple_list = get_transfer_pd_list()
     for em in tuple_list:
-        clear_bmp_stock(em[0], em[1], em[2])
+        clear_bmp_stock(em[0], em[1], em[2], em[3])
+    # test_zero_bmp_stock()

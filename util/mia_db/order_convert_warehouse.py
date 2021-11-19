@@ -159,7 +159,7 @@ def gen_original_bmp_update_sql(order_dict, item_list):
 
 
 if __name__ == '__main__':
-    order_code_list = ['2110182457576374']
+    order_code_list = ['2111012461405485']
     # 获取订单列表
     o_list = get_order_info(order_code_list)
     # 获取明细列表
@@ -173,8 +173,8 @@ if __name__ == '__main__':
     gen_original_bmp_update_sql(order_map, order_item_list)
 
     # 确定目标仓库后生成转仓sql
-    gen_update_order_sql(o_list, 9769)
-    gen_update_item_sql(order_item_list, 9769)
+    gen_update_order_sql(o_list, 6868)
+    gen_update_item_sql(order_item_list, 6868)
 
     # for i in range(56, 28, -1):
     #     file_name = "E:/file/download/tb/tb_" + str(i) + ".txt"
