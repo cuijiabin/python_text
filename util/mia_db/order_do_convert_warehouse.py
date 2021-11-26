@@ -6,8 +6,8 @@ if __name__ == '__main__':
     for order_code in order_list:
         post_data = {
             "orderCode": str(order_code),
-            # "targetWarehouseId": 6868,
-            "confirmTime": "2021-10-21 14:00:00",
+            "targetWarehouseId": 3364,
+            "remark": "非兔头品牌订单西安仓撤仓"
         }
 
         r = requests.post("http://10.5.107.177:8082/order/changeOrderWarehouse.sc", data=post_data)
