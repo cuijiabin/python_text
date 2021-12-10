@@ -112,7 +112,7 @@ def gen_bmp_update_sql(item_list):
     sql_tmp = Template("update brand_stock_item_channel set stock_quantity = stock_quantity$num where id = $id;")
     for bmp_id, num in return_map.items():
         sql = sql_tmp.substitute(id=str(bmp_id), num="+" + str(num))
-        print(sql)
+        # print(sql)
         print("默认扣减")
         d_bmp = bmp_map.get(bmp_id)
         default_bmp = get_bmp_stock_info(1, d_bmp['item_id'], 0, 0)
@@ -121,7 +121,7 @@ def gen_bmp_update_sql(item_list):
                 continue
             msg = "库存不足" if bb['stock_quantity'] < num else "库存充足"
             reduce_sql = sql_tmp.substitute(id=str(bb['id']), num="-" + str(num))
-            print(reduce_sql, msg, bb['warehouse_id'], bb['stock_quantity'])
+            print(reduce_sql, msg, bb['warehouse_id'], bb['stock_quantity'], bb['item_id'], bb['tz_item_id'])
 
 
 # 原路退还sql
@@ -155,11 +155,11 @@ def gen_original_bmp_update_sql(order_dict, item_list):
                 continue
             msg = "库存不足" if bb['stock_quantity'] < num else "库存充足"
             reduce_sql = sql_tmp.substitute(id=str(bb['id']), num="-" + str(num))
-            print(reduce_sql, msg, bb['warehouse_id'], bb['stock_quantity'])
+            print(reduce_sql, msg, bb['warehouse_id'], bb['stock_quantity'], bb['item_id'], bb['tz_item_id'])
 
 
 if __name__ == '__main__':
-    order_code_list = ['2111012461405485']
+    order_code_list = ['2111232466650093']
     # 获取订单列表
     o_list = get_order_info(order_code_list)
     # 获取明细列表
@@ -173,32 +173,5 @@ if __name__ == '__main__':
     gen_original_bmp_update_sql(order_map, order_item_list)
 
     # 确定目标仓库后生成转仓sql
-    gen_update_order_sql(o_list, 6868)
-    gen_update_item_sql(order_item_list, 6868)
-
-    # for i in range(56, 28, -1):
-    #     file_name = "E:/file/download/tb/tb_" + str(i) + ".txt"
-    #     print(file_name)
-    #     oo_list = []
-    #
-    #     with open(file_name, encoding="utf8") as f:
-    #         line = f.readline()
-    #         while line:
-    #             line = line.strip('\n')
-    #             if len(line) > 0:
-    #                 # print(line)
-    #                 oo_list.append(line)
-    #             line = f.readline()
-    #         f.close()
-    #
-    #     for o in oo_list:
-    #         post_data = {
-    #             "orderCodes": str(o)
-    #         }
-    #
-    #         r = requests.post("http://10.5.107.177:8082/order/batchEncryptOrder.sc", data=post_data)
-    #         if r.content.decode("utf-8") != "更新成功":
-    #             print(o)
-    #         else:
-    #             print(r.content.decode("utf-8"))
-    #     time.sleep(10)
+    # gen_update_order_sql(o_list, 6868)
+    # gen_update_item_sql(order_item_list, 6868)

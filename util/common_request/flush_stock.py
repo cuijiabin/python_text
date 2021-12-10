@@ -149,7 +149,7 @@ def clear_bmp_stock(item_id, tz_item_id, warehouse_id, channel_id):
         })
 
         targetList.append({
-            "brandChannel": 10,
+            "brandChannel": 1,
             "itemId": row["item_id"],
             "qty": qty,
             "tzItemId": 0
@@ -198,8 +198,8 @@ def get_transfer_pd_list():
     sql_tmp = Template(
         "SELECT DISTINCT item_id,tz_item_id,warehouse_id,channel_id "
         "FROM brand_stock_item_channel "
-        "WHERE channel_id IN (228 ,229) "
-        "AND stock_quantity > 0 AND `status` = 1 ORDER BY lastmodified_date DESC"
+        "WHERE channel_id != 1 "
+        "AND stock_quantity > 0 AND `status` = 1 AND warehouse_id = 6868 ORDER BY lastmodified_date DESC"
     )
     sql = sql_tmp.substitute()
     cur.execute(sql)
@@ -240,4 +240,5 @@ if __name__ == "__main__":
     tuple_list = get_transfer_pd_list()
     for em in tuple_list:
         clear_bmp_stock(em[0], em[1], em[2], em[3])
+        # print(em[0], em[1], em[2], em[3])
     # test_zero_bmp_stock()

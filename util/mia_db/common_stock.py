@@ -414,20 +414,23 @@ def clear_bmp_pre_qty():
 
 
 if __name__ == '__main__':
-    # get_stock(5486227)
-    delete_stock(5917244)
+    # get_stock(5876098)
+    mm = [5565211, 5665175, 5887008, 5613405, 5960245]
+    for m in mm:
+        delete_stock(m)
+    # delete_stock(5841449)
     # mq = {
-    #     "itemId": 2474565,
+    #     "itemId": 5876098,
     #     "opType": 9,
     #     "operatePreQty": False,
     #     "orderCode": "10",
-    #     "qty": 8,
-    #     "stockItemId": 5001407,
+    #     "qty": -3,
+    #     "stockItemId": 8242681,
     #     "stockType": 1,
     #     "superiorOrderCode": "",
     #     "test": False,
     #     "userId": 9999,
-    #     "warehouseId": 6868
+    #     "warehouseId": 3364
     # }
-
+    #
     # re_send_product_mq(mq)

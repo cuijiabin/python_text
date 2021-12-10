@@ -27,7 +27,7 @@ def l_read_file(filename, N):
 # 文件对比
 def file_check(file_a, file_b):
     relation = {}
-    with open("E:/file/download/" + file_a) as mf:
+    with open("E:/work-text/" + file_a) as mf:
         line = mf.readline()
         while line:
             line = line.strip('\n')
@@ -35,7 +35,7 @@ def file_check(file_a, file_b):
             line = mf.readline()
         mf.close()
 
-    with open("E:/file/download/" + file_b) as genf:
+    with open("E:/work-text/" + file_b) as genf:
         line = genf.readline()
         while line:
             line = line.strip('\n')
@@ -47,10 +47,10 @@ def file_check(file_a, file_b):
 
 
 if __name__ == '__main__':
-    # file_check("白金-mysql.txt", "白金用户列表.txt")
+    file_check("tmp_03.txt", "tmp_04.txt")
     # file_check("pro.txt", "pro-mysql.txt")
-    r_data = {
-        "logIds": "343883662,343971348,343871316"
-    }
-    r = requests.post("http://10.5.107.217:9999/userJob/batchDelLog", data=r_data)
-    print(r.status_code)
+    # r_data = {
+    #     "logIds": "343883662,343971348,343871316"
+    # }
+    # r = requests.post("http://10.5.107.217:9999/userJob/batchDelLog", data=r_data)
+    # print(r.status_code)

@@ -52,18 +52,19 @@ def test_zero_bmp_stock():
     head = {"Content-Type": "application/json; charset=UTF-8", 'Connection': 'close'}
     businessParams = json.dumps({"warehouseId": 9757,
                                  "userId": 9999,
+                                 "remark": "备8注测试无测试无备注测试无注测试无",
                                  "sourceList": [{
                                      "brandChannel": 1,
                                      "id": 42259,
                                      "itemId": 6056781,
-                                     "qty": 4,
+                                     "qty": 1,
                                      "tzItemId": 0
                                  }],
                                  "targetList": [{
                                      "brandChannel": 264,
                                      "id": 43775,
                                      "itemId": 6056781,
-                                     "qty": 4,
+                                     "qty": 1,
                                      "tzItemId": 0
                                  }]
                                  })
@@ -78,7 +79,7 @@ def test_zero_bmp_stock():
         "commonParams": commonParams
     }
     # print(json.dumps(r_data))
-    r = requests.post("http://172.16.96.197:9999/order-stock-service-api/stockBmp/bmpDistributeStockQty",
+    r = requests.post("http://172.16.130.143:9999/order-stock-service-api/stockBmp/bmpDistributeStockQty",
                       data=json.dumps(r_data), headers=head)
     print(r.content.decode("utf-8"))
 
@@ -224,7 +225,9 @@ def test_zero_http_stock():
 
 if __name__ == "__main__":
     a = datetime.now()
-    test_zero_http_stock()
+    # test_zero_http_stock()
+
+    test_zero_bmp_stock()
     b = datetime.now()  # 获取当前时间
     durn = (b - a).microseconds  # 两个时间差，并以秒显示出来
     print(durn)
