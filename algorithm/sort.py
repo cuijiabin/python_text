@@ -7,6 +7,7 @@
 基数排序
 """
 import math
+
 # 第一类
 """
 插入排序 InsertionSort 插入排序的工作原理是，对于每个未排序数据，在已排序序列中从后向前扫描，找到相应位置并插入。
@@ -18,20 +19,23 @@ import math
 5.将新元素插入到该位置后
 6.重复步骤2~5
 """
+
+
 def insert_sort(array):
     n = len(array)
-    for i in range(1,n):
-        if array[i] < array[i-1]:
+    for i in range(1, n):
+        if array[i] < array[i - 1]:
             temp = array[i]
-            index = i           #待插入的下标
-            for j in range(i-1,-1,-1):  #从i-1 循环到 0 (包括0)
-                if array[j] > temp :
-                    array[j+1] = array[j]
-                    index = j   #记录待插入下标
-                else :
+            index = i  # 待插入的下标
+            for j in range(i - 1, -1, -1):  # 从i-1 循环到 0 (包括0)
+                if array[j] > temp:
+                    array[j + 1] = array[j]
+                    index = j  # 记录待插入下标
+                else:
                     break
             array[index] = temp
     return array
+
 
 """
 冒泡排序 BubbleSort 冒泡排序的原理非常简单，它重复地走访过要排序的数列，一次比较两个元素，如果他们的顺序错误就把他们交换过来。
@@ -41,13 +45,16 @@ def insert_sort(array):
 针对所有的元素重复以上的步骤，除了最后一个。
 持续每次对越来越少的元素重复上面的步骤，直到没有任何一对数字需要比较。
 """
+
+
 def bubble_sort(arry):
-    n = len(arry)                   #获得数组的长度
+    n = len(arry)  # 获得数组的长度
     for i in range(n):
-        for j in range(1,n-i):
-            if  arry[j-1] > arry[j] :       #如果前者比后者大
-                arry[j-1],arry[j] = arry[j],arry[j-1]      #则交换两者
+        for j in range(1, n - i):
+            if arry[j - 1] > arry[j]:  # 如果前者比后者大
+                arry[j - 1], arry[j] = arry[j], arry[j - 1]  # 则交换两者
     return arry
+
 
 """
 选择排序 SelectionSort 选择排序无疑是最简单直观的排序。它的工作原理如下。
@@ -56,15 +63,18 @@ def bubble_sort(arry):
 再从剩余未排序元素中继续寻找最小（大）元素，然后放到已排序序列的末尾。
 以此类推，直到所有元素均排序完毕。
 """
+
+
 def select_sort(array):
     n = len(array)
-    for i in range(0,n):
-        min = i                             #最小元素下标标记
-        for j in range(i+1,n):
-            if array[j] < array[min] :
-                min = j                     #找到最小值的下标
-        array[min],array[i] = array[i],array[min]   #交换两者
+    for i in range(0, n):
+        min = i  # 最小元素下标标记
+        for j in range(i + 1, n):
+            if array[j] < array[min]:
+                min = j  # 找到最小值的下标
+        array[min], array[i] = array[i], array[min]  # 交换两者
     return array
+
 
 """
 希尔排序 ShellSort
@@ -105,19 +115,22 @@ def select_sort(array):
 94
 最后以1步长进行排序（此时就是简单的插入排序了）。
 """
+
+
 def shell_sort(array):
     n = len(array)
-    gap = round(n/2)       #初始步长 , 用round四舍五入取整
-    while gap > 0 :
-        for i in range(gap,n):        #每一列进行插入排序 , 从gap 到 n-1
+    gap = round(n / 2)  # 初始步长 , 用round四舍五入取整
+    while gap > 0:
+        for i in range(gap, n):  # 每一列进行插入排序 , 从gap 到 n-1
             temp = array[i]
             j = i
-            while ( j >= gap and array[j-gap] > temp ):    #插入排序
-                array[j] = array[j-gap]
+            while (j >= gap and array[j - gap] > temp):  # 插入排序
+                array[j] = array[j - gap]
                 j = j - gap
             array[j] = temp
-        gap = round(gap/2)                     #重新设置步长
+        gap = round(gap / 2)  # 重新设置步长
     return array
+
 
 """
 归并排序 MergeSort
@@ -129,21 +142,24 @@ def shell_sort(array):
 再考虑递归分解，基本思路是将数组分解成left和right，如果这两个数组内部数据是有序的，那么就可以用上面合并数组的方法将这两个数组合并排序。
 如何让这两个数组内部是有序的？可以再二分，直至分解出的小组只含有一个元素时为止，此时认为该小组内部已有序。然后合并排序相邻二个小组即可。
 """
+
+
 def merge_sort(ary):
-    if len(ary) <= 1 :
+    if len(ary) <= 1:
         return ary
-    num = int(len(ary)/2)       #二分分解
+    num = int(len(ary) / 2)  # 二分分解
     left = merge_sort(ary[:num])
     right = merge_sort(ary[num:])
-    return merge(left,right)    #合并数组
+    return merge(left, right)  # 合并数组
 
-def merge(left,right):
+
+def merge(left, right):
     '''合并操作，
     将两个有序数组left[]和right[]合并成一个大的有序数组
     '''
-    l,r = 0,0           #left与right数组的下标指针
+    l, r = 0, 0  # left与right数组的下标指针
     result = []
-    while l<len(left) and r<len(right) :
+    while l < len(left) and r < len(right):
         if left[l] < right[r]:
             result.append(left[l])
             l += 1
@@ -153,6 +169,7 @@ def merge(left,right):
     result += left[l:]
     result += right[r:]
     return result
+
 
 """
 快速排序 QuickSort
@@ -166,27 +183,31 @@ def merge(left,right):
 再对左右区间递归执行第二步，直至各区间只有一个数。
 
 """
+
+
 def quick_sort(array):
-    return qsort(array,0,len(array)-1)
+    return qsort(array, 0, len(array) - 1)
 
-def qsort(array,left,right):
-    #快排函数，array为待排序数组，left为待排序的左边界，right为右边界
-    if left >= right :
+
+def qsort(array, left, right):
+    # 快排函数，array为待排序数组，left为待排序的左边界，right为右边界
+    if left >= right:
         return array
-    key = array[left]     #取最左边的为基准数
-    lp = left           #左指针
-    rp = right          #右指针
-    while lp < rp :
-        while array[rp] >= key and lp < rp :
+    key = array[left]  # 取最左边的为基准数
+    lp = left  # 左指针
+    rp = right  # 右指针
+    while lp < rp:
+        while array[rp] >= key and lp < rp:
             rp -= 1
-        while array[lp] <= key and lp < rp :
+        while array[lp] <= key and lp < rp:
             lp += 1
-        array[lp],array[rp] = array[rp],array[lp]
+        array[lp], array[rp] = array[rp], array[lp]
 
-    array[left],array[lp] = array[lp],array[left]
-    qsort(array,left,lp-1)
-    qsort(array,rp+1,right)
+    array[left], array[lp] = array[lp], array[left]
+    qsort(array, left, lp - 1)
+    qsort(array, rp + 1, right)
     return array
+
 
 """
 堆排序 HeapSort
@@ -206,42 +227,47 @@ def qsort(array,left,right):
 
 最大堆调整（Max_Heapify）：该方法是提供给上述两个过程调用的。目的是将堆的末端子节点作调整，使得子节点永远小于父节点 。
 """
-def heap_sort(ary) :
+
+
+def heap_sort(ary):
     n = len(ary)
-    first = int(n/2-1)       #最后一个非叶子节点
-    for start in range(first,-1,-1) :     #构造大根堆
-        max_heapify(ary,start,n-1)
-    for end in range(n-1,0,-1):           #堆排，将大根堆转换成有序数组
-        ary[end],ary[0] = ary[0],ary[end]
-        max_heapify(ary,0,end-1)
+    first = int(n / 2 - 1)  # 最后一个非叶子节点
+    for start in range(first, -1, -1):  # 构造大根堆
+        max_heapify(ary, start, n - 1)
+    for end in range(n - 1, 0, -1):  # 堆排，将大根堆转换成有序数组
+        ary[end], ary[0] = ary[0], ary[end]
+        max_heapify(ary, 0, end - 1)
     return ary
 
 
-#最大堆调整：将堆的末端子节点作调整，使得子节点永远小于父节点
-#start为当前需要调整最大堆的位置，end为调整边界
-def max_heapify(ary,start,end):
+# 最大堆调整：将堆的末端子节点作调整，使得子节点永远小于父节点
+# start为当前需要调整最大堆的位置，end为调整边界
+def max_heapify(ary, start, end):
     root = start
-    while True :
-        child = root*2 +1               #调整节点的子节点
-        if child > end : break
-        if child+1 <= end and ary[child] < ary[child+1] :
-            child = child+1             #取较大的子节点
-        if ary[root] < ary[child] :     #较大的子节点成为父节点
-            ary[root],ary[child] = ary[child],ary[root]     #交换
+    while True:
+        child = root * 2 + 1  # 调整节点的子节点
+        if child > end: break
+        if child + 1 <= end and ary[child] < ary[child + 1]:
+            child = child + 1  # 取较大的子节点
+        if ary[root] < ary[child]:  # 较大的子节点成为父节点
+            ary[root], ary[child] = ary[child], ary[root]  # 交换
             root = child
-        else :
+        else:
             break
+
 
 """
 基数排序
 
 """
+
+
 def radix_sort(lists, radix=10):
     k = int(math.ceil(math.log(max(lists), radix)))
     bucket = [[] for i in range(radix)]
-    for i in range(1, k+1):
+    for i in range(1, k + 1):
         for j in lists:
-            bucket[j/(radix**(i-1)) % (radix**i)].append(j)
+            bucket[j / (radix ** (i - 1)) % (radix ** i)].append(j)
         del lists[:]
         for z in bucket:
             lists += z
@@ -318,8 +344,9 @@ def heapify(arr, low, high):
     # 把假根把到这个正确的位置
     arr[current] = tmp
 
-if __name__ =="__main__":
-    arr = [1,2,5,6,7,4,9,8]
+
+if __name__ == "__main__":
+    arr = [1, 2, 5, 6, 7, 4, 9, 8]
     # arr = insert_sort(arr)
     # arr = bubble_sort(arr)
     # arr = select_sort(arr)

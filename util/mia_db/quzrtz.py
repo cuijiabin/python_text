@@ -6,10 +6,9 @@ from collections import deque
 import requests
 
 queue = deque()
-url_list = ['http://10.5.105.104:9089/stock/resetStockPreQty?itemId=6047973&warehouseId=3364',
-            'http://10.5.105.104:9089/stock/resetStockPreQty?itemId=6047972&warehouseId=3364'
+url_list = [
 
-            ]
+]
 # print("本次需要跑出的数组长度 ", len(url_list))
 for url in url_list:
     queue.append(url)
@@ -38,4 +37,4 @@ def check_gen(inc=60):
 
 
 # 10s 输出一次
-check_gen(1)
+check_gen(0.01)

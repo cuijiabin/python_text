@@ -19,18 +19,18 @@ def get_mia_cursor(db_name="mia"):
 # 10.5.1.10 api.gateway.miaidc.com
 def test_zero_bmp_stock():
     head = {"Content-Type": "application/json; charset=UTF-8", 'Connection': 'close'}
-    businessParams = json.dumps({"warehouseId": 6868,
+    businessParams = json.dumps({"warehouseId": 3364,
                                  "userId": 9999,
                                  "sourceList": [{
-                                     "brandChannel": 142,
-                                     "itemId": 5486209,
-                                     "qty": 4,
-                                     "tzItemId": 5827204
+                                     "brandChannel": 10,
+                                     "itemId": 6107864,
+                                     "qty": 6,
+                                     "tzItemId": 0
                                  }],
                                  "targetList": [{
-                                     "brandChannel": 1,
-                                     "itemId": 5486209,
-                                     "qty": 4,
+                                     "brandChannel": 264,
+                                     "itemId": 6107864,
+                                     "qty": 6,
                                      "tzItemId": 0
                                  }]
                                  })
@@ -213,7 +213,7 @@ def get_transfer_pd_list():
 
 # bmp库存数据刷库相关的操作内容
 if __name__ == "__main__":
-    # test_zero_bmp_stock()
+    test_zero_bmp_stock()
     # tuple_list = []
     #
     # for item in tuple_list:
@@ -237,8 +237,8 @@ if __name__ == "__main__":
     #                 str(row['item_id']) + "\t" + str(row['warehouse_id']) + "\t" + str(row['channel_id']) + "\t" + str(
     #                     num))
 
-    tuple_list = get_transfer_pd_list()
-    for em in tuple_list:
-        clear_bmp_stock(em[0], em[1], em[2], em[3])
+    # tuple_list = get_transfer_pd_list()
+    # for em in tuple_list:
+    #     clear_bmp_stock(em[0], em[1], em[2], em[3])
         # print(em[0], em[1], em[2], em[3])
     # test_zero_bmp_stock()

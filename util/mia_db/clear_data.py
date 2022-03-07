@@ -74,6 +74,23 @@ def l_read_file(filename, num, N):
     # a.close()
 
 
+def read_file(file_path):
+    with open(file_path, 'r') as f:
+        line = f.readline()
+        num = 1
+        while line:
+            line = line.strip('\n')
+            if len(line) == 0:
+                continue
+            requests.get("http://10.5.108.57:8080/orderTrailInit?thirdOrderCode=" + line)
+            if num % 500 == 0:
+                print(num, "休眠")
+                time.sleep(3)
+            num += 1
+            line = f.readline()
+        f.close()
+
+
 if __name__ == '__main__':
     # for i in range(0, 133):
     # for i in range(0, 1):
@@ -81,14 +98,15 @@ if __name__ == '__main__':
     #     print(file_name)
     #     l_read_file(file_name, i, 500)
     #     time.sleep(1)
-    oo = [
-          ]
-    for o in oo:
-        post_data = {
-            "orderCode": str(o),
-            "targetWarehouseId": 9769,
-            # "confirmTime": "2021-10-21 14:00:00",
-        }
-
-        r = requests.post("http://10.5.107.177:8082/order/changeOrderWarehouse.sc", data=post_data)
-        print(str(o), r.content.decode("utf-8"))
+    read_file('E:/file/download/file_32.txt')
+    # oo = [
+    # ]
+    # for o in oo:
+    #     post_data = {
+    #         "orderCode": str(o),
+    #         "targetWarehouseId": 9769,
+    #         # "confirmTime": "2021-10-21 14:00:00",
+    #     }
+    #
+    #     r = requests.post("http://10.5.107.177:8082/order/changeOrderWarehouse.sc", data=post_data)
+    #     print(str(o), r.content.decode("utf-8"))

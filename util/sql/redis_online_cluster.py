@@ -55,8 +55,10 @@ def get_pre_qty_lock_key(item_id, wid):
 
 def get_stock(itemId):
     redis_client = get_cluster_client()
+    print(itemId)
     print(redis_client.hgetall("stock_" + str(itemId)))
-    print(redis_client.hgetall("stock_" + str(itemId) + "_incr"))
+    print(redis_client.hget("stock_" + str(itemId), "wid_3364_stockItemId"))
+    # print(redis_client.hgetall("stock_" + str(itemId) + "_incr"))
 
 
 def pre_incr_stock(itemId, wid):
@@ -182,14 +184,18 @@ if __name__ == '__main__':
     # clear_export_key()
     # get_stock_test(3070037)
     # 1000239 1000847
-    # delete_stock(5460752)
+    # delete_stock(6161488)
     # batch_delete_pre_init()
-    test_add_data()
-    # item_list = [5546637]
+    # test_add_data()
+    item_list = [
+        # 6145320, 6145321, 6145322, 6145317, 6145318, 6145319, 6106468, 6136755, 6106467, 6106466, 6107741, 6175649,
+        # 6178196
+        6161488
+    ]
     #
-    # for id in item_list:
-    #     # delete_stock(id)
-    #     get_stock(id)
+    for id in item_list:
+        delete_stock(id)
+        # get_stock(id)
     #     get_all_stock_list(id)
     # delete_stock(5641520)
     # redis_client = get_cluster_client()

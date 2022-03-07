@@ -1,4 +1,5 @@
 # coding=utf-8
+import time
 from datetime import datetime
 
 import pymysql
@@ -223,17 +224,34 @@ def test_zero_http_stock():
     print(r.content.decode("utf-8"))
 
 
+def read_file(file_path):
+    with open(file_path, 'r') as f:
+        line = f.readline()
+        num = 1
+        while line:
+            line = line.strip('\n')
+            if len(line) == 0:
+                continue
+            requests.get("http://10.5.108.57:8080/orderTrailInit?thirdOrderCode=" + line)
+            if num % 500 == 0:
+                print(num, "休眠")
+                time.sleep(8)
+            num += 1
+            line = f.readline()
+        f.close()
+
+
 if __name__ == "__main__":
-    a = datetime.now()
+    # a = datetime.now()
     # test_zero_http_stock()
 
-    test_zero_bmp_stock()
-    b = datetime.now()  # 获取当前时间
-    durn = (b - a).microseconds  # 两个时间差，并以秒显示出来
-    print(durn)
-    # ll = [
-    #     2111022461615053, 2111022461615663, 2111022461613013
-    # ]
-    # for o in ll:
-    #     # decrypt_third_order(str(o))
-    #     order_decrypt(str(o))
+    # test_zero_bmp_stock()
+    # b = datetime.now()  # 获取当前时间
+    # durn = (b - a).microseconds  # 两个时间差，并以秒显示出来
+    # print(durn)
+    ll = [
+    ]
+    for o in ll:
+        # decrypt_third_order(str(o))
+        order_decrypt(str(o))
+    # read_file('E:/file/download/file_31.txt')
