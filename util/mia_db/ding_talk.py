@@ -19,5 +19,21 @@ def ding_talk():
         data=json_data, headers=headers)
 
 
+def jt_talk():
+    headers = {
+        "apiAccount": "365045451705032732",
+        "digest": "rgfMVgqkUfywNMuAsD1OMw==",
+        "timestamp": "1646730735000"
+    }
+    data = {"billCodes": "557080502147480"
+            }
+    json_data = json.dumps(data)
+    r = requests.post(
+        url='https://openapi.jtexpress.com.cn/webopenplatformapi/api/logistics/trace',
+        data=json_data, headers=headers)
+
+    print(r.content.decode("utf-8"))
+
+
 if __name__ == '__main__':
-    ding_talk()
+    jt_talk()

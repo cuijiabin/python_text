@@ -2,22 +2,12 @@
 import datetime
 from string import Template
 
-import pymysql
 import requests
-
-
-def get_mia_cursor(db_name="mia_mirror"):
-    conn = pymysql.connect(host="10.5.96.80",
-                           port=3306,
-                           user="pop_cuijiabin",
-                           passwd="8dtx5EOUZASc#",
-                           db=db_name,
-                           charset="utf8")
-    return conn.cursor()
+import util as bm
 
 
 def get_bmp_pre_stock_list(start_date, m_date):
-    cur = get_mia_cursor("mia_bmp")
+    cur = bm.get_mia_cursor("mia_bmp")
     sql_tmp = Template(
         "select item_id,warehouse_id,pre_qty,lastmodified_date as modify_time from brand_stock_item_channel "
         "WHERE warehouse_id in (select id from stock_warehouse WHERE type in (1,6,8) and `status` = 1) "
@@ -34,7 +24,7 @@ def get_bmp_pre_stock_list(start_date, m_date):
 
 
 def get_mia_pre_stock_list(start_date, m_date):
-    cur = get_mia_cursor("mia_mirror")
+    cur = bm.get_mia_cursor("mia_mirror")
     sql_tmp = Template(
         "SELECT s.item_id AS item_id, s.warehouse_id AS warehouse_id, s.pre_qty AS pre_qty, s.modify_time as modify_time "
         "from stock_item s LEFT JOIN stock_warehouse sw on s.warehouse_id = sw.id  "
@@ -55,7 +45,7 @@ def get_order_pre_qty(info):
                        "INNER JOIN order_item oi ON oi.order_id = os.id "
                        "WHERE os.warehouse_id = $wid AND os.`status` IN (1, 2) AND oi.item_id = $item_id AND os.is_test = 0")
     sql = sql_tmp.substitute(wid=info["warehouse_id"], item_id=info["item_id"])
-    cur = get_mia_cursor("mia_mirror")
+    cur = bm.get_mia_cursor("mia_mirror")
     cur.execute(sql)
 
     result_data = cur.fetchall()
@@ -78,7 +68,7 @@ def get_wms_qty(info):
                        "INNER JOIN oms_order_item oi ON oo.order_id = oi.order_id "
                        "WHERE o.sync_order = 2 AND o.sync_stock = 1 AND o.warehouse_id = $wid AND oi.item_id = $item_id")
     sql = sql_tmp.substitute(wid=info["warehouse_id"], item_id=info["item_id"])
-    cur = get_mia_cursor("mia_wms")
+    cur = bm.get_mia_cursor("mia_wms")
     cur.execute(sql)
 
     result_data = cur.fetchall()
@@ -87,7 +77,7 @@ def get_wms_qty(info):
 
 
 def get_bmp_pre_stock_by_ids(bmp_ids):
-    cur = get_mia_cursor("mia_bmp")
+    cur = bm.get_mia_cursor("mia_bmp")
     sql_tmp = Template(
         "select item_id,warehouse_id,pre_qty,lastmodified_date as modify_time from brand_stock_item_channel "
         "WHERE id in ($ids)")

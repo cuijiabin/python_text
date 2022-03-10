@@ -3,22 +3,12 @@ import re
 from itertools import groupby
 from string import Template
 
-import pymysql
 import xlrd
-
-
-def get_mia_cursor(db_name="mia_mirror"):
-    conn = pymysql.connect(host="10.5.96.80",
-                           port=3306,
-                           user="pop_cuijiabin",
-                           passwd="8dtx5EOUZASc#",
-                           db=db_name,
-                           charset="utf8")
-    return conn.cursor()
+import util as bm
 
 
 def get_order_list(superior_order_code):
-    cur = get_mia_cursor("mia_mirror")
+    cur = bm.get_mia_cursor("mia_mirror")
     sql_tmp = Template(
         "SELECT id,sale_price,deal_price,pay_price from orders "
         "WHERE superior_order_code = '$superior_order_code' and warehouse_id = 8149"
@@ -32,7 +22,7 @@ def get_order_list(superior_order_code):
 
 
 def get_order_item_list(superior_order_code):
-    cur = get_mia_cursor("mia_mirror")
+    cur = bm.get_mia_cursor("mia_mirror")
     sql_tmp = Template(
         "SELECT id,order_id,sale_price,deal_price,pay_price,promotion_info, "
         "item_id,spu_id,promotion_id,promotion_type,pro_discount "
@@ -63,7 +53,7 @@ def get_update_sql(superior_order_code):
 
 
 def judge_order(order_code_list):
-    cur = get_mia_cursor("mia_mirror")
+    cur = bm.get_mia_cursor("mia_mirror")
     sql_tmp = Template(
         "SELECT o.order_code,oi.item_id,count(oi.qty) as num,i.brand_id "
         "from order_item oi INNER JOIN orders o on oi.order_id = o.id "

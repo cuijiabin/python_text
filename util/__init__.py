@@ -41,7 +41,7 @@ def get_log_cursor(db_name="log"):
 
 
 def get_mia_test_cursor(db_name="mia_test2"):
-    conn = pymysql.connect(host="172.16.104.207",
+    conn = pymysql.connect(host="172.16.130.253",
                            port=3308,
                            user="write_user",
                            passwd="write_pwd",

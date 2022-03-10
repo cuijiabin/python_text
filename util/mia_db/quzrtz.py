@@ -7,7 +7,14 @@ import requests
 
 queue = deque()
 url_list = [
-
+    'http://10.5.105.104:9089/stock/resetStockPreQty?itemId=5079079&warehouseId=6715',
+    'http://10.5.105.104:9089/stock/resetStockPreQty?itemId=5279948&warehouseId=2655',
+    'http://10.5.105.104:9089/stock/resetStockPreQty?itemId=5376323&warehouseId=3364',
+    'http://10.5.105.104:9089/stock/resetStockPreQty?itemId=5565212&warehouseId=3364',
+    'http://10.5.105.104:9089/stock/resetStockPreQty?itemId=5937773&warehouseId=9769',
+    'http://10.5.105.104:9089/stock/resetStockPreQty?itemId=5937770&warehouseId=3364',
+    'http://10.5.105.104:9089/stock/resetStockPreQty?itemId=5937770&warehouseId=9769',
+    'http://10.5.105.104:9089/stock/resetStockPreQty?itemId=5937771&warehouseId=9769'
 ]
 # print("本次需要跑出的数组长度 ", len(url_list))
 for url in url_list:

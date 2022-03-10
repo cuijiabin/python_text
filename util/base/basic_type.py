@@ -26,28 +26,27 @@ fnmatch 模块提供了两个函数—— fnmatch() 和 fnmatchcase()
 """
 
 
-def dump():
-    a = []
-    dt = {}
-    with open("F:/File/download/tmp.txt", encoding="utf8") as f:
+def count_stat():
+    txt_array = []
+    count_map = {}
+    with open("E:/File/download/tmp.txt", encoding="utf8") as f:
         line = f.readline()
         while line:
             line = line.strip('\n')
             if len(line) > 0:
-                a.append(line)
+                txt_array.append(line)
+                # 经典操作
+                count_map[line] = count_map.get(line, 0) + 1
             line = f.readline()
         f.close()
 
-    for key in a:
-        dt[key] = dt.get(key, 0) + 1
-
-    # 按value值排序 什么语法？
-    dt = sorted(dt.items(), key=lambda item: item[1], reverse=True)
-    for v in dt:
+    # 经典操作 对字典按value值排序
+    count_map = sorted(count_map.items(), key=lambda item: item[1], reverse=True)
+    for v in count_map:
         print(v[0], " ", v[1])
 
 
 if __name__ == '__main__':
     # print("cuijiabin".startswith("cui"))
     # print("cuijiabin".startswith("ui"))
-    dump()
+    count_stat()

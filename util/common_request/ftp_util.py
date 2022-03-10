@@ -15,7 +15,7 @@ class MyFtp:
         self.ftp.login(username, pwd)
         print(self.ftp.welcome)
 
-    def downloadFile(self, localpath, remotepath, filename):
+    def download_file(self, localpath, remotepath, filename):
         os.chdir(localpath)  # 切换工作路径到下载目录
         self.ftp.cwd(remotepath)  # 要登录的ftp目录
         self.ftp.nlst()  # 获取目录下的文件
@@ -32,6 +32,6 @@ class MyFtp:
 if __name__ == '__main__':
     ftp = MyFtp('10.5.97.74')
     ftp.login('admin', 'ilbhxuosnfm4736u')
-    ftp.downloadFile('E:/file/download/', ' /jobs/results/DES-202004070858-32309900000000/',
-                     '323613d7-2993-4df5-a492-759fecc06b35.csv')
+    ftp.download_file('E:/file/download/', ' /jobs/results/DES-202004070858-32309900000000/',
+                      '323613d7-2993-4df5-a492-759fecc06b35.csv')
     ftp.close()

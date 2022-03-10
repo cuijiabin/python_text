@@ -1,10 +1,6 @@
 # coding=utf-8
-from collections import Iterable
 import functools
 import gc
-import json
-from pymongo import MongoClient
-from collections import OrderedDict
 
 """
 python 函数式程序设计

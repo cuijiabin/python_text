@@ -6,28 +6,16 @@ update orders set warehouse_id = 6868, wdgj_status = 1, oms_sync_status = 1 wher
 -- 订单明细转仓
 update order_item set warehouse_id = 6868 where id = 679459348 and warehouse_id = 7575;
 """
-import time
 from collections import Counter
 from string import Template
 
-import pymysql
-import requests
-
-
-def get_mia_cursor(db_name="mia"):
-    conn = pymysql.connect(host="10.5.96.80",
-                           port=3306,
-                           user="pop_cuijiabin",
-                           passwd="8dtx5EOUZASc#",
-                           db=db_name,
-                           charset="utf8")
-    return conn.cursor()
+import util as bm
 
 
 def get_order_info(code_list):
     code_list = list(map(lambda x: "'" + str(x) + "'", code_list))
     code_list = ','.join(code_list)
-    cur = get_mia_cursor("mia")
+    cur = bm.get_mia_cursor("mia")
     sql_tmp = Template(
         "select id,order_code,`status`,wdgj_status,oms_sync_status,warehouse_id,channel,brand_channel "
         "from orders WHERE order_code IN ($code_list)")
@@ -42,7 +30,7 @@ def get_order_info(code_list):
 
 def get_order_item_info(id_list):
     str_list = list(map(lambda x: str(x), id_list))
-    cur = get_mia_cursor("mia")
+    cur = bm.get_mia_cursor("mia")
     sql_tmp = Template(
         "SELECT id,order_id,warehouse_id,item_id,spu_id "
         "from order_item WHERE order_id IN ($id_list)")
@@ -83,7 +71,7 @@ def gen_update_item_sql(item_list, target_warehouse_id):
 
 # bmp库存信息查询
 def get_bmp_stock_info(channel_id, item_id, spu_id, warehouse_id):
-    cur = get_mia_cursor("mia_bmp")
+    cur = bm.get_mia_cursor("mia_bmp")
     sql_tmp = Template(
         "SELECT * from brand_stock_item_channel WHERE channel_id = $channel_id and item_id = $item_id "
         "AND tz_item_id = $tz_item_id")

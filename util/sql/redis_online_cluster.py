@@ -57,8 +57,22 @@ def get_stock(itemId):
     redis_client = get_cluster_client()
     print(itemId)
     print(redis_client.hgetall("stock_" + str(itemId)))
-    print(redis_client.hget("stock_" + str(itemId), "wid_3364_stockItemId"))
+    # print(redis_client.hget("stock_" + str(itemId), "wid_3364_stockItemId"))
     # print(redis_client.hgetall("stock_" + str(itemId) + "_incr"))
+
+
+def check_warehouse_num(itemId, num):
+    redis_client = get_cluster_client()
+    keys = redis_client.hgetall("stock_" + str(itemId))
+    w_list = []
+    for key in keys:
+        # print(key)
+        wid = key.split("_")[1]
+        w_list.append(wid)
+
+    w_num = len(set(w_list))
+    if num != w_num:
+        print(itemId, num, w_num)
 
 
 def pre_incr_stock(itemId, wid):
@@ -188,14 +202,11 @@ if __name__ == '__main__':
     # batch_delete_pre_init()
     # test_add_data()
     item_list = [
-        # 6145320, 6145321, 6145322, 6145317, 6145318, 6145319, 6106468, 6136755, 6106467, 6106466, 6107741, 6175649,
-        # 6178196
-        6161488
+        4210781, 4602847, 4602846, 5835062, 5831810, 5835046, 5835045, 5831762, 5384580, 5441593, 5441594, 5803367, 4408571, 3859778, 3859777, 3859776, 4341894, 5987542, 5982135, 3658173, 5372610, 5372611, 5372612, 4498025, 4210792, 4210793, 4210777, 4210778, 4210782, 4210783, 4151050, 4151049, 4151048, 5868481, 5565099, 5189348, 5189345, 5189346, 5189347, 5189342, 5189343, 5189344, 5189339, 5189341, 6137864, 5373135, 5403215, 5403216, 5847676, 5373137, 5403213, 5403214, 5819060
     ]
-    #
     for id in item_list:
         delete_stock(id)
-        # get_stock(id)
+        # check_warehouse_num(id[0], id[1])
     #     get_all_stock_list(id)
     # delete_stock(5641520)
     # redis_client = get_cluster_client()
