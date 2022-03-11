@@ -3,10 +3,8 @@ from string import Template
 
 import util as bm
 
-
 # 父单下商品统计
 def get_all_info(superior_order_code):
-    cur = bm.get_mia_cursor("mia")
     sql_tmp = Template(
         "SELECT "
         "IF(item_info.spu_id=0,0,1) AS is_spu, "
@@ -28,51 +26,35 @@ def get_all_info(superior_order_code):
         # "GROUP BY item_info.spu_id,item_info.item_id "
         "ORDER BY item_id ASC")
     sql = sql_tmp.substitute(superior_order_code=superior_order_code)
-    cur.execute(sql)
 
-    columns = [col[0] for col in cur.description]
-    rows = [dict(zip(columns, row)) for row in cur.fetchall()]
-    cur.close()
-    return rows
+    return bm.get_mia_db_data(sql)
 
 
 # 达人名称获取
 def get_tiktok_alliance_info(superior_order_code):
-    cur = bm.get_mia_cursor("mia")
     sql_tmp = Template(
         "SELECT superior_order_code,author_id,author_account,room_id "
         "FROM third_tiktok_alliance_info "
         "WHERE superior_order_code = '$superior_order_code' AND author_id > 0"
     )
     sql = sql_tmp.substitute(superior_order_code=superior_order_code)
-    cur.execute(sql)
 
-    columns = [col[0] for col in cur.description]
-    rows = [dict(zip(columns, row)) for row in cur.fetchall()]
-    cur.close()
-    return rows
+    return bm.get_mia_db_data(sql)
 
 
 # 客服备注获取
 def get_customer_alliance_info(superior_order_code):
-    cur = bm.get_mia_cursor("mia")
     sql_tmp = Template(
         "SELECT REPLACE(REPLACE(REPLACE(GROUP_CONCAT(l.dscrp),CHAR(9),''),CHAR(10),''),CHAR(13),'') AS dd FROM `order_dscrp_log` l "
         "LEFT JOIN orders o on l.order_code = o.order_code "
         "WHERE o.superior_order_code = '$superior_order_code' AND l.admin_id != 10000 GROUP BY o.superior_order_code"
     )
     sql = sql_tmp.substitute(superior_order_code=superior_order_code)
-    cur.execute(sql)
-
-    columns = [col[0] for col in cur.description]
-    rows = [dict(zip(columns, row)) for row in cur.fetchall()]
-    cur.close()
-    return rows
+    return bm.get_mia_db_data(sql)
 
 
 # 仓库信息获取
 def get_warehouse_info(superior_order_code):
-    cur = bm.get_mia_cursor("mia")
     sql_tmp = Template(
         # "SELECT DISTINCT ooc.open_order_id,sw.id,sw.`name`,o.dst_province,o.dst_city,o.dst_area,o.order_time,o.push_time,pds.deliver_time "
         "SELECT DISTINCT ooc.open_order_id,sw.id,sw.`name` "
@@ -83,17 +65,11 @@ def get_warehouse_info(superior_order_code):
     )
     sql = sql_tmp.substitute(superior_order_code=superior_order_code,
                              superior_order_code_b=str(superior_order_code) + 'A')
-    cur.execute(sql)
-
-    columns = [col[0] for col in cur.description]
-    rows = [dict(zip(columns, row)) for row in cur.fetchall()]
-    cur.close()
-    return rows
+    return bm.get_mia_db_data(sql)
 
 
 # 订单渠道获取
 def get_channel_info(order_code):
-    cur = bm.get_mia_cursor("mia")
     sql_tmp = Template(
         "SELECT o.brand_channel,sw.channel_name,o.order_code "
         "FROM orders o "
@@ -101,17 +77,11 @@ def get_channel_info(order_code):
         "WHERE o.order_code = '$order_code' limit 1"
     )
     sql = sql_tmp.substitute(order_code=order_code)
-    cur.execute(sql)
-
-    columns = [col[0] for col in cur.description]
-    rows = [dict(zip(columns, row)) for row in cur.fetchall()]
-    cur.close()
-    return rows
+    return bm.get_mia_db_data(sql)
 
 
 # 订单物流单号获取
 def get_third_dst_info(order_code):
-    cur = bm.get_mia_cursor("mia")
     sql_tmp = Template(
         "SELECT tor.third_order_code, GROUP_CONCAT(DISTINCT o.order_code) as order_code,GROUP_CONCAT(DISTINCT pds.sheet_code) as sheet_code "
         "from third_order_relation tor "
@@ -120,12 +90,7 @@ def get_third_dst_info(order_code):
         "WHERE tor.third_order_code = '$order_code' GROUP BY tor.third_order_code"
     )
     sql = sql_tmp.substitute(order_code=order_code)
-    cur.execute(sql)
-
-    columns = [col[0] for col in cur.description]
-    rows = [dict(zip(columns, row)) for row in cur.fetchall()]
-    cur.close()
-    return rows
+    return bm.get_mia_db_data(sql)
 
 
 # 物流相关数据导出功能。

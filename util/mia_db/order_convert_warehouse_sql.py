@@ -15,32 +15,22 @@ import util as bm
 def get_order_info(code_list):
     code_list = list(map(lambda x: "'" + str(x) + "'", code_list))
     code_list = ','.join(code_list)
-    cur = bm.get_mia_cursor("mia")
     sql_tmp = Template(
         "select id,order_code,`status`,wdgj_status,oms_sync_status,warehouse_id,channel,brand_channel "
         "from orders WHERE order_code IN ($code_list)")
     sql = sql_tmp.substitute(code_list=code_list)
-    cur.execute(sql)
 
-    columns = [col[0] for col in cur.description]
-    rows = [dict(zip(columns, row)) for row in cur.fetchall()]
-    cur.close()
-    return rows
+    return bm.get_mia_db_data(sql)
 
 
 def get_order_item_info(id_list):
     str_list = list(map(lambda x: str(x), id_list))
-    cur = bm.get_mia_cursor("mia")
     sql_tmp = Template(
         "SELECT id,order_id,warehouse_id,item_id,spu_id "
         "from order_item WHERE order_id IN ($id_list)")
     sql = sql_tmp.substitute(id_list=','.join(str_list))
-    cur.execute(sql)
 
-    columns = [col[0] for col in cur.description]
-    rows = [dict(zip(columns, row)) for row in cur.fetchall()]
-    cur.close()
-    return rows
+    return bm.get_mia_db_data(sql)
 
 
 def gen_update_order_sql(order_list, target_warehouse_id):
@@ -71,18 +61,13 @@ def gen_update_item_sql(item_list, target_warehouse_id):
 
 # bmp库存信息查询
 def get_bmp_stock_info(channel_id, item_id, spu_id, warehouse_id):
-    cur = bm.get_mia_cursor("mia_bmp")
     sql_tmp = Template(
         "SELECT * from brand_stock_item_channel WHERE channel_id = $channel_id and item_id = $item_id "
         "AND tz_item_id = $tz_item_id")
     sql = sql_tmp.substitute(channel_id=channel_id, item_id=item_id, tz_item_id=spu_id)
     if warehouse_id > 0:
         sql += " AND warehouse_id = " + str(warehouse_id)
-    cur.execute(sql)
-    columns = [col[0] for col in cur.description]
-    rows = [dict(zip(columns, row)) for row in cur.fetchall()]
-    cur.close()
-    return rows
+    return bm.get_mia_db_data(sql, "mia_bmp")
 
 
 def gen_bmp_update_sql(item_list):

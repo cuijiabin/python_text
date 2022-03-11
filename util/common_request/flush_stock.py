@@ -1,4 +1,5 @@
 # coding=utf-8
+from itertools import groupby
 from string import Template
 
 import util as bm
@@ -29,7 +30,6 @@ def test_zero_bmp_stock():
 
 # 渠道库存清零
 def clear_bmp_stock(item_id, tz_item_id, warehouse_id, channel_id):
-    cur = bm.get_mia_cursor("mia_bmp")
     sql_tmp = Template(
         "SELECT item_id,warehouse_id,channel_id,tz_item_id,stock_quantity,`status` "
         "from brand_stock_item_channel "
@@ -37,11 +37,8 @@ def clear_bmp_stock(item_id, tz_item_id, warehouse_id, channel_id):
         "and item_id = $item_id and tz_item_id = $tz_item_id and stock_quantity > 0"
     )
     sql = sql_tmp.substitute(item_id=item_id, tz_item_id=tz_item_id, channel_id=channel_id, warehouse_id=warehouse_id)
-    cur.execute(sql)
 
-    columns = [col[0] for col in cur.description]
-    rows = [dict(zip(columns, row)) for row in cur.fetchall()]
-    cur.close()
+    rows = bm.get_mia_db_data(sql, "mia_bmp")
 
     if len(rows) < 1:
         print("无相关数据")
@@ -92,7 +89,6 @@ ORDER BY lastmodified_date DESC;
 
 
 def get_transfer_pd_list():
-    cur = bm.get_mia_cursor("mia_bmp")
     sql_tmp = Template(
         "SELECT DISTINCT item_id,tz_item_id,warehouse_id,channel_id "
         "FROM brand_stock_item_channel "
@@ -100,18 +96,13 @@ def get_transfer_pd_list():
         "AND stock_quantity = 0 AND `status` = 1 AND warehouse_id = 6868 ORDER BY lastmodified_date DESC"
     )
     sql = sql_tmp.substitute()
-    cur.execute(sql)
-
-    # columns = [col[0] for col in cur.description]
-    # rows = [dict(zip(columns, row)) for row in cur.fetchall()]
-    rows = cur.fetchall()
-    cur.close()
-    return rows
+    return bm.get_mia_db_data(sql, "mia_bmp")
 
 
 # bmp库存数据刷库相关的操作内容
 if __name__ == "__main__":
     stock_list = get_transfer_pd_list()
-    for stock in stock_list:
-        print(stock)
-        # clear_bmp_stock(stock[0,1,2,3])
+
+    for k, g in groupby(stock_list, lambda x: x["channel_id"]):
+        print(k)
+        print(list(g))

@@ -7,7 +7,6 @@ import util as bm
 
 
 def get_bmp_pre_stock_list(start_date, m_date):
-    cur = bm.get_mia_cursor("mia_bmp")
     sql_tmp = Template(
         "select item_id,warehouse_id,pre_qty,lastmodified_date as modify_time from brand_stock_item_channel "
         "WHERE warehouse_id in (select id from stock_warehouse WHERE type in (1,6,8) and `status` = 1) "
@@ -15,16 +14,11 @@ def get_bmp_pre_stock_list(start_date, m_date):
         "and lastmodified_date >= '$start_date' "
         "and lastmodified_date < '$lastmodified_date' ORDER BY pre_qty DESC")
     sql = sql_tmp.substitute(start_date=start_date, lastmodified_date=m_date)
-    cur.execute(sql)
 
-    columns = [col[0] for col in cur.description]
-    rows = [dict(zip(columns, row)) for row in cur.fetchall()]
-    cur.close()
-    return rows
+    return bm.get_mia_db_data(sql, "mia_bmp")
 
 
 def get_mia_pre_stock_list(start_date, m_date):
-    cur = bm.get_mia_cursor("mia_mirror")
     sql_tmp = Template(
         "SELECT s.item_id AS item_id, s.warehouse_id AS warehouse_id, s.pre_qty AS pre_qty, s.modify_time as modify_time "
         "from stock_item s LEFT JOIN stock_warehouse sw on s.warehouse_id = sw.id  "
@@ -32,12 +26,8 @@ def get_mia_pre_stock_list(start_date, m_date):
         "and modify_time >= '$start_date' "
         "and modify_time < '$modify_time' ORDER BY s.pre_qty DESC")
     sql = sql_tmp.substitute(start_date=start_date, modify_time=m_date)
-    cur.execute(sql)
 
-    columns = [col[0] for col in cur.description]
-    rows = [dict(zip(columns, row)) for row in cur.fetchall()]
-    cur.close()
-    return rows
+    return bm.get_mia_db_data(sql, "mia_mirror")
 
 
 def get_order_pre_qty(info):
@@ -68,26 +58,39 @@ def get_wms_qty(info):
                        "INNER JOIN oms_order_item oi ON oo.order_id = oi.order_id "
                        "WHERE o.sync_order = 2 AND o.sync_stock = 1 AND o.warehouse_id = $wid AND oi.item_id = $item_id")
     sql = sql_tmp.substitute(wid=info["warehouse_id"], item_id=info["item_id"])
-    cur = bm.get_mia_cursor("mia_wms")
-    cur.execute(sql)
 
-    result_data = cur.fetchall()
-    cur.close()
-    return result_data[0][0]
+    return bm.get_mia_db_data(sql, "mia_wms")
 
 
 def get_bmp_pre_stock_by_ids(bmp_ids):
-    cur = bm.get_mia_cursor("mia_bmp")
     sql_tmp = Template(
         "select item_id,warehouse_id,pre_qty,lastmodified_date as modify_time from brand_stock_item_channel "
         "WHERE id in ($ids)")
     ids = ", ".join(list(map(lambda x: str(x), bmp_ids)))
     sql = sql_tmp.substitute(ids=ids)
-    cur.execute(sql)
-    columns = [col[0] for col in cur.description]
-    rows = [dict(zip(columns, row)) for row in cur.fetchall()]
-    cur.close()
-    return rows
+    return bm.get_mia_db_data(sql, "mia_bmp")
+
+
+mq = {
+    "itemId": 5876098,
+    "opType": 9,
+    "operatePreQty": False,
+    "orderCode": "10",
+    "qty": -3,
+    "stockItemId": 8242681,
+    "stockType": 1,
+    "superiorOrderCode": "",
+    "test": False,
+    "userId": 9999,
+    "warehouseId": 3364
+}
+
+
+# 库存服务mq补发
+def re_send_product_mq(mq):
+    r = requests.post("http://10.5.105.104:9089/stock/reSendMq", data=mq)
+
+    print(r.content.decode("utf-8"))
 
 
 # 重置预占库存
@@ -108,3 +111,5 @@ if __name__ == '__main__':
     # rows = get_mia_pre_stock_list(start_date, m_date)
     # for r in rows:
     #     get_order_pre_qty(r)
+
+    # re_send_product_mq(mq)

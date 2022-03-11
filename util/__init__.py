@@ -5,7 +5,9 @@ import json
 import traceback
 
 import pymysql
+import redis
 import xlrd
+from rediscluster import RedisCluster
 
 
 class ExtendJSONEncoder(json.JSONEncoder):
@@ -30,16 +32,18 @@ def get_mia_cursor(db_name="mia_mirror"):
     return conn.cursor()
 
 
-def get_log_cursor(db_name="log"):
-    conn = pymysql.connect(host="10.1.103.19",
-                           port=3306,
-                           user="pop_cuijiabin",
-                           passwd="8dtx5EOUZASc#",
-                           db=db_name,
-                           charset="utf8")
-    return conn.cursor()
+# 通过SQL获取mia库数据
+def get_mia_db_data(sql, db_name="mia_mirror"):
+    cur = get_mia_cursor(db_name)
+    cur.execute(sql)
+
+    columns = [col[0] for col in cur.description]
+    rows = [dict(zip(columns, row)) for row in cur.fetchall()]
+    cur.close()
+    return rows
 
 
+# 通过SQL获取测试库数据
 def get_mia_test_cursor(db_name="mia_test2"):
     conn = pymysql.connect(host="172.16.130.253",
                            port=3308,
@@ -48,6 +52,16 @@ def get_mia_test_cursor(db_name="mia_test2"):
                            db=db_name,
                            charset="utf8")
     return conn.cursor()
+
+
+def get_test_db_data(sql, db_name="mia_test2"):
+    cur = get_mia_test_cursor(db_name)
+    cur.execute(sql)
+
+    columns = [col[0] for col in cur.description]
+    rows = [dict(zip(columns, row)) for row in cur.fetchall()]
+    cur.close()
+    return rows
 
 
 # 小驼峰转大驼峰
@@ -102,3 +116,36 @@ def open_excel(file):
         print("e.message:\t", e.message)
         print("traceback.print_exc():\t", traceback.print_exc())
         print("traceback.format_exc():\n%s" % traceback.format_exc())
+
+
+# 获取测试环境redis集群client
+def get_test_cluster_client():
+    redis_nodes = [
+        {'host': '172.16.130.100', 'port': 7001},
+        {'host': '172.16.130.100', 'port': 7002},
+        {'host': '172.16.130.100', 'port': 7003},
+        {'host': '172.16.130.100', 'port': 7004},
+        {'host': '172.16.130.100', 'port': 7005},
+        {'host': '172.16.130.100', 'port': 7006}
+
+    ]
+
+    return RedisCluster(startup_nodes=redis_nodes, decode_responses=True)
+
+
+# 获取线上库存redis集群client
+def get_stock_cluster_client():
+    redis_nodes = [
+        {'host': '10.5.96.169', 'port': 7012},
+        {'host': '10.5.96.174', 'port': 7012},
+        {'host': '10.5.96.181', 'port': 7012},
+        {'host': '10.5.96.228', 'port': 7024},
+        {'host': '10.5.97.18', 'port': 7024},
+        {'host': '10.5.96.169', 'port': 7013}
+    ]
+
+    return RedisCluster(startup_nodes=redis_nodes, decode_responses=True)
+
+
+def get_single_redis_client(host="10.5.111.125"):
+    return redis.StrictRedis(host=host, port=6379, db=0)

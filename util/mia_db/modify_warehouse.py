@@ -11,15 +11,10 @@ target_warehouse_map = {
 
 # 根据仓库id获取可用库存列表
 def get_order_list():
-    cur = bm.get_mia_cursor("mia_mirror")
-    # sql = "select id, order_code, warehouse_id from orders WHERE order_code in ('2012052398902155') and `status` !=6"
     sql = "select DISTINCT o.id, o.order_code,o.warehouse_id from orders o LEFT JOIN order_item t on o.id = t.order_id " + \
           "where o.order_time>'2021-1-4' and t.spu_id=5876088 and o.`status`<3 AND o.warehouse_id in (6868,7575)"
-    cur.execute(sql)
 
-    columns = [col[0] for col in cur.description]
-    rows = [dict(zip(columns, row)) for row in cur.fetchall()]
-    return rows
+    return bm.get_mia_db_data(sql)
 
 
 # 更新订单sql生成
@@ -36,28 +31,21 @@ def gen_update_order_sql(rows):
 
 # 订单商品列表查询
 def get_order_item_list(order_ids):
-    cur = bm.get_mia_cursor("mia_mirror")
     sql = "select id,order_id,item_id,warehouse_id,stock_item_id from order_item where order_id in (%s)"
     condition = ", ".join(list(map(lambda x: str(x), order_ids)))
     sql %= condition
-    cur.execute(sql)
 
-    columns = [col[0] for col in cur.description]
-    rows = [dict(zip(columns, row)) for row in cur.fetchall()]
-    return rows
+    return bm.get_mia_db_data(sql)
 
 
 # 库存信息查询
 def get_stock_item_list(item_ids):
-    cur = bm.get_mia_cursor("mia_mirror")
     sql = "select id,item_id,warehouse_id from stock_item where item_id in (%s)"
     condition = ", ".join(list(map(lambda x: str(x), item_ids)))
     sql %= condition
     sql += " and status = 1"
-    cur.execute(sql)
 
-    columns = [col[0] for col in cur.description]
-    rows = [dict(zip(columns, row)) for row in cur.fetchall()]
+    rows = bm.get_mia_db_data(sql)
     stock_map = {}
     for x in rows:
         stock_map.setdefault(str(x["item_id"]) + "#" + str(x["warehouse_id"]), x["id"])
@@ -98,15 +86,11 @@ def gen_update_order_item_sql(order_item_list, stock_map):
 
 # 退货单列表查询
 def get_returns_list(order_item_ids):
-    cur = bm.get_mia_cursor("mia_mirror")
     sql = "select id, order_code, warehouse_id from returns where order_code in (%s)"
     condition = ", ".join(list(map(lambda x: "'" + str(x) + "'", order_item_ids)))
     sql %= condition
-    cur.execute(sql)
 
-    columns = [col[0] for col in cur.description]
-    rows = [dict(zip(columns, row)) for row in cur.fetchall()]
-    return rows
+    return bm.get_mia_db_data(sql)
 
 
 def gen_returns_sql(return_list, order_warehouse_map):
@@ -118,39 +102,27 @@ def gen_returns_sql(return_list, order_warehouse_map):
 
 # 预售商品查询
 def get_order_presell_item_list(order_code_list):
-    cur = bm.get_mia_cursor("mia_mirror")
     sql = "select id, order_item_id, warehouse_id from order_presell_item where order_item_id in (%s)"
     condition = ", ".join(list(map(lambda x: "'" + str(x) + "'", order_code_list)))
     sql %= condition
-    cur.execute(sql)
 
-    columns = [col[0] for col in cur.description]
-    rows = [dict(zip(columns, row)) for row in cur.fetchall()]
-    return rows
+    return bm.get_mia_db_data(sql)
 
 
 def get_return_items_list(order_code_list):
-    cur = bm.get_mia_cursor("mia_mirror")
     sql = "select id, order_item_id, warehouse_id from return_items where order_item_id in (%s)"
     condition = ", ".join(list(map(lambda x: "'" + str(x) + "'", order_code_list)))
     sql %= condition
-    cur.execute(sql)
 
-    columns = [col[0] for col in cur.description]
-    rows = [dict(zip(columns, row)) for row in cur.fetchall()]
-    return rows
+    return bm.get_mia_db_data(sql)
 
 
 def get_return_process_item_list(order_code_list):
-    cur = bm.get_mia_cursor("mia_mirror")
     sql = "select id, order_item_id, warehouse_id from return_process_item where order_item_id in (%s)"
     condition = ", ".join(list(map(lambda x: "'" + str(x) + "'", order_code_list)))
     sql %= condition
-    cur.execute(sql)
 
-    columns = [col[0] for col in cur.description]
-    rows = [dict(zip(columns, row)) for row in cur.fetchall()]
-    return rows
+    return bm.get_mia_db_data(sql)
 
 
 def gen_update_detail_sql(item_list, table_name, order_item_map):

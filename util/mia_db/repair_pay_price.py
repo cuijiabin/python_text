@@ -8,21 +8,15 @@ import util as bm
 
 
 def get_order_list(superior_order_code):
-    cur = bm.get_mia_cursor("mia_mirror")
     sql_tmp = Template(
         "SELECT id,sale_price,deal_price,pay_price from orders "
         "WHERE superior_order_code = '$superior_order_code' and warehouse_id = 8149"
     )
     sql = sql_tmp.substitute(superior_order_code=superior_order_code)
-    cur.execute(sql)
-    columns = [col[0] for col in cur.description]
-    result = [dict(zip(columns, row)) for row in cur.fetchall()]
-    cur.close()
-    return result
+    return bm.get_mia_db_data(sql, "mia_mirror")
 
 
 def get_order_item_list(superior_order_code):
-    cur = bm.get_mia_cursor("mia_mirror")
     sql_tmp = Template(
         "SELECT id,order_id,sale_price,deal_price,pay_price,promotion_info, "
         "item_id,spu_id,promotion_id,promotion_type,pro_discount "
@@ -31,11 +25,7 @@ def get_order_item_list(superior_order_code):
         "WHERE superior_order_code = '$superior_order_code' and warehouse_id = 8149)"
     )
     sql = sql_tmp.substitute(superior_order_code=superior_order_code)
-    cur.execute(sql)
-    columns = [col[0] for col in cur.description]
-    result = [dict(zip(columns, row)) for row in cur.fetchall()]
-    cur.close()
-    return result
+    return bm.get_mia_db_data(sql, "mia_mirror")
 
 
 def get_update_sql(superior_order_code):
@@ -53,7 +43,6 @@ def get_update_sql(superior_order_code):
 
 
 def judge_order(order_code_list):
-    cur = bm.get_mia_cursor("mia_mirror")
     sql_tmp = Template(
         "SELECT o.order_code,oi.item_id,count(oi.qty) as num,i.brand_id "
         "from order_item oi INNER JOIN orders o on oi.order_id = o.id "
@@ -66,10 +55,8 @@ def judge_order(order_code_list):
         "GROUP BY oi.order_id,oi.item_id"
     )
     sql = sql_tmp.substitute(order_code_list=','.join(map(lambda x: "'" + x + "'", order_code_list)))
-    cur.execute(sql)
-    columns = [col[0] for col in cur.description]
-    result = [dict(zip(columns, row)) for row in cur.fetchall()]
-    cur.close()
+
+    result = bm.get_mia_db_data(sql, "mia_mirror")
     rm = dict()
     for i in result:
         pre = rm.get(i["order_code"])
