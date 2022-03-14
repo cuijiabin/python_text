@@ -1,4 +1,6 @@
 # coding=utf-8
+from collections import Counter
+
 """
 1.python 中有多少种类型？
 
@@ -44,6 +46,13 @@ def count_stat():
     count_map = sorted(count_map.items(), key=lambda item: item[1], reverse=True)
     for v in count_map:
         print(v[0], " ", v[1])
+
+    print("分隔符")
+    # 也可以直接使用Counter函数进行统计处理
+    return_map = dict(Counter(txt_array))
+    print(return_map)
+    for key in return_map.keys():
+        print(key, " ", return_map[key])
 
 
 if __name__ == '__main__':

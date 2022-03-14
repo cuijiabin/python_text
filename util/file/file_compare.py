@@ -25,4 +25,4 @@ def compare_file(file_a, file_b):
 
 if __name__ == '__main__':
     compare_file("tmp_03.txt", "tmp_04.txt")
-    compare_file("tmp_04.txt", "tmp_03.txt")
+    # compare_file("tmp_04.txt", "tmp_03.txt")

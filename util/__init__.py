@@ -4,6 +4,7 @@ import decimal
 import json
 import traceback
 
+import pandas
 import pymysql
 import redis
 import xlrd
@@ -149,3 +150,30 @@ def get_stock_cluster_client():
 
 def get_single_redis_client(host="10.5.111.125"):
     return redis.StrictRedis(host=host, port=6379, db=0)
+
+
+def read_sql_file(path):
+    sql = ""
+    with open(path, 'r', encoding="utf8") as file:
+
+        line = file.readline()
+        while line:
+            line = line.strip('\n')
+            if line.find("--") > -1 or len(line) < 1:
+                line = file.readline()
+                continue
+
+            sql += line + " "
+            line = file.readline()
+    file.close()
+
+    return sql
+
+
+# 通用sql数据导出excel
+def export_sql_excel(sql_path, excel_path):
+    sql = read_sql_file(sql_path)
+    print(sql)
+    data_list = get_mia_db_data(sql, "mia")
+    df = pandas.DataFrame(data_list)
+    df.to_excel(excel_path, index=False)
