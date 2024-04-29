@@ -133,7 +133,7 @@ def read_csv(file_path):
 if __name__ == '__main__':
     # split_file_line_count('E:/file/download/unlock_order_提取.txt', 200, False)
     # remove_file('E:/file/download/unlock_order', 2)
-    split_file_line_count('E:/file/download/工作文本/sql_backup.txt', 20000, False)
+    split_file_line_count('C:/Users/cuiji/Downloads/部署jar文件/huangcun.sql', 10000, False)
     # read_csv('E:/file/download/8152e680f9978d76400e7a9dcfccfe95.csv')
     # read_csv('E:/file/download/xxx.txt')
 

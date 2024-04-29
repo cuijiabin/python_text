@@ -38,7 +38,46 @@ def test_time_diff():
     print(time_diff)
 
 
+# 根据日期生成消耗记录
+def gen_use_record(stat_date):
+    head = {
+        "Content-Type": "application/json;charset=UTF-8",
+        "jnpf-origin": "pc",
+        "Authorization": "bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpblR5cGUiOiJsb2dpbiIsImxvZ2luSWQiOiI1NDQ3OTYxNjg5NjI1MDM4MTMiLCJyblN0ciI6IlByVXp1cm9zMUxRQm9ZWG5HVG9HcUd0VldubERCS3RCIiwidXNlcl9pZCI6IjU0NDc5NjE2ODk2MjUwMzgxMyIsInVzZXJfbmFtZSI6ImN1aWppYWJpbkRldiIsInNpbmdsZUxvZ2luIjoyLCJleHAiOjE3MTg0MTQ0NDY1MzQsInRva2VuIjoibG9naW5fdG9rZW5fNTQ5ODQ4Mjc1MzY5NDE2MTMzIn0.UTjc-_AFzwSiSeEmeXivbznCIKPGlsJZqGB1R2uAUnc"}
+    post_data = {
+        "tenantId": "",
+        "origin": "preview",
+        "paramList": [
+            {
+                "field": "statDate",
+                "fieldName": "统计日期",
+                "dataType": "varchar",
+                "required": 0,
+                "defaultValue": str(stat_date)
+            }
+        ]
+    }
+    r = requests.post("http://127.0.0.1:3100/dev/api/system/DataInterface/547485512055725509/Actions/Preview",
+                      data=json.dumps(post_data), headers=head)
+    print(r.content.decode("utf-8"))
+
+
+# 获取每天的日期字符串
+# 参数1：begin_date_str，开始日期字符串，例如：2020-01-01
+# 参数2：end_date_str，结束日期字符串，例如：2020-08-10
+def get_every_day(begin_date_str, end_date_str):
+    date_list = []
+    begin_date = datetime.datetime.strptime(begin_date_str, "%Y-%m-%d")
+    end_date = datetime.datetime.strptime(end_date_str, "%Y-%m-%d")
+    while begin_date <= end_date:
+        date_str = begin_date.strftime("%Y-%m-%d")
+        date_list.append(date_str)
+        begin_date += datetime.timedelta(days=1)
+    return date_list
+
+
 if __name__ == "__main__":
-    order_code_list = []
-    for order_code in order_code_list:
-        common_order_decrypt(order_code)
+    data = get_every_day("2023-10-01", "2024-04-15")
+    for d in data:
+        print(d)
+        gen_use_record(d)

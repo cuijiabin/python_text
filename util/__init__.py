@@ -65,6 +65,27 @@ def get_test_db_data(sql, db_name="mia_test2"):
     return rows
 
 
+def get_cctd_cursor(db_name="java_boot_test"):
+    conn = pymysql.connect(host="192.168.10.225",
+                           port=3306,
+                           user="root",
+                           passwd="123456",
+                           db=db_name,
+                           charset="utf8")
+    return conn.cursor()
+
+
+# 通过SQL获取mia库数据
+def get_cctd_db_data(sql, db_name="java_boot_test"):
+    cur = get_cctd_cursor(db_name)
+    cur.execute(sql)
+
+    columns = [col[0] for col in cur.description]
+    rows = [dict(zip(columns, row)) for row in cur.fetchall()]
+    cur.close()
+    return rows
+
+
 # 小驼峰转大驼峰
 def camel_convert(input_string, space_character):
     input_list = str(input_string).split(space_character)
